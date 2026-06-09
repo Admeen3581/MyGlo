@@ -48,3 +48,7 @@ yarn-error.log*
 /ios
 /android
 
+#Guides & AI Tools
+AGENTS.md
+CLAUDE.md
+
