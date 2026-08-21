@@ -10,19 +10,25 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts } from "@/constants/theme";
+import {ThemedView} from "@/components/themed-view";
+import {ThemedText} from "@/components/themed-text";
 
-export interface TextboxProps extends TextInputProps {
+export interface TextboxInputProps extends TextInputProps {
     label?: string;
     error?: string;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
     isPassword?: boolean;
     showClearButton?: boolean;
+    autoCapitalize?: TextInputProps['autoCapitalize'];
+    autoCorrect?: boolean;
+    autoComplete?: TextInputProps['autoComplete'];
+    keyboardType?: TextInputProps['keyboardType'];
     value?: string;
     onChangeText?: (text: string) => void;
 }
 
-const Textbox = forwardRef<TextInput, TextboxProps>(
+const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
     (
         {
             label,
@@ -31,13 +37,12 @@ const Textbox = forwardRef<TextInput, TextboxProps>(
             rightIcon,
             isPassword = false,
             showClearButton = false,
-            value,
-            onChangeText,
-            // DEFAULTS FOR INHERITABLE COMPONENT
             autoCapitalize = 'none',
             autoCorrect = false,
             autoComplete = 'off',
             keyboardType = 'default',
+            value,
+            onChangeText,
             style,
             ...props
         },
@@ -56,28 +61,21 @@ const Textbox = forwardRef<TextInput, TextboxProps>(
         };
 
         return (
-            <View style={styles.container}>
+            <ThemedView>
                 {/* Label */}
                 {label ? (
-                    <Text style={[styles.label, { color: theme.text, fontFamily: Fonts.sans }]}>
+                    <ThemedText style={[styles.label, { color: theme.text, fontFamily: Fonts.sans }]}>
                         {label}
-                    </Text>
+                    </ThemedText>
                 ) : null}
 
                 {/* Input Container */}
-                <View
-                    style={[
-                        styles.inputContainer,
-                        { backgroundColor: theme.background, borderColor: theme.border },
-                        isFocused && styles.inputFocused,
-                        !!error && { borderColor: theme.error },
-                    ]}
-                >
+                <ThemedView>
                     {/* Left Icon Slot */}
                     {leftIcon && <View style={styles.leftIconContainer}>{leftIcon}</View>}
 
                     {/* Core TextInput */}
-                    <TextInput
+                    <TextboxInput
                         ref={ref}
                         value={value}
                         onChangeText={onChangeText}
@@ -100,7 +98,7 @@ const Textbox = forwardRef<TextInput, TextboxProps>(
                     />
 
                     {/* Right-Side Adornments */}
-                    <View style={styles.rightAdornmentContainer}>
+                    <ThemedView>
 
                         {/* Custom Clear Button */}
                         {showClearButton && value && value.length > 0 && !isPassword ? (
@@ -125,23 +123,23 @@ const Textbox = forwardRef<TextInput, TextboxProps>(
                         ) : null}
 
                         {/* General Right Icon Slot */}
-                        {rightIcon && <View style={styles.rightIconContainer}>{rightIcon}</View>}
-                    </View>
-                </View>
+                        {rightIcon && <ThemedView>{rightIcon}</ThemedView>}
+                    </ThemedView>
+                </ThemedView>
 
                 {/* Error Text */}
                 {error ? (
-                    <Text style={[styles.errorText, { color: theme.error, fontFamily: Fonts.sans }]}>
+                    <ThemedText type='default' style={{fontFamily: Fonts.sans}}>
                         {error}
-                    </Text>
+                    </ThemedText>
                 ) : null}
-            </View>
+            </ThemedView>
         );
     }
 );
 
-Textbox.displayName = 'Textbox';
-export default Textbox;
+TextboxInput.displayName = 'TextboxInput';
+export default TextboxInput;
 
 const styles = StyleSheet.create({
     container: {
