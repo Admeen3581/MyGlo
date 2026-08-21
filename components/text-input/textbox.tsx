@@ -11,7 +11,8 @@ import { Colors, Fonts } from "@/constants/theme";
 import {ThemedView} from "@/components/themed-view";
 import {ThemedText} from "@/components/themed-text";
 
-export interface TextboxInputProps extends TextInputProps {
+export interface TextboxInputProps extends TextInputProps
+{
     label?: string;
     error?: string;
     leftIcon?: React.ReactNode;
@@ -29,7 +30,7 @@ export interface TextboxInputProps extends TextInputProps {
 const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
     (
         {
-            label,
+            label = "Textbox",
             error,
             leftIcon,
             rightIcon,
@@ -45,7 +46,8 @@ const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
             ...props
         },
         ref
-    ) => {
+    ) =>
+    {
         // Theme & State Setup
         const colorScheme = useColorScheme();
         const theme = Colors[colorScheme ?? 'light'];
@@ -55,7 +57,8 @@ const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
         const [isTextHidden, setIsTextHidden] = useState(isHidden);
 
         // Handlers
-        const handleClear = () => {
+        const handleClear = () =>
+        {
             onChangeText?.('');
         };
 
