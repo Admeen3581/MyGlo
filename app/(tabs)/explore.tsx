@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {Animated, KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 
 import { Collapsible } from '@/components/ui/collapsible';
 import { ExternalLink } from '@/components/external-link';
@@ -8,6 +8,14 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
+import EmailBox from "@/components/text-input/emailbox";
+import PasswordBox from "@/components/text-input/passwordbox";
+import SearchBox from "@/components/text-input/searchbox";
+import NumberBox from "@/components/text-input/numberbox";
+import Genericbox from "@/components/text-input/genericbox";
+import URLBox from "@/components/text-input/urlbox";
+import TwoFactorBox from "@/components/text-input/twofactorbox";
+import {KeyboardAwareScrollView} from "react-native-keyboard-controller";
 
 export default function TabTwoScreen()
 {
@@ -95,6 +103,18 @@ export default function TabTwoScreen()
           ),
         })}
       </Collapsible>
+
+
+        <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }} bottomOffset={20}>
+            <EmailBox></EmailBox>
+            <PasswordBox></PasswordBox>
+            <SearchBox></SearchBox>
+            <NumberBox></NumberBox>
+            <Genericbox></Genericbox>
+            <URLBox></URLBox>
+            <TwoFactorBox></TwoFactorBox>
+        </KeyboardAwareScrollView>
+
     </ParallaxScrollView>
   );
 }

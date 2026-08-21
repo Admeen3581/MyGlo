@@ -13,6 +13,7 @@ const SearchBox = forwardRef<TextInput, TextboxInputProps>(
         return (
             <TextboxInput
                 ref={ref}
+                label={""}
                 placeholder="Search..."
                 returnKeyType="search"
                 autoCapitalize="none"
