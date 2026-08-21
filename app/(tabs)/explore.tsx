@@ -19,8 +19,8 @@ export default function TabTwoScreen()
           color="#808080"
           name="chevron.left.forwardslash.chevron.right"
           style={styles.headerImage}
-        />
-      }>
+        />}
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText
           type="title"
