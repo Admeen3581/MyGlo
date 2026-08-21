@@ -1,8 +1,6 @@
 import React, { useState, forwardRef } from 'react';
 import {
-    View,
     TextInput,
-    Text,
     StyleSheet,
     TextInputProps,
     TouchableOpacity,
@@ -18,7 +16,7 @@ export interface TextboxInputProps extends TextInputProps {
     error?: string;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
-    isPassword?: boolean;
+    isHidden?: boolean;
     showClearButton?: boolean;
     autoCapitalize?: TextInputProps['autoCapitalize'];
     autoCorrect?: boolean;
@@ -35,7 +33,7 @@ const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
             error,
             leftIcon,
             rightIcon,
-            isPassword = false,
+            isHidden = false,
             showClearButton = false,
             autoCapitalize = 'none',
             autoCorrect = false,
@@ -53,7 +51,8 @@ const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
         const theme = Colors[colorScheme ?? 'light'];
 
         const [isFocused, setIsFocused] = useState(false);
-        const [isPasswordHidden, setIsPasswordHidden] = useState(isPassword);
+        const [isBlurred, setIsBlurred] = useState(false);
+        const [isTextHidden, setIsTextHidden] = useState(isHidden);
 
         // Handlers
         const handleClear = () => {
@@ -61,7 +60,7 @@ const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
         };
 
         return (
-            <ThemedView>
+            <ThemedView style={[styles.container]}>
                 {/* Label */}
                 {label ? (
                     <ThemedText style={[styles.label, { color: theme.text, fontFamily: Fonts.sans }]}>
@@ -70,16 +69,23 @@ const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
                 ) : null}
 
                 {/* Input Container */}
-                <ThemedView>
+                <ThemedView
+                    style={[
+                        styles.inputContainer,
+                        { borderColor: '#ccc' }, // Fallback if theme.border is undefined
+                        isFocused && styles.inputFocused,
+                        (!!error && isBlurred) && { borderColor: 'red' } // Fallback for error state
+                    ]}
+                >
                     {/* Left Icon Slot */}
-                    {leftIcon && <View style={styles.leftIconContainer}>{leftIcon}</View>}
+                    {leftIcon && <ThemedView style={styles.leftIconContainer}>{leftIcon}</ThemedView>}
 
                     {/* Core TextInput */}
-                    <TextboxInput
+                    <TextInput
                         ref={ref}
                         value={value}
                         onChangeText={onChangeText}
-                        secureTextEntry={isPassword ? isPasswordHidden : false}
+                        secureTextEntry={isHidden ? isTextHidden : false}
                         autoCapitalize={autoCapitalize}
                         autoCorrect={autoCorrect}
                         autoComplete={autoComplete}
@@ -91,31 +97,36 @@ const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
                         }}
                         onBlur={(e) => {
                             setIsFocused(false);
+                            setIsBlurred(true)
                             props.onBlur?.(e);
                         }}
-                        style={[styles.input, { color: theme.text, fontFamily: Fonts.sans }, style]}
+                        style={[
+                            styles.input,
+                            { color: theme.text, fontFamily: Fonts.sans },
+                            {outlineStyle: 'none', borderWidth: 0} as any,
+                            style]}
                         {...props}
                     />
 
                     {/* Right-Side Adornments */}
-                    <ThemedView>
+                    <ThemedView style={styles.rightAdornmentContainer}>
 
                         {/* Custom Clear Button */}
-                        {showClearButton && value && value.length > 0 && !isPassword ? (
+                        {showClearButton && value && value.length > 0 && !isHidden ? (
                             <TouchableOpacity onPress={handleClear} style={styles.iconButton} hitSlop={8}>
                                 <Ionicons name="close-circle" size={20} color={theme.icon} />
                             </TouchableOpacity>
                         ) : null}
 
-                        {/* Password Toggle Button */}
-                        {isPassword ? (
+                        {/* Password/Hidden Text Toggle Button */}
+                        {isHidden ? (
                             <TouchableOpacity
-                                onPress={() => setIsPasswordHidden(!isPasswordHidden)}
+                                onPress={() => setIsTextHidden(!isTextHidden)}
                                 style={styles.iconButton}
                                 hitSlop={8}
                             >
                                 <Ionicons
-                                    name={isPasswordHidden ? 'eye-off' : 'eye'}
+                                    name={isTextHidden ? 'eye-off' : 'eye'}
                                     size={20}
                                     color={theme.icon}
                                 />
@@ -128,8 +139,8 @@ const TextboxInput = forwardRef<TextInput, TextboxInputProps>(
                 </ThemedView>
 
                 {/* Error Text */}
-                {error ? (
-                    <ThemedText type='default' style={{fontFamily: Fonts.sans}}>
+                {(error && isBlurred) ? (
+                    <ThemedText type='default' style={{fontFamily: Fonts.sans, color: 'red', marginTop: 6, fontSize: 13, fontWeight: '500'}}>
                         {error}
                     </ThemedText>
                 ) : null}
