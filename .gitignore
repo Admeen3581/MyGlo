@@ -49,7 +49,7 @@ yarn-error.log*
 /android
 
 #Guides & AI Tools
-./notes
+/notes
 AGENTS.md
 CLAUDE.md
 
