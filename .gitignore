@@ -42,7 +42,6 @@ yarn-error.log*
 /.idea
 .venv
 /.vscode
-/.claude
 
 # generated native folders
 /ios
@@ -52,4 +51,6 @@ yarn-error.log*
 /notes
 AGENTS.md
 CLAUDE.md
-
+/.agents/
+/.claude
+/skills-lock.json
