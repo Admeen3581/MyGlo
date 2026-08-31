@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 140" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bioglow-a" cx="55%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#94D2BD" stop-opacity="0.8"/>
+      <stop offset="45%" stop-color="#005F73" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#0E151A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" rx="12" fill="#0E151A"/>
+
+  <!-- Bioluminescent Backlight Glow -->
+  <circle cx="70" cy="55" r="42" fill="url(#bioglow-a)"/>
+
+  <!-- Box Base -->
+  <path d="M 32 64 L 60 64 L 60 110 L 36 110 A 5 5 0 0 1 31 105 L 31 65 A 1 1 0 0 1 32 64 Z" fill="#3A8898"/>
+  <path d="M 68 64 L 96 64 A 1 1 0 0 1 97 65 L 97 105 A 5 5 0 0 1 92 110 L 68 110 Z" fill="#3A8898"/>
+  
+  <!-- Tilted Lid & Bow -->
+  <g transform="rotate(-16 64 54)">
+    <rect x="24" y="44" width="80" height="14" rx="4" fill="#4AA0B0"/>
+    <path d="M 54 44 C 44 28, 56 18, 64 44 C 72 18, 84 28, 74 44" fill="none" stroke="#4AA0B0" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Glowing Sparkles & Trails -->
+  <g stroke="#94D2BD" fill="#94D2BD">
+    <path d="M 72 48 C 90 40, 102 36, 122 40" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="122" cy="40" r="3.5" stroke="none"/>
+    <path d="M 74 54 C 94 52, 108 56, 128 62" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="128" cy="62" r="3.2" stroke="none"/>
+    <path d="M 70 58 C 88 66, 104 74, 118 82" fill="none" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="118" cy="82" r="2.5" stroke="none"/>
+    <path d="M 78 44 C 95 28, 108 30, 120 28" fill="none" stroke-width="1.8" stroke-linecap="round"/>
+    <circle cx="120" cy="28" r="2" stroke="none"/>
+  </g>
+</svg>

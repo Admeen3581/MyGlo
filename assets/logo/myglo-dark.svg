@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 160" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&amp;display=swap');
+      .brand-title-dark-nosub {
+        font-family: 'Fraunces', 'Noto Serif Display', Georgia, serif;
+        font-size: 72px;
+        font-weight: 700;
+        fill: #20A4B5;
+        letter-spacing: -0.5px;
+      }
+    </style>
+    <radialGradient id="bioglow-alt-nosub" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#94D2BD" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#20A4B5" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0E151A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="100%" height="100%" rx="12" fill="#0E151A"/>
+
+  <!-- Glowing Gift Icon -->
+  <g transform="translate(44, 10)">
+    <!-- Radial Ambient Glow -->
+    <ellipse cx="64" cy="55" rx="42" ry="28" fill="url(#bioglow-alt-nosub)"/>
+
+    <!-- Left Box Half -->
+    <rect x="32" y="64" width="28" height="46" rx="4" fill="#20A4B5"/>
+    
+    <!-- Right Box Half -->
+    <rect x="68" y="64" width="28" height="46" rx="4" fill="#20A4B5"/>
+
+    <!-- Tilted Lid & Bow -->
+    <g transform="rotate(-16 64 54)">
+      <rect x="24" y="44" width="80" height="14" rx="4" fill="#20A4B5"/>
+      <path d="M 54 44 C 44 26, 56 18, 64 44 C 72 18, 84 26, 74 44" fill="none" stroke="#2CD4E8" stroke-width="4.5" stroke-linecap="round"/>
+      <circle cx="64" cy="44" r="3" fill="#A3E7D5"/>
+    </g>
+
+    <!-- Bioluminescent Wisps & Magic Particles -->
+    <g stroke="#94D2BD" fill="#94D2BD">
+      <!-- Upper Trail -->
+      <path d="M 72 48 C 90 40, 102 36, 122 40" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="122" cy="40" r="3.5" stroke="none"/>
+      
+      <!-- Middle Trail -->
+      <path d="M 74 54 C 94 52, 108 56, 128 62" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="128" cy="62" r="3.2" stroke="none"/>
+      
+      <!-- Lower Trail -->
+      <path d="M 70 58 C 88 66, 104 74, 118 82" fill="none" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="118" cy="82" r="2.5" stroke="none"/>
+      
+      <!-- Stardust Floating Orbs -->
+      <path d="M 78 44 C 95 28, 108 30, 120 28" fill="none" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="120" cy="28" r="2" stroke="none"/>
+      <circle cx="104" cy="50" r="1.5" stroke="none"/>
+      <circle cx="134" cy="48" r="1.8" stroke="none"/>
+    </g>
+  </g>
+
+  <!-- Brand Wordmark -->
+  <text x="236" y="105" class="brand-title-dark-nosub">MyGlo</text>
+</svg>
