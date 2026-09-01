@@ -3,3 +3,162 @@
 @import "tailwindcss/utilities.css";
 
 @import "nativewind/theme";
+
+@theme {
+  --color-background: #F7F7F6;
+  --color-foreground: #222D35;
+  --color-primary: #005F73;
+  --color-primary-foreground: #EDF2F4;
+  --color-secondary: #84D2BD;
+  --color-secondary-foreground: #212930;
+  --color-accent: #207D85;
+  --color-accent-foreground: #FFFFFF;
+  --color-muted: #EAEBE7;
+  --color-muted-foreground: #5C6B71;
+  --color-border: #C7D1CF;
+  --color-destructive: #C43D2F;
+  --color-destructive-foreground: #FFFFFF;
+  --color-success: #38B26C;
+  --color-success-foreground: #FFFFFF;
+  --color-warning: #E88B1A;
+  --color-warning-foreground: #FFFFFF;
+  --color-overlay: #102129;
+  --color-shadow-tint: #01377D;
+  --color-moss-green: #5D7052;
+
+  --font-serif: 'Fraunces-Bold';
+  --font-sans: 'Nunito-Regular';
+  --font-fraunces: 'Fraunces-Regular';
+  --font-fraunces-medium: 'Fraunces-Medium';
+  --font-fraunces-semibold: 'Fraunces-SemiBold';
+  --font-fraunces-bold: 'Fraunces-Bold';
+  --font-fraunces-black: 'Fraunces-Black';
+  --font-nunito: 'Nunito-Regular';
+  --font-nunito-medium: 'Nunito-Medium';
+  --font-nunito-semibold: 'Nunito-SemiBold';
+  --font-nunito-bold: 'Nunito-Bold';
+  --font-nunito-extrabold: 'Nunito-ExtraBold';
+  --font-quicksand: 'Quicksand-Regular';
+  --font-quicksand-medium: 'Quicksand-Medium';
+  --font-quicksand-semibold: 'Quicksand-SemiBold';
+  --font-quicksand-bold: 'Quicksand-Bold';
+}
+
+/* Custom BEM Design System Utilities */
+@layer utilities {
+  .btn-primary {
+    background-color: #005F73;
+    border-radius: 9999px;
+    height: 48px;
+    padding-left: 32px;
+    padding-right: 32px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+  }
+  
+  .btn-primary__text {
+    color: #EDF2F4;
+      font-family: 'Nunito-Bold', sans-serif;
+    font-size: 16px;
+  }
+
+  .btn-secondary {
+    background-color: #84D2BD;
+    border-radius: 9999px;
+    height: 48px;
+    padding-left: 32px;
+    padding-right: 32px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+  }
+
+  .btn-secondary__text {
+    color: #212930;
+      font-family: 'Nunito-Bold', sans-serif;
+    font-size: 16px;
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    border-width: 2px;
+    border-color: #84D2BD;
+    border-radius: 9999px;
+    height: 48px;
+    padding-left: 32px;
+    padding-right: 32px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+  }
+
+  .btn-outline__text {
+    color: #207D85;
+      font-family: 'Nunito-Bold', sans-serif;
+    font-size: 16px;
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    border-radius: 9999px;
+    height: 48px;
+    padding-left: 24px;
+    padding-right: 24px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+  }
+
+  .btn-ghost__text {
+    color: #005F73;
+      font-family: 'Nunito-Bold', sans-serif;
+    font-size: 16px;
+  }
+
+  .card-organic {
+    background-color: #FFFFFF;
+    border-radius: 32px;
+    border-width: 1px;
+    border-color: rgba(199, 209, 207, 0.6);
+    padding: 24px;
+  }
+
+  .input-pill {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 9999px;
+    border-width: 1px;
+    border-color: #C7D1CF;
+    height: 48px;
+    padding-left: 24px;
+    padding-right: 24px;
+      font-family: 'Nunito-Regular', sans-serif;
+    font-size: 14px;
+    color: #222D35;
+  }
+
+  .badge-pill {
+    border-radius: 9999px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    align-self: flex-start;
+  }
+
+  .badge-pill__text {
+      font-family: 'Nunito-SemiBold', sans-serif;
+    font-size: 12px;
+  }
+
+  .glass-nav {
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 9999px;
+    border-width: 1px;
+    border-color: rgba(199, 209, 207, 0.5);
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
