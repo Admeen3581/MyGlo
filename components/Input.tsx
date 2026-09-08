@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TextInput as RNTextInput, TextInputProps, Text } from 'react-native';
+import { LightColors, DarkColors } from '@/constants/colors';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -7,6 +8,7 @@ interface InputProps extends TextInputProps {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   containerClassName?: string;
+  isDarkMode?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -16,16 +18,29 @@ export const Input: React.FC<InputProps> = ({
   rightIcon,
   containerClassName = '',
   style,
+  isDarkMode = false,
+  placeholderTextColor,
   ...props
 }) => {
+  const activeColors = isDarkMode ? DarkColors : LightColors;
+
   return (
     <View className={`w-full ${containerClassName}`}>
       {label && (
-        <Text className="text-sm font-nunito-semibold text-foreground mb-2 ml-2">
+        <Text
+          style={{ color: activeColors.foreground }}
+          className="text-sm font-nunito-semibold mb-2 ml-2"
+        >
           {label}
         </Text>
       )}
-      <View className="flex-row items-center bg-white/80 border border-border rounded-full h-12 px-5">
+      <View
+        style={{
+          backgroundColor: isDarkMode ? 'rgba(22, 34, 42, 0.85)' : 'rgba(255, 255, 255, 0.80)',
+          borderColor: activeColors.border,
+        }}
+        className="flex-row items-center border rounded-full h-12 px-5"
+      >
         {leftIcon && <View className="mr-3">{leftIcon}</View>}
         <RNTextInput
           style={[
@@ -33,17 +48,20 @@ export const Input: React.FC<InputProps> = ({
               flex: 1,
               fontFamily: 'Nunito-Regular',
               fontSize: 14,
-              color: '#222D35',
+              color: activeColors.foreground,
             },
             style,
           ]}
-          placeholderTextColor="#5C6B71"
+          placeholderTextColor={placeholderTextColor || activeColors.mutedForeground}
           {...props}
         />
         {rightIcon && <View className="ml-3">{rightIcon}</View>}
       </View>
       {error && (
-        <Text className="text-xs font-nunito text-destructive mt-1 ml-3">
+        <Text
+          style={{ color: activeColors.destructive }}
+          className="text-xs font-nunito mt-1 ml-3"
+        >
           {error}
         </Text>
       )}

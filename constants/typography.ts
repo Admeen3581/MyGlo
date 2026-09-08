@@ -34,4 +34,92 @@ export const fontSizeScale = {
   '6xl': { fontSize: 60, lineHeight: 64 },
 } as const;
 
+/**
+ * Typography Presets matching global.css utility classes
+ * Can be used with React Native StyleSheet or inline styles when NativeWind is not applicable.
+ */
+export const typographyPresets = {
+  titleDisplay: {
+    fontFamily: fontFamilies.serif.black,
+    fontSize: 36,
+    lineHeight: 44,
+    color: '#222D35',
+  },
+  titlePrimary: {
+    fontFamily: fontFamilies.serif.bold,
+    fontSize: 28,
+    lineHeight: 34,
+    color: '#222D35',
+  },
+  titleSecondary: {
+    fontFamily: fontFamilies.serif.semibold,
+    fontSize: 22,
+    lineHeight: 28,
+    color: '#005F73',
+  },
+  titleTertiary: {
+    fontFamily: fontFamilies.serif.medium,
+    fontSize: 18,
+    lineHeight: 24,
+    color: '#222D35',
+  },
+  subheadingPrimary: {
+    fontFamily: fontFamilies.sans.semibold,
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#5C6B71',
+  },
+  subheadingSecondary: {
+    fontFamily: fontFamilies.sans.medium,
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#5C6B71',
+  },
+  bodyLg: {
+    fontFamily: fontFamilies.sans.regular,
+    fontSize: 18,
+    lineHeight: 28,
+    color: '#222D35',
+  },
+  bodyBase: {
+    fontFamily: fontFamilies.sans.regular,
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#222D35',
+  },
+  bodySm: {
+    fontFamily: fontFamilies.sans.regular,
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#5C6B71',
+  },
+  metadata: {
+    fontFamily: fontFamilies.quicksand.semibold,
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#5C6B71',
+  },
+  metadataOverline: {
+    fontFamily: fontFamilies.quicksand.bold,
+    fontSize: 11,
+    lineHeight: 14,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase' as const,
+    color: '#5C6B71',
+  },
+  titleAccent: {
+    fontFamily: fontFamilies.quicksand.bold,
+    fontSize: 18,
+    lineHeight: 24,
+    color: '#207D85',
+  },
+  footnote: {
+    fontFamily: fontFamilies.quicksand.medium,
+    fontSize: 11,
+    lineHeight: 14,
+    color: '#5C6B71',
+  },
+} as const;
+
 export type FontFamily = typeof fontFamilies;
+export type TypographyPreset = keyof typeof typographyPresets;

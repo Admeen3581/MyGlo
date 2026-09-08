@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, ViewProps, StyleSheet } from 'react-native';
-import { blobShapes, shadows } from '@/constants/theme';
+import { blobShapes } from '@/constants/theme';
+import { LightColors, DarkColors } from '@/constants/colors';
 
 interface CardProps extends ViewProps {
   variant?: 'default' | 'tl-large' | 'tr-large' | 'br-large' | 'bl-large';
   children: React.ReactNode;
   className?: string;
+  isDarkMode?: boolean;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -13,8 +15,11 @@ export const Card: React.FC<CardProps> = ({
   children,
   className = '',
   style,
+  isDarkMode = false,
   ...props
 }) => {
+  const activeColors = isDarkMode ? DarkColors : LightColors;
+
   const getRadiusStyle = () => {
     switch (variant) {
       case 'tl-large':
@@ -30,10 +35,16 @@ export const Card: React.FC<CardProps> = ({
     }
   };
 
+  const dynamicCardStyle = {
+    backgroundColor: isDarkMode ? activeColors.muted : '#FFFFFF',
+    borderColor: activeColors.border,
+    shadowColor: activeColors.shadowTint,
+  };
+
   return (
     <View
-      style={[styles.card, getRadiusStyle(), style]}
-      className={`bg-white p-6 border border-border/60 ${className}`}
+      style={[styles.card, getRadiusStyle(), dynamicCardStyle, style]}
+      className={`p-6 border ${className}`}
       {...props}
     >
       {children}
@@ -43,7 +54,10 @@ export const Card: React.FC<CardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    ...shadows.soft,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 4,
   },
 });
 

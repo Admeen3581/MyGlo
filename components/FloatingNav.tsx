@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
 import { Image } from 'expo-image';
 import { images } from '@/constants/images';
+import { LightColors, DarkColors } from '@/constants/colors';
 
 interface FloatingNavProps {
   title?: string;
@@ -18,17 +19,24 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
   isDarkMode = false,
   style,
 }) => {
+  const activeColors = isDarkMode ? DarkColors : LightColors;
+
   return (
     <View
-      style={style}
-      className={`flex-row items-center justify-between shadow-sm px-5 py-3 rounded-full border ${
-        isDarkMode
-          ? 'bg-neutral-900/80 border-neutral-700'
-          : 'bg-white/75 border-border/50'
-      }`}
+      style={[
+        {
+          backgroundColor: isDarkMode ? 'rgba(14, 21, 26, 0.85)' : 'rgba(255, 255, 255, 0.85)',
+          borderColor: activeColors.border,
+        },
+        style,
+      ]}
+      className="flex-row items-center justify-between shadow-sm px-5 py-3 rounded-full border"
     >
       <View className="flex-row items-center gap-3">
-        <View className="w-10 h-10 rounded-full bg-primary items-center justify-center shadow-sm">
+        <View
+          style={{ backgroundColor: activeColors.primary }}
+          className="w-10 h-10 rounded-full items-center justify-center shadow-sm"
+        >
           <Image
             source={images.logoIconWhite}
             style={{ width: 48, height: 48, borderRadius: 24 }}
@@ -36,9 +44,8 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
           />
         </View>
         <Text
-          className={`text-xl font-fraunces-bold ${
-            isDarkMode ? 'text-white' : 'text-foreground'
-          }`}
+          style={{ color: activeColors.foreground }}
+          className="text-xl font-fraunces-bold"
         >
           {title}
         </Text>
@@ -47,9 +54,13 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
       <TouchableOpacity
         onPress={onActionPress}
         activeOpacity={0.8}
-        className="bg-primary px-5 py-2 rounded-full"
+        style={{ backgroundColor: activeColors.primary }}
+        className="px-5 py-2 rounded-full"
       >
-        <Text className="text-primary-foreground font-nunito-bold text-xs">
+        <Text
+          style={{ color: activeColors.primaryForeground }}
+          className="font-nunito-bold text-xs"
+        >
           {actionText}
         </Text>
       </TouchableOpacity>
