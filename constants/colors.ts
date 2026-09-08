@@ -18,7 +18,6 @@ export const LightColors = {
   warningForeground: '#FFFFFF', // Pure White
   overlay: '#102129', // Translucent Deep Ocean
   shadowTint: '#01377D', // Dark Azure
-  mossGreen: '#5D7052', // Moss Green
 } as const;
 
 export const DarkColors = {
@@ -41,7 +40,6 @@ export const DarkColors = {
   warningForeground: '#201202', // Dark Umber
   overlay: '#070B0E', // Abyssal Veil
   shadowTint: '#020811', // Pitch Deep Navy
-  mossGreen: '#41C47A',
 } as const;
 
 export const colors = {
