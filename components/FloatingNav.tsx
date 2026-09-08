@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
-import { Image } from 'expo-image';
-import { images } from '@/constants/images';
 import { LightColors, DarkColors } from '@/constants/colors';
+import { MyGloLogo } from '@/components/MyGloLogo';
 
 interface FloatingNavProps {
   title?: string;
@@ -37,11 +36,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
           style={{ backgroundColor: activeColors.primary }}
           className="w-10 h-10 rounded-full items-center justify-center shadow-sm"
         >
-          <Image
-            source={images.logoIconWhite}
-            style={{ width: 48, height: 48, borderRadius: 24 }}
-            contentFit="cover"
-          />
+          <MyGloLogo type="icon" color="white" size={45} align='center' />
         </View>
         <Text
           style={{ color: activeColors.foreground }}

@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LightColors, DarkColors } from '@/constants/colors';
 import { Button } from '@/components/Button';
@@ -15,7 +14,7 @@ import { Badge } from '@/components/Badge';
 import { FloatingNav } from '@/components/FloatingNav';
 import { ColorSwatch } from '@/components/ColorSwatch';
 import { BlobBackground } from '@/components/BlobBackground';
-import { images } from '@/constants/images';
+import { MyGloLogo } from '@/components/MyGloLogo';
 
 export default function Index() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -104,14 +103,181 @@ export default function Index() {
           </View>
         </View>
 
+        {/* Section: Logo Component Showcase */}
+        <View className="mb-8">
+          <Text
+            style={{ color: activeColors.foreground }}
+            className="text-3xl font-fraunces-bold title-primary mb-2"
+          >
+            Logo Component System
+          </Text>
+          <Text
+            style={{ color: activeColors.mutedForeground }}
+            className="text-sm font-nunito-medium subheading-secondary mb-4"
+          >
+            Flexible logo component supporting automatic light/dark mode selection, 12 SVG variants, custom sizing, and alignment.
+          </Text>
+
+          {/* Automatic Theme Switching Showcase */}
+          <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-4 space-y-4">
+            <Text
+              style={{ color: activeColors.mutedForeground }}
+              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+            >
+              Automatic Mode Selection ({isDarkMode ? 'Dark Active' : 'Light Active'})
+            </Text>
+
+            <View style={dividerStyle} className="mb-4 border-b pb-4">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                Standard Logo ({'color="auto"'})
+              </Text>
+              <MyGloLogo type="standard" isDarkMode={isDarkMode} size="md" align="left" />
+            </View>
+
+            <View style={dividerStyle} className="mb-4 border-b pb-4">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                Icon Only ({'type="icon"'})
+              </Text>
+              <MyGloLogo type="icon" isDarkMode={isDarkMode} size="md" align="left" />
+            </View>
+
+            <View className="pb-1">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                Logo with Subtext ({'type="subtext"'})
+              </Text>
+              <MyGloLogo type="subtext" isDarkMode={isDarkMode} size="md" align="left" />
+            </View>
+          </Card>
+
+          {/* 12 SVG Color Variants Matrix */}
+          <Card variant="tr-large" isDarkMode={isDarkMode} className="mb-4 space-y-4">
+            <Text
+              style={{ color: activeColors.mutedForeground }}
+              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+            >
+              All 12 SVG Color & Format Variants
+            </Text>
+
+            {/* Light Variants */}
+            <View style={dividerStyle} className="mb-4 border-b pb-4">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                Light Theme Variants ({'color="light"'})
+              </Text>
+              <View className="flex-row items-center flex-wrap gap-4">
+                <MyGloLogo type="standard" color="light" size="sm" />
+                <MyGloLogo type="icon" color="light" size="sm" />
+                <MyGloLogo type="subtext" color="light" size="sm" />
+              </View>
+            </View>
+
+            {/* Dark Variants */}
+            <View style={dividerStyle} className="mb-4 border-b pb-4">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                Dark Theme Variants ({'color="dark"'})
+              </Text>
+              <View
+                style={{ backgroundColor: isDarkMode ? '#0E151A' : '#1E293B' }}
+                className="p-3 rounded-xl flex-row items-center flex-wrap gap-4"
+              >
+                <MyGloLogo type="standard" color="dark" size="sm" />
+                <MyGloLogo type="icon" color="dark" size="sm" />
+                <MyGloLogo type="subtext" color="dark" size="sm" />
+              </View>
+            </View>
+
+            {/* Black Variants */}
+            <View style={dividerStyle} className="mb-4 border-b pb-4">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                Black Monochrome Variants ({'color="black"'})
+              </Text>
+              <View className="flex-row items-center flex-wrap gap-4">
+                <MyGloLogo type="standard" color="black" size="sm" />
+                <MyGloLogo type="icon" color="black" size="sm" />
+                <MyGloLogo type="subtext" color="black" size="sm" />
+              </View>
+            </View>
+
+            {/* White Variants */}
+            <View className="pb-1">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                White Monochrome Variants ({'color="white"'})
+              </Text>
+              <View
+                style={{ backgroundColor: activeColors.primary }}
+                className="p-3 rounded-xl flex-row items-center flex-wrap gap-4"
+              >
+                <MyGloLogo type="standard" color="white" size="sm" />
+                <MyGloLogo type="icon" color="white" size="sm" />
+                <MyGloLogo type="subtext" color="white" size="sm" />
+              </View>
+            </View>
+          </Card>
+
+          {/* Resizing & Alignment Options */}
+          <Card variant="br-large" isDarkMode={isDarkMode} className="space-y-4">
+            <Text
+              style={{ color: activeColors.mutedForeground }}
+              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+            >
+              Resizing & Alignment Control
+            </Text>
+
+            <View style={dividerStyle} className="mb-4 border-b pb-4">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                Size Presets (sm, md, lg)
+              </Text>
+              <View className="flex-row items-center flex-wrap gap-4">
+                  <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
+                  <MyGloLogo type="standard" isDarkMode={isDarkMode} size="md" />
+                  <MyGloLogo type="standard" isDarkMode={isDarkMode} size="lg" />
+                  <MyGloLogo type='standard' isDarkMode={isDarkMode} size="xl" />
+              </View>
+            </View>
+
+            <View className="pb-1">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold metadata mb-2"
+              >
+                Alignment Options (left, center, right)
+              </Text>
+              <View className="space-y-2">
+                <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" align="left" />
+                <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" align="center" />
+                <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" align="right" />
+              </View>
+            </View>
+          </Card>
+        </View>
+
         {/* Section: Design Philosophy */}
         <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-8">
           <View className="flex-row items-center mb-3">
-            <Image
-              source={images.logoIcon}
-              style={{ width: 48, height: 48, marginRight: 8 }}
-              contentFit="contain"
-            />
+            <MyGloLogo type="icon" isDarkMode={isDarkMode} size={44} className="mr-2" />
             <Text
               style={{ color: activeColors.primary }}
               className="text-2xl font-fraunces-semibold title-secondary"
@@ -575,6 +741,7 @@ export default function Index() {
 
         {/* Footer info */}
         <View style={dividerStyle} className="py-8 items-center border-t">
+          <MyGloLogo type="subtext" isDarkMode={isDarkMode} size="sm" className="mb-3" />
           <Text
             style={{ color: activeColors.mutedForeground }}
             className="text-xs font-quicksand-semibold metadata mb-1"
