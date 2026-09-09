@@ -21,14 +21,6 @@ export default function OnboardingScreen() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
-  const handleSkip = () => {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.push('/');
-    }
-  };
-
   const handleGetStarted = () => {
     if (router.canGoBack()) {
       router.back();
@@ -110,7 +102,7 @@ export default function OnboardingScreen() {
 
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-base font-nunito-semibold text-center leading-relaxed max-w-[300px]"
+            className="text-base font-nunito-semibold text-center leading-relaxed max-w-75"
           >
             Curate wishlists, share with friends and family, all without spoilers and duplicates ever again.
           </Text>
