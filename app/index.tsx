@@ -6,6 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { LightColors, DarkColors } from '@/constants/colors';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
@@ -17,6 +18,7 @@ import { BlobBackground } from '@/components/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
 
 export default function Index() {
+  const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const activeColors = isDarkMode ? DarkColors : LightColors;
@@ -73,13 +75,13 @@ export default function Index() {
           </View>
           <Text
             style={{ color: activeColors.foreground }}
-            className="text-4xl font-fraunces-black title-display mb-3"
+            className="text-4xl font-fraunces-black mb-3"
           >
             Organic & Natural Design System
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-base font-nunito-semibold subheading-primary mb-6"
+            className="text-base font-nunito-semibold mb-6"
           >
             A tactile, warm, wabi-sabi aesthetic crafted with soft amorphous blob shapes,
             natural ocean-floor color palettes, rounded typography, and soft colored shadows.
@@ -103,17 +105,67 @@ export default function Index() {
           </View>
         </View>
 
+        {/* Section: New Pages (Testing) */}
+        <View className="mb-8">
+          <Text
+            style={{ color: activeColors.foreground }}
+            className="text-3xl font-fraunces-bold mb-2"
+          >
+            New Pages (Testing)
+          </Text>
+          <Text
+            style={{ color: activeColors.mutedForeground }}
+            className="text-sm font-nunito-medium mb-4"
+          >
+            Test implemented application pages and onboarding user flows.
+          </Text>
+
+          <Card variant="tl-large" isDarkMode={isDarkMode} className="space-y-4">
+            <View className="flex-row items-center justify-between mb-1">
+              <Badge label="NEW SCREEN" variant="primary" size="sm" isDarkMode={isDarkMode} />
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-semibold"
+              >
+                /onboarding
+              </Text>
+            </View>
+
+            <Text
+              style={{ color: activeColors.foreground }}
+              className="text-xl font-fraunces-semibold mb-1"
+            >
+              Onboarding Screen
+            </Text>
+
+            <Text
+              style={{ color: activeColors.mutedForeground }}
+              className="text-sm font-nunito mb-4"
+            >
+              Pixel-perfect implementation of the warm wabi-sabi onboarding screen featuring centered illustration card, typography, and clear action CTAs.
+            </Text>
+
+            <Button
+              title="Open Onboarding Screen"
+              variant="primary"
+              size="md"
+              isDarkMode={isDarkMode}
+              onPress={() => router.push('/onboarding')}
+            />
+          </Card>
+        </View>
+
         {/* Section: Logo Component Showcase */}
         <View className="mb-8">
           <Text
             style={{ color: activeColors.foreground }}
-            className="text-3xl font-fraunces-bold title-primary mb-2"
+            className="text-3xl font-fraunces-bold mb-2"
           >
             Logo Component System
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-sm font-nunito-medium subheading-secondary mb-4"
+            className="text-sm font-nunito-medium mb-4"
           >
             Flexible logo component supporting automatic light/dark mode selection, 12 SVG variants, custom sizing, and alignment.
           </Text>
@@ -122,7 +174,7 @@ export default function Index() {
           <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-4 space-y-4">
             <Text
               style={{ color: activeColors.mutedForeground }}
-              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+              className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
             >
               Automatic Mode Selection ({isDarkMode ? 'Dark Active' : 'Light Active'})
             </Text>
@@ -130,7 +182,7 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-4">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 Standard Logo ({'color="auto"'})
               </Text>
@@ -140,7 +192,7 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-4">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 Icon Only ({'type="icon"'})
               </Text>
@@ -150,7 +202,7 @@ export default function Index() {
             <View className="pb-1">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 Logo with Subtext ({'type="subtext"'})
               </Text>
@@ -162,7 +214,7 @@ export default function Index() {
           <Card variant="tr-large" isDarkMode={isDarkMode} className="mb-4 space-y-4">
             <Text
               style={{ color: activeColors.mutedForeground }}
-              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+              className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
             >
               All 12 SVG Color & Format Variants
             </Text>
@@ -171,7 +223,7 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-4">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 Light Theme Variants ({'color="light"'})
               </Text>
@@ -186,7 +238,7 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-4">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 Dark Theme Variants ({'color="dark"'})
               </Text>
@@ -204,7 +256,7 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-4">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 Black Monochrome Variants ({'color="black"'})
               </Text>
@@ -219,7 +271,7 @@ export default function Index() {
             <View className="pb-1">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 White Monochrome Variants ({'color="white"'})
               </Text>
@@ -238,7 +290,7 @@ export default function Index() {
           <Card variant="br-large" isDarkMode={isDarkMode} className="space-y-4">
             <Text
               style={{ color: activeColors.mutedForeground }}
-              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+              className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
             >
               Resizing & Alignment Control
             </Text>
@@ -246,7 +298,7 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-4">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 Size Presets (sm, md, lg)
               </Text>
@@ -261,7 +313,7 @@ export default function Index() {
             <View className="pb-1">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-2"
+                className="text-xs font-quicksand-semibold mb-2"
               >
                 Alignment Options (left, center, right)
               </Text>
@@ -280,14 +332,14 @@ export default function Index() {
             <MyGloLogo type="icon" isDarkMode={isDarkMode} size={44} className="mr-2" />
             <Text
               style={{ color: activeColors.primary }}
-              className="text-2xl font-fraunces-semibold title-secondary"
+              className="text-2xl font-fraunces-semibold"
             >
               Design Philosophy
             </Text>
           </View>
           <Text
             style={{ color: activeColors.foreground }}
-            className="text-base font-nunito body-base leading-relaxed mb-4"
+            className="text-base font-nunito leading-relaxed mb-4"
           >
             Embracing imperfection, erosion by wind and water, and organic curves.
             There are no harsh 90-degree angles. Everything feels handcrafted, peaceful,
@@ -305,13 +357,13 @@ export default function Index() {
         <View className="mb-8">
           <Text
             style={{ color: activeColors.foreground }}
-            className="text-3xl font-fraunces-bold title-primary mb-2"
+            className="text-3xl font-fraunces-bold mb-2"
           >
             Color Palette ({isDarkMode ? 'Dark Mode' : 'Light Mode'})
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-sm font-nunito-medium subheading-secondary mb-4"
+            className="text-sm font-nunito-medium mb-4"
           >
             Water-drawn palette evoking ocean floors, clay pottery, and bleached driftwood.
           </Text>
@@ -333,13 +385,13 @@ export default function Index() {
         <View className="mb-8">
           <Text
             style={{ color: activeColors.foreground }}
-            className="text-3xl font-fraunces-bold title-primary mb-2"
+            className="text-3xl font-fraunces-bold mb-2"
           >
             Typography Utility System
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-base font-nunito-semibold subheading-primary mb-4"
+            className="text-base font-nunito-semibold mb-4"
           >
             Fraunces old-style serif titles combined with Nunito body & Quicksand metadata/accents.
           </Text>
@@ -348,7 +400,7 @@ export default function Index() {
           <Card variant="default" isDarkMode={isDarkMode} className="mb-4 space-y-4">
             <Text
               style={{ color: activeColors.mutedForeground }}
-              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+              className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
             >
               Heading & Title Utilities
             </Text>
@@ -356,13 +408,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .title-display / .text-display (36px Fraunces Black)
+                Hero Display Title (36px Fraunces Black)
               </Text>
               <Text
                 style={{ color: activeColors.foreground }}
-                className="text-4xl font-fraunces-black title-display"
+                className="text-4xl font-fraunces-black"
               >
                 Hero Display Title
               </Text>
@@ -371,13 +423,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .title-primary / .text-title-1 (28px Fraunces Bold)
+                Primary Section Heading (28px Fraunces Bold)
               </Text>
               <Text
                 style={{ color: activeColors.foreground }}
-                className="text-3xl font-fraunces-bold title-primary"
+                className="text-3xl font-fraunces-bold"
               >
                 Primary Section Heading
               </Text>
@@ -386,13 +438,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .title-secondary / .text-title-2 (22px Fraunces SemiBold)
+                Secondary Card Title (22px Fraunces SemiBold)
               </Text>
               <Text
                 style={{ color: activeColors.primary }}
-                className="text-2xl font-fraunces-semibold title-secondary"
+                className="text-2xl font-fraunces-semibold"
               >
                 Secondary Card Title
               </Text>
@@ -401,13 +453,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .title-tertiary / .text-title-3 (18px Fraunces Medium)
+                Tertiary Item Title (18px Fraunces Medium)
               </Text>
               <Text
                 style={{ color: activeColors.foreground }}
-                className="text-xl font-fraunces-medium title-tertiary"
+                className="text-xl font-fraunces-medium"
               >
                 Tertiary Item Title
               </Text>
@@ -416,13 +468,13 @@ export default function Index() {
             <View className="pb-1">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .title-accent / .text-title-accent (18px Quicksand Bold)
+                Quicksand Accent Highlight (18px Quicksand Bold)
               </Text>
               <Text
                 style={{ color: isDarkMode ? activeColors.accentForeground : activeColors.accent }}
-                className="text-lg font-quicksand-bold title-accent"
+                className="text-lg font-quicksand-bold"
               >
                 Quicksand Accent Highlight
               </Text>
@@ -433,7 +485,7 @@ export default function Index() {
           <Card variant="tr-large" isDarkMode={isDarkMode} className="mb-4 space-y-4">
             <Text
               style={{ color: activeColors.mutedForeground }}
-              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+              className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
             >
               Subheading & Body Utilities
             </Text>
@@ -441,13 +493,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .subheading-primary (16px Nunito SemiBold)
+                Primary Subheading (16px Nunito SemiBold)
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-base font-nunito-semibold subheading-primary"
+                className="text-base font-nunito-semibold"
               >
                 Primary Subheading — Explanatory intro under main headers.
               </Text>
@@ -456,13 +508,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .subheading-secondary (14px Nunito Medium)
+                Secondary Subheading (14px Nunito Medium)
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-sm font-nunito-medium subheading-secondary"
+                className="text-sm font-nunito-medium"
               >
                 Secondary Subheading — Group headers and sub-navigation descriptors.
               </Text>
@@ -471,13 +523,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .body-lg (18px Nunito Regular)
+                Large Body (18px Nunito Regular)
               </Text>
               <Text
                 style={{ color: activeColors.foreground }}
-                className="text-lg font-nunito body-lg"
+                className="text-lg font-nunito"
               >
                 Large Body — Lead paragraph copy for featured articles and callouts.
               </Text>
@@ -486,13 +538,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .body-base (16px Nunito Regular)
+                Base Body (16px Nunito Regular)
               </Text>
               <Text
                 style={{ color: activeColors.foreground }}
-                className="text-base font-nunito body-base"
+                className="text-base font-nunito"
               >
                 Base Body — Comfortable reading copy for wishlist items and descriptions.
               </Text>
@@ -501,13 +553,13 @@ export default function Index() {
             <View className="pb-1">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .body-sm (14px Nunito Regular)
+                Small Body (14px Nunito Regular)
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-sm font-nunito body-sm"
+                className="text-sm font-nunito"
               >
                 Small Body — Compact text for helper notes, secondary card text, and labels.
               </Text>
@@ -518,7 +570,7 @@ export default function Index() {
           <Card variant="bl-large" isDarkMode={isDarkMode}>
             <Text
               style={{ color: activeColors.mutedForeground }}
-              className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-3"
+              className="text-xs font-quicksand-bold uppercase tracking-widest mb-3"
             >
               Metadata, Overline & Footnote Utilities
             </Text>
@@ -526,13 +578,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .metadata-overline (11px Quicksand Bold Uppercase Tracked)
+                Metadata Overline (11px Quicksand Bold Uppercase Tracked)
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline"
+                className="text-xs font-quicksand-bold uppercase tracking-widest"
               >
                 WISHLIST ITEM • CATEGORY TAG
               </Text>
@@ -541,13 +593,13 @@ export default function Index() {
             <View style={dividerStyle} className="mb-4 border-b pb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .metadata (12px Quicksand SemiBold)
+                Metadata Caption (12px Quicksand SemiBold)
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata"
+                className="text-xs font-quicksand-semibold"
               >
                 Added 2 days ago • Requested by Alex
               </Text>
@@ -556,13 +608,13 @@ export default function Index() {
             <View>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-semibold metadata mb-1"
+                className="text-xs font-quicksand-semibold mb-1"
               >
-                .footnote (11px Quicksand Medium)
+                Footnote Fine Print (11px Quicksand Medium)
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-medium footnote"
+                className="text-xs font-quicksand-medium"
               >
                 © 2026 MyGlo Gift Giving App • Terms & Privacy
               </Text>
@@ -574,13 +626,13 @@ export default function Index() {
         <View className="mb-8">
           <Text
             style={{ color: activeColors.foreground }}
-            className="text-3xl font-fraunces-bold title-primary mb-2"
+            className="text-3xl font-fraunces-bold mb-2"
           >
             Button Component System
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-sm font-nunito-medium subheading-secondary mb-4"
+            className="text-sm font-nunito-medium mb-4"
           >
             Fully rounded pill shapes with generous horizontal padding.
           </Text>
@@ -589,7 +641,7 @@ export default function Index() {
             <View className="mb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+                className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
               >
                 Primary Pill
               </Text>
@@ -599,7 +651,7 @@ export default function Index() {
             <View className="mb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+                className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
               >
                 Secondary Pill
               </Text>
@@ -609,7 +661,7 @@ export default function Index() {
             <View className="mb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+                className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
               >
                 Outline Pill
               </Text>
@@ -619,7 +671,7 @@ export default function Index() {
             <View className="mb-3">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+                className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
               >
                 Ghost Pill
               </Text>
@@ -629,7 +681,7 @@ export default function Index() {
             <View className="mb-1">
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-xs font-quicksand-bold uppercase tracking-widest metadata-overline mb-2"
+                className="text-xs font-quicksand-bold uppercase tracking-widest mb-2"
               >
                 Button Sizes (Small, Medium, Large)
               </Text>
@@ -646,13 +698,13 @@ export default function Index() {
         <View className="mb-8">
           <Text
             style={{ color: activeColors.foreground }}
-            className="text-3xl font-fraunces-bold title-primary mb-2"
+            className="text-3xl font-fraunces-bold mb-2"
           >
             Input Controls
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-sm font-nunito-medium subheading-secondary mb-4"
+            className="text-sm font-nunito-medium mb-4"
           >
             Pill-shaped text fields with semi-transparent background.
           </Text>
@@ -680,13 +732,13 @@ export default function Index() {
         <View className="mb-8">
           <Text
             style={{ color: activeColors.foreground }}
-            className="text-3xl font-fraunces-bold title-primary mb-2"
+            className="text-3xl font-fraunces-bold mb-2"
           >
             Asymmetric Organic Cards
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-sm font-nunito-medium subheading-secondary mb-4"
+            className="text-sm font-nunito-medium mb-4"
           >
             Unique asymmetric border radii create erosion-like, handcrafted card frames.
           </Text>
@@ -695,13 +747,13 @@ export default function Index() {
             <Card variant="tl-large" isDarkMode={isDarkMode}>
               <Text
                 style={{ color: activeColors.foreground }}
-                className="text-xl font-fraunces-medium title-tertiary mb-1"
+                className="text-xl font-fraunces-medium mb-1"
               >
                 Top-Left Eroded Radius
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-sm font-nunito body-sm"
+                className="text-sm font-nunito"
               >
                 Card with prominent top-left corner curve (64px).
               </Text>
@@ -710,13 +762,13 @@ export default function Index() {
             <Card variant="tr-large" isDarkMode={isDarkMode}>
               <Text
                 style={{ color: isDarkMode ? activeColors.accentForeground : activeColors.accent }}
-                className="text-lg font-quicksand-bold title-accent mb-1"
+                className="text-lg font-quicksand-bold mb-1"
               >
                 Top-Right Eroded Radius
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-sm font-nunito body-sm"
+                className="text-sm font-nunito"
               >
                 Card with prominent top-right corner curve (80px).
               </Text>
@@ -725,13 +777,13 @@ export default function Index() {
             <Card variant="br-large" isDarkMode={isDarkMode}>
               <Text
                 style={{ color: activeColors.primary }}
-                className="text-2xl font-fraunces-semibold title-secondary mb-1"
+                className="text-2xl font-fraunces-semibold mb-1"
               >
                 Bottom-Right Eroded Radius
               </Text>
               <Text
                 style={{ color: activeColors.mutedForeground }}
-                className="text-sm font-nunito body-sm"
+                className="text-sm font-nunito"
               >
                 Card with prominent bottom-right corner curve (64px).
               </Text>
@@ -744,13 +796,13 @@ export default function Index() {
           <MyGloLogo type="subtext" isDarkMode={isDarkMode} size="sm" className="mb-3" />
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-xs font-quicksand-semibold metadata mb-1"
+            className="text-xs font-quicksand-semibold mb-1"
           >
             MyGlo Design System • NativeWind v5 + Tailwind v4
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
-            className="text-xs font-quicksand-medium footnote"
+            className="text-xs font-quicksand-medium"
           >
             Built with Expo & React Native
           </Text>
