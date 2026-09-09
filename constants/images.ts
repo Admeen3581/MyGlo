@@ -9,7 +9,7 @@ export const images = {
     //Organized icons
     icons: {
         tray: require('@/assets/icons/tray.and.arrow.down.png'),
-        gift: require('@/assets/icons/gift.gift.png'),
+        gift: require('@/assets/icons/gift.png'),
     },
 
     //Organized logo dictionary containing all 12 SVG variants
