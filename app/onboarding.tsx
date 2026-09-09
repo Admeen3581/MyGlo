@@ -68,7 +68,7 @@ export default function OnboardingScreen()
                 color={activeColors.primary}
                 size={340}
                 variant="blob3"
-                style={{ bottom: -40, right: -110, opacity: isDarkMode ? 0.15 : 0.25 }}
+                style={{ bottom: -40, right: -110, opacity: isDarkMode ? 0.15 : 0.2 }}
             />
 
             <ScrollView
