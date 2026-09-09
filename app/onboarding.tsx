@@ -22,8 +22,7 @@ export default function OnboardingScreen()
     const [isDarkMode, setIsDarkMode] = useState(false);
     const activeColors = isDarkMode ? DarkColors : LightColors;
 
-    const handleGetStarted = () =>
-    {
+    const handleGetStarted = () => {
         if (router.canGoBack())
         {
             router.back();
@@ -34,8 +33,7 @@ export default function OnboardingScreen()
         }
     };
 
-    const handleExistingAccount = () =>
-    {
+    const handleExistingAccount = () => {
         if (router.canGoBack())
         {
             router.back();
@@ -135,19 +133,13 @@ export default function OnboardingScreen()
                         onPress={handleGetStarted}
                     />
 
-                    <View className="flex-row items-center justify-center py-2">
-                        <Text
-                            style={{ color: activeColors.mutedForeground }}
-                            className="text-sm font-nunito-medium"
-                        >
-                            Already have an account?{' '}
-                        </Text>
-                        <TouchableOpacity onPress={handleGetStarted} activeOpacity={0.7}>
+                    <View className="flex-row items-center justify-center py-2 pt-3">
+                        <TouchableOpacity onPress={handleExistingAccount} activeOpacity={0.7}>
                             <Text
                                 style={{ color: activeColors.primary }}
                                 className="text-sm font-nunito-bold"
                             >
-                                Sign In
+                                I already have an account
                             </Text>
                         </TouchableOpacity>
                     </View>
