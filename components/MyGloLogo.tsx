@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import { images } from '@/constants/images';
+import { ThemeContext } from '@/context/ThemeContext';
 
 export type LogoType = 'standard' | 'icon' | 'subtext';
 export type LogoColor = 'auto' | 'light' | 'dark' | 'black' | 'white';
@@ -72,9 +73,12 @@ export const MyGloLogo: React.FC<LogoProps> = ({
   accessibilityLabel = 'MyGlo Logo',
 }) => {
   const systemColorScheme = useColorScheme();
+  const context = useContext(ThemeContext);
   
-  // Resolve dark mode state: explicit prop > system preference
-  const activeDarkMode = isDarkMode !== undefined ? isDarkMode : systemColorScheme === 'dark';
+  // Resolve dark mode state: explicit prop > ThemeContext > system preference
+  const activeDarkMode = isDarkMode !== undefined 
+    ? isDarkMode 
+    : (context?.isDarkMode !== undefined ? context.isDarkMode : systemColorScheme === 'dark');
 
   // Resolve target color: auto -> light/dark, or explicit color selection
   let resolvedColor: 'light' | 'dark' | 'black' | 'white';

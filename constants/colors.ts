@@ -47,4 +47,4 @@ export const colors = {
   dark: DarkColors,
 };
 
-export type ThemeColors = typeof LightColors;
+export type ThemeColors = Record<keyof typeof LightColors, string>;

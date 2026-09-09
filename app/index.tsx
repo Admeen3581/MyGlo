@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { LightColors, DarkColors } from '@/constants/colors';
+import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Input } from '@/components/Input';
@@ -19,9 +19,8 @@ import { MyGloLogo } from '@/components/MyGloLogo';
 
 export default function Index() {
   const router = useRouter();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
   const [inputValue, setInputValue] = useState('');
-  const activeColors = isDarkMode ? DarkColors : LightColors;
 
   const dividerStyle = {
     borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)',
@@ -63,7 +62,7 @@ export default function Index() {
           <FloatingNav
             title="MyGlo"
             actionText={isDarkMode ? 'Light Mode' : 'Dark Mode'}
-            onActionPress={() => setIsDarkMode(!isDarkMode)}
+            onActionPress={toggleDarkMode}
             isDarkMode={isDarkMode}
           />
         </View>

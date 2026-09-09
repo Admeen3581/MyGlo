@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, TextInput as RNTextInput, TextInputProps, Text } from 'react-native';
 import { LightColors, DarkColors } from '@/constants/colors';
+import { ThemeContext } from '@/context/ThemeContext';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -18,10 +19,12 @@ export const Input: React.FC<InputProps> = ({
   rightIcon,
   containerClassName = '',
   style,
-  isDarkMode = false,
+  isDarkMode: customDarkMode,
   placeholderTextColor,
   ...props
 }) => {
+  const context = useContext(ThemeContext);
+  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
   return (

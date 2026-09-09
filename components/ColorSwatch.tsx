@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text } from 'react-native';
 import { LightColors, DarkColors } from '@/constants/colors';
+import { ThemeContext } from '@/context/ThemeContext';
 
 interface ColorSwatchProps {
   name: string;
@@ -12,8 +13,10 @@ interface ColorSwatchProps {
 export const ColorSwatch: React.FC<ColorSwatchProps> = ({
   name,
   hex,
-  isDarkMode = false,
+  isDarkMode: customDarkMode,
 }) => {
+  const context = useContext(ThemeContext);
+  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
   return (
