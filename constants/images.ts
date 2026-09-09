@@ -17,7 +17,7 @@ export const images = {
         light: {
             standard: require('@/assets/logo/myglo-light.svg'),
             icon: require('@/assets/logo/myglo-light-icon.svg'),
-            subtext: require('@/assets/logo/myglo-subtext-light.svg') || require('@/assets/logo/myglo-light-subtext.svg'),
+            subtext: require('@/assets/logo/myglo-light-subtext.svg'),
         },
         dark: {
             standard: require('@/assets/logo/myglo-dark.svg'),
