@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 140" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&amp;family=Nunito:wght@400;600&amp;display=swap');
+      .brand-title { font-family: 'Fraunces', Georgia, serif; font-size: 56px; font-weight: 700; fill: #005F73; }
+      .brand-sub { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 600; fill: #313C4E; letter-spacing: 0.5px; }
+    </style>
+  </defs>
+
+  <!-- Icon -->
+  <g transform="translate(0, 0)">
+    <path d="M 32 64 L 60 64 L 60 110 L 36 110 A 5 5 0 0 1 31 105 L 31 65 A 1 1 0 0 1 32 64 Z" fill="#005F73"/>
+    <path d="M 68 64 L 96 64 A 1 1 0 0 1 97 65 L 97 105 A 5 5 0 0 1 92 110 L 68 110 Z" fill="#005F73"/>
+    <g transform="rotate(-16 64 54)">
+      <rect x="24" y="44" width="80" height="14" rx="4" fill="#005F73"/>
+      <path d="M 54 44 C 44 28, 56 18, 64 44 C 72 18, 84 28, 74 44" fill="none" stroke="#005F73" stroke-width="4.5" stroke-linecap="round"/>
+    </g>
+    <g stroke="#005F73" fill="#005F73">
+      <path d="M 72 48 C 90 40, 102 36, 122 40" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="122" cy="40" r="3.5" stroke="none"/>
+      <path d="M 74 54 C 94 52, 108 56, 128 62" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="128" cy="62" r="3.2" stroke="none"/>
+      <path d="M 70 58 C 88 66, 104 74, 118 82" fill="none" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="118" cy="82" r="2.5" stroke="none"/>
+      <path d="M 78 44 C 95 28, 108 30, 120 28" fill="none" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="120" cy="28" r="2" stroke="none"/>
+      <circle cx="104" cy="50" r="1.5" stroke="none"/>
+    </g>
+  </g>
+
+  <!-- Typography -->
+  <text x="156" y="80" class="brand-title">MyGlo</text>
+  <text x="158" y="112" class="brand-sub">My Gifts Online</text>
+</svg>
