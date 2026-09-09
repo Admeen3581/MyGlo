@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -9,40 +9,32 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { LightColors, DarkColors } from '@/constants/colors';
+import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { BlobBackground } from '@/components/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { images } from '@/constants/images';
 
-export default function OnboardingScreen()
-{
+export default function OnboardingScreen() {
     const router = useRouter();
-    const [isDarkMode, setIsDarkMode] = useState(false);
-    const activeColors = isDarkMode ? DarkColors : LightColors;
+    const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
 
     const handleGetStarted = () => {
-        if (router.canGoBack())
-        {
+        if (router.canGoBack()) {
             router.back();
-        }
-        else
-        {
+        } else {
             router.push('/');
         }
     };
 
     const handleExistingAccount = () => {
-        if (router.canGoBack())
-        {
+        if (router.canGoBack()) {
             router.back();
-        }
-        else
-        {
+        } else {
             router.push('/');
         }
-    }
+    };
 
     return (
         <SafeAreaView
@@ -79,6 +71,22 @@ export default function OnboardingScreen()
                 {/* Top Header Navigation */}
                 <View className="flex-row items-center justify-between mb-6 pt-2">
                     <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
+                    <TouchableOpacity
+                        onPress={toggleDarkMode}
+                        activeOpacity={0.8}
+                        style={{
+                            backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                            borderColor: activeColors.border,
+                        }}
+                        className="px-3 py-1.5 rounded-full border flex-row items-center"
+                    >
+                        <Text
+                            style={{ color: activeColors.foreground }}
+                            className="text-xs font-nunito-bold"
+                        >
+                            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                        </Text>
+                    </TouchableOpacity>
                 </View>
 
                 {/* Center Illustration Frame */}

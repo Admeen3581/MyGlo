@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
 import { LightColors, DarkColors } from '@/constants/colors';
+import { ThemeContext } from '@/context/ThemeContext';
 
 interface ButtonProps {
   title: string;
@@ -21,8 +22,10 @@ export const Button: React.FC<ButtonProps> = ({
   loading = false,
   disabled = false,
   icon,
-  isDarkMode = false,
+  isDarkMode: customDarkMode,
 }) => {
+  const context = useContext(ThemeContext);
+  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
   const sizeClasses = {

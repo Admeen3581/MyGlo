@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
 import { LightColors, DarkColors } from '@/constants/colors';
 import { MyGloLogo } from '@/components/MyGloLogo';
+import { ThemeContext } from '@/context/ThemeContext';
 
 interface FloatingNavProps {
   title?: string;
@@ -15,9 +16,11 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
   title = 'MyGlo',
   onActionPress,
   actionText = 'Get Started',
-  isDarkMode = false,
+  isDarkMode: customDarkMode,
   style,
 }) => {
+  const context = useContext(ThemeContext);
+  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
   return (
