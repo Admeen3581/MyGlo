@@ -3,6 +3,7 @@ import {
   View,
   TouchableOpacity,
   useColorScheme,
+  useWindowDimensions,
   StyleProp,
   ViewStyle,
   ImageStyle,
@@ -50,13 +51,47 @@ const ASPECT_RATIOS: Record<LogoType, number> = {
   subtext: 450 / 140,  // ~3.21
 };
 
-// Preset heights for each size category
-const PRESET_HEIGHTS: Record<Extract<LogoSize, string>, number> = {
-    xs: 24, //should only be used for the icon
+// Preset heights for each size category across screen breakpoints
+// Mobile (< 768px) keeps original baseline sizes
+// Tablet (768px - 1023px) and Desktop (>= 1024px) scale presets inherently larger
+const PRESET_HEIGHTS_BY_BREAKPOINT: Record<
+  'mobile' | 'tablet' | 'desktop',
+  Record<Extract<LogoSize, string>, number>
+> = {
+  mobile: {
+    xs: 24,//should only be used for the icon
     sm: 32,
     md: 48,
     lg: 72,
     xl: 108,
+  },
+  tablet: {
+    xs: 30,//should only be used for the icon
+    sm: 40,
+    md: 60,
+    lg: 90,
+    xl: 135,
+  },
+  desktop: {
+    xs: 36,//should only be used for the icon
+    sm: 48,
+    md: 72,
+    lg: 108,
+    xl: 196,
+  },
+};
+
+/**
+ * Returns the height preset map based on current window width
+ */
+const getPresetHeights = (screenWidth: number): Record<Extract<LogoSize, string>, number> => {
+  if (screenWidth >= 1024) {
+    return PRESET_HEIGHTS_BY_BREAKPOINT.desktop;
+  }
+  if (screenWidth >= 768) {
+    return PRESET_HEIGHTS_BY_BREAKPOINT.tablet;
+  }
+  return PRESET_HEIGHTS_BY_BREAKPOINT.mobile;
 };
 
 export const MyGloLogo: React.FC<LogoProps> = ({
@@ -74,6 +109,7 @@ export const MyGloLogo: React.FC<LogoProps> = ({
   accessibilityLabel = 'MyGlo Logo',
 }) => {
   const systemColorScheme = useColorScheme();
+  const { width: windowWidth } = useWindowDimensions();
   const context = useContext(ThemeContext);
   
   // Resolve dark mode state: explicit prop > ThemeContext > system preference
@@ -107,7 +143,8 @@ export const MyGloLogo: React.FC<LogoProps> = ({
     calculatedHeight = size;
     calculatedWidth = size * ratio;
   } else {
-    calculatedHeight = PRESET_HEIGHTS[size] || PRESET_HEIGHTS.md;
+    const presetHeights = getPresetHeights(windowWidth);
+    calculatedHeight = presetHeights[size] || presetHeights.md;
     calculatedWidth = calculatedHeight * ratio;
   }
 

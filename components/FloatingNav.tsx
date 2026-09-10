@@ -39,7 +39,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
           style={{ backgroundColor: activeColors.primary }}
           className="w-10 h-10 rounded-full items-center justify-center shadow-sm"
         >
-          <MyGloLogo type="icon" color="white" size={45} align='center' />
+          <MyGloLogo type="icon" color="white" size='sm' align='center' />
         </View>
         <Text
           style={{ color: activeColors.foreground }}

@@ -305,9 +305,10 @@ export default function Index() {
                 style={{ color: activeColors.mutedForeground }}
                 className="text-xs font-quicksand-semibold mb-2"
               >
-                Size Presets (sm, md, lg)
+                Size Presets (xs, sm, md, lg, xl)
               </Text>
               <View className="flex-row items-center flex-wrap gap-4">
+                  <MyGloLogo type="icon" isDarkMode={isDarkMode} size="xs" />
                   <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
                   <MyGloLogo type="standard" isDarkMode={isDarkMode} size="md" />
                   <MyGloLogo type="standard" isDarkMode={isDarkMode} size="lg" />
