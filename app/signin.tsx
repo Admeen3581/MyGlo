@@ -16,6 +16,7 @@ import { Card } from '@/components/Card';
 import { BlobBackground } from '@/components/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { SocialAuthButtons } from '@/components/SocialAuthButtons';
+import { ScreenWrapper } from '@/components/ScreenWrapper';
 
 export default function SignInScreen() {
     const router = useRouter();
@@ -61,145 +62,147 @@ export default function SignInScreen() {
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                {/* Top Header Navigation */}
-                <View className="flex-row items-center justify-between mb-6 pt-2">
-                    <TouchableOpacity
-                        onPress={() => router.back()}
-                        activeOpacity={0.7}
-                        style={{
-                            backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                            borderColor: activeColors.border,
-                        }}
-                        className="w-10 h-10 rounded-full border items-center justify-center"
-                    >
-                        <Ionicons name="arrow-back" size={20} color={activeColors.foreground} />
-                    </TouchableOpacity>
-
-                    <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
-
-                    <TouchableOpacity
-                        onPress={toggleDarkMode}
-                        activeOpacity={0.8}
-                        style={{
-                            backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                            borderColor: activeColors.border,
-                        }}
-                        className="px-3 py-1.5 rounded-full border flex-row items-center"
-                    >
-                        <Text
-                            style={{ color: activeColors.foreground }}
-                            className="text-xs font-nunito-bold"
+                <ScreenWrapper variant="auth">
+                    {/* Top Header Navigation */}
+                    <View className="flex-row items-center justify-between mb-6 pt-2">
+                        <TouchableOpacity
+                            onPress={() => router.back()}
+                            activeOpacity={0.7}
+                            style={{
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                                borderColor: activeColors.border,
+                            }}
+                            className="w-10 h-10 rounded-full border items-center justify-center"
                         >
-                            {isDarkMode ? 'Light' : 'Dark'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                            <Ionicons name="arrow-back" size={20} color={activeColors.foreground} />
+                        </TouchableOpacity>
 
-                {/* Title Section */}
-                <View className="mb-6">
-                    <Text
-                        style={{ color: activeColors.foreground }}
-                        className="text-3xl font-fraunces-black mb-2"
-                    >
-                        Welcome Back
-                    </Text>
-                    <Text
-                        style={{ color: activeColors.mutedForeground }}
-                        className="text-sm font-nunito-semibold leading-relaxed"
-                    >
-                        Take a deep breath and feel the joy of giving.
-                    </Text>
-                </View>
+                        <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
 
-                {/* Form Container Card */}
-                <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
-                    <Input
-                        label="Email Address"
-                        placeholder="name@example.com"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        leftIcon={
-                            <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
-                        }
-                        isDarkMode={isDarkMode}
-                    />
-
-                    <Input
-                        label="Password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={!showPassword}
-                        rightLabel={
-                            <TouchableOpacity
-                                onPress={handleForgotPassword}
-                                activeOpacity={0.7}
-                                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                        <TouchableOpacity
+                            onPress={toggleDarkMode}
+                            activeOpacity={0.8}
+                            style={{
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                                borderColor: activeColors.border,
+                            }}
+                            className="px-3 py-1.5 rounded-full border flex-row items-center"
+                        >
+                            <Text
+                                style={{ color: activeColors.foreground }}
+                                className="text-xs font-nunito-bold"
                             >
-                                <Text
-                                    style={{ color: activeColors.primary }}
-                                    className="text-xs font-nunito-bold"
-                                >
-                                    Forgot Password?
-                                </Text>
-                            </TouchableOpacity>
-                        }
-                        leftIcon={
-                            <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
-                        }
-                        rightIcon={
-                            <TouchableOpacity
-                                onPress={() => setShowPassword(!showPassword)}
-                                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                            >
-                                <Ionicons
-                                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                    size={18}
-                                    color={activeColors.mutedForeground}
-                                />
-                            </TouchableOpacity>
-                        }
-                        isDarkMode={isDarkMode}
-                    />
-
-                    {/* Sign In Action Button (Blank onPress function) */}
-                    <View className="pt-2">
-                        <Button
-                            title="Sign In"
-                            variant="primary"
-                            size="lg"
-                            isDarkMode={isDarkMode}
-                            onPress={handleSignIn}
-                        />
+                                {isDarkMode ? 'Light' : 'Dark'}
+                            </Text>
+                        </TouchableOpacity>
                     </View>
 
-                    {/* Social Auth Buttons Component */}
-                    <SocialAuthButtons isDarkMode={isDarkMode} />
-                </Card>
-
-
-                {/* Footer Navigation Link */}
-                <View className="flex-row items-center justify-center py-6">
-                    <Text
-                        style={{ color: activeColors.mutedForeground }}
-                        className="text-sm font-nunito-medium mr-1"
-                    >
-                        Don&#39;t have an account?
-                    </Text>
-                    <TouchableOpacity
-                        onPress={() => router.push('/signup' as any)}
-                        activeOpacity={0.7}
-                    >
+                    {/* Title Section */}
+                    <View className="mb-6">
                         <Text
-                            style={{ color: activeColors.primary }}
-                            className="text-sm font-nunito-bold"
+                            style={{ color: activeColors.foreground }}
+                            className="text-3xl font-fraunces-black mb-2"
                         >
-                            Sign Up
+                            Welcome Back
                         </Text>
-                    </TouchableOpacity>
-                </View>
+                        <Text
+                            style={{ color: activeColors.mutedForeground }}
+                            className="text-sm font-nunito-semibold leading-relaxed"
+                        >
+                            Take a deep breath and feel the joy of giving.
+                        </Text>
+                    </View>
+
+                    {/* Form Container Card */}
+                    <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
+                        <Input
+                            label="Email Address"
+                            placeholder="name@example.com"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            leftIcon={
+                                <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
+                            }
+                            isDarkMode={isDarkMode}
+                        />
+
+                        <Input
+                            label="Password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={!showPassword}
+                            rightLabel={
+                                <TouchableOpacity
+                                    onPress={handleForgotPassword}
+                                    activeOpacity={0.7}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                                >
+                                    <Text
+                                        style={{ color: activeColors.primary }}
+                                        className="text-xs font-nunito-bold"
+                                    >
+                                        Forgot Password?
+                                    </Text>
+                                </TouchableOpacity>
+                            }
+                            leftIcon={
+                                <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
+                            }
+                            rightIcon={
+                                <TouchableOpacity
+                                    onPress={() => setShowPassword(!showPassword)}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                                >
+                                    <Ionicons
+                                        name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                                        size={18}
+                                        color={activeColors.mutedForeground}
+                                    />
+                                </TouchableOpacity>
+                            }
+                            isDarkMode={isDarkMode}
+                        />
+
+                        {/* Sign In Action Button (Blank onPress function) */}
+                        <View className="pt-2">
+                            <Button
+                                title="Sign In"
+                                variant="primary"
+                                size="lg"
+                                isDarkMode={isDarkMode}
+                                onPress={handleSignIn}
+                            />
+                        </View>
+
+                        {/* Social Auth Buttons Component */}
+                        <SocialAuthButtons isDarkMode={isDarkMode} />
+                    </Card>
+
+
+                    {/* Footer Navigation Link */}
+                    <View className="flex-row items-center justify-center py-6">
+                        <Text
+                            style={{ color: activeColors.mutedForeground }}
+                            className="text-sm font-nunito-medium mr-1"
+                        >
+                            Don&#39;t have an account?
+                        </Text>
+                        <TouchableOpacity
+                            onPress={() => router.push('/signup' as any)}
+                            activeOpacity={0.7}
+                        >
+                            <Text
+                                style={{ color: activeColors.primary }}
+                                className="text-sm font-nunito-bold"
+                            >
+                                Sign Up
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScreenWrapper>
             </ScrollView>
         </SafeAreaView>
     );
@@ -210,6 +213,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
+        flexGrow: 1,
         paddingHorizontal: 20,
         paddingTop: 12,
         paddingBottom: 40,

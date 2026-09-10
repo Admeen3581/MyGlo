@@ -19,6 +19,7 @@ import { SocialAuthButtons } from '@/components/SocialAuthButtons';
 import { VerificationModal } from '@/components/VerificationModal';
 import { TermsOfService } from "@/components/TermsOfService";
 import { PrivacyPolicy } from "@/components/PrivacyPolicy";
+import { ScreenWrapper } from '@/components/ScreenWrapper';
 import {
     getEmailStatus,
     getPasswordStatus,
@@ -133,172 +134,174 @@ export default function SignUpScreen() {
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                {/* Top Header Navigation */}
-                <View className="flex-row items-center justify-between mb-6 pt-2">
-                    <TouchableOpacity
-                        onPress={() => router.back()}
-                        activeOpacity={0.7}
-                        style={{
-                            backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                            borderColor: activeColors.border,
-                        }}
-                        className="w-10 h-10 rounded-full border items-center justify-center"
-                    >
-                        <Ionicons name="arrow-back" size={20} color={activeColors.foreground} />
-                    </TouchableOpacity>
+                <ScreenWrapper variant="auth">
+                    {/* Top Header Navigation */}
+                    <View className="flex-row items-center justify-between mb-6 pt-2">
+                        <TouchableOpacity
+                            onPress={() => router.back()}
+                            activeOpacity={0.7}
+                            style={{
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                                borderColor: activeColors.border,
+                            }}
+                            className="w-10 h-10 rounded-full border items-center justify-center"
+                        >
+                            <Ionicons name="arrow-back" size={20} color={activeColors.foreground} />
+                        </TouchableOpacity>
 
-                    <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
+                        <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
 
-                    <TouchableOpacity
-                        onPress={toggleDarkMode}
-                        activeOpacity={0.8}
-                        style={{
-                            backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                            borderColor: activeColors.border,
-                        }}
-                        className="px-3 py-1.5 rounded-full border flex-row items-center"
-                    >
+                        <TouchableOpacity
+                            onPress={toggleDarkMode}
+                            activeOpacity={0.8}
+                            style={{
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                                borderColor: activeColors.border,
+                            }}
+                            className="px-3 py-1.5 rounded-full border flex-row items-center"
+                        >
+                            <Text
+                                style={{ color: activeColors.foreground }}
+                                className="text-xs font-nunito-bold"
+                            >
+                                {isDarkMode ? 'Light' : 'Dark'}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Title Section */}
+                    <View className="mb-6">
                         <Text
                             style={{ color: activeColors.foreground }}
-                            className="text-xs font-nunito-bold"
+                            className="text-3xl font-fraunces-black mb-2"
                         >
-                            {isDarkMode ? 'Light' : 'Dark'}
+                            Join the Circle
                         </Text>
-                    </TouchableOpacity>
-                </View>
-
-                {/* Title Section */}
-                <View className="mb-6">
-                    <Text
-                        style={{ color: activeColors.foreground }}
-                        className="text-3xl font-fraunces-black mb-2"
-                    >
-                        Join the Circle
-                    </Text>
-                    <Text
-                        style={{ color: activeColors.mutedForeground }}
-                        className="text-sm font-nunito-semibold leading-relaxed"
-                    >
-                        Take a deep breath and prepare to feel the joy of giving.
-                    </Text>
-                </View>
-
-                {/* Form Container Card */}
-                <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
-                    <Input
-                        label="Email Address"
-                        rightLabel={renderStatusLabel(emailStatus)}
-                        placeholder="name@example.com"
-                        value={email}
-                        onChangeText={setEmail}
-                        onBlur={() => setEmailBlurred(true)}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        leftIcon={
-                            <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
-                        }
-                        rightIcon={renderStatusIcon(emailStatus)}
-                        isDarkMode={isDarkMode}
-                    />
-
-                    <Input
-                        label="Password"
-                        rightLabel={renderStatusLabel(passwordStatus)}
-                        placeholder="Enter your password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={true}
-                        leftIcon={
-                            <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
-                        }
-                        rightIcon={
-                            <View className="flex-row items-center gap-2">
-                                {renderStatusIcon(passwordStatus)}
-                            </View>
-                        }
-                        isDarkMode={isDarkMode}
-                    />
-
-                    <Input
-                        label="Verify Password"
-                        rightLabel={renderStatusLabel(confirmPasswordStatus)}
-                        placeholder="Reenter your password"
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        secureTextEntry={true}
-                        leftIcon={
-                            <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
-                        }
-                        rightIcon={
-                            <View className="flex-row items-center gap-2">
-                                {renderStatusIcon(confirmPasswordStatus)}
-                            </View>
-                        }
-                        isDarkMode={isDarkMode}
-                    />
-
-                    {/* Create Account Primary Action Button */}
-                    <View className="pt-2">
-                        <Button
-                            title="Create Account"
-                            variant="primary"
-                            size="lg"
-                            isDarkMode={isDarkMode}
-                            onPress={handleCreateAccount}
-                        />
-                    </View>
-
-                    {/* Social Auth Buttons Component */}
-                    <SocialAuthButtons isDarkMode={isDarkMode} />
-
-
-                    {/* Terms & Privacy Policy Note */}
-                    <View className="pt-2 px-1 mt-3">
                         <Text
                             style={{ color: activeColors.mutedForeground }}
-                            className="text-xs font-nunito-medium leading-relaxed text-center"
+                            className="text-sm font-nunito-semibold leading-relaxed"
                         >
-                            By signing up, you agree to our{' '}
-                            <Text
-                                onPress={handleLinktoTOS}
-                                style={{ color: activeColors.primary }}
-                                className="font-nunito-bold underline"
-                            >
-                                Terms of Service
-                            </Text>{' '}
-                            and{' '}
-                            <Text
-                                onPress={handleLinkToPrivacy}
-                                style={{ color: activeColors.primary }}
-                                className="font-nunito-bold underline"
-                            >
-                                Privacy Policy
-                            </Text>
-                            .
+                            Take a deep breath and prepare to feel the joy of giving.
                         </Text>
                     </View>
-                </Card>
 
-                {/* Footer Navigation Link */}
-                <View className="flex-row items-center justify-center py-6">
-                    <Text
-                        style={{ color: activeColors.mutedForeground }}
-                        className="text-sm font-nunito-medium mr-1"
-                    >
-                        Already have an account?
-                    </Text>
-                    <TouchableOpacity
-                        onPress={() => router.push('/signin' as any)}
-                        activeOpacity={0.7}
-                    >
+                    {/* Form Container Card */}
+                    <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
+                        <Input
+                            label="Email Address"
+                            rightLabel={renderStatusLabel(emailStatus)}
+                            placeholder="name@example.com"
+                            value={email}
+                            onChangeText={setEmail}
+                            onBlur={() => setEmailBlurred(true)}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            leftIcon={
+                                <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
+                            }
+                            rightIcon={renderStatusIcon(emailStatus)}
+                            isDarkMode={isDarkMode}
+                        />
+
+                        <Input
+                            label="Password"
+                            rightLabel={renderStatusLabel(passwordStatus)}
+                            placeholder="Enter your password"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={true}
+                            leftIcon={
+                                <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
+                            }
+                            rightIcon={
+                                <View className="flex-row items-center gap-2">
+                                    {renderStatusIcon(passwordStatus)}
+                                </View>
+                            }
+                            isDarkMode={isDarkMode}
+                        />
+
+                        <Input
+                            label="Verify Password"
+                            rightLabel={renderStatusLabel(confirmPasswordStatus)}
+                            placeholder="Reenter your password"
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            secureTextEntry={true}
+                            leftIcon={
+                                <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
+                            }
+                            rightIcon={
+                                <View className="flex-row items-center gap-2">
+                                    {renderStatusIcon(confirmPasswordStatus)}
+                                </View>
+                            }
+                            isDarkMode={isDarkMode}
+                        />
+
+                        {/* Create Account Primary Action Button */}
+                        <View className="pt-2">
+                            <Button
+                                title="Create Account"
+                                variant="primary"
+                                size="lg"
+                                isDarkMode={isDarkMode}
+                                onPress={handleCreateAccount}
+                            />
+                        </View>
+
+                        {/* Social Auth Buttons Component */}
+                        <SocialAuthButtons isDarkMode={isDarkMode} />
+
+
+                        {/* Terms & Privacy Policy Note */}
+                        <View className="pt-2 px-1 mt-3">
+                            <Text
+                                style={{ color: activeColors.mutedForeground }}
+                                className="text-xs font-nunito-medium leading-relaxed text-center"
+                            >
+                                By signing up, you agree to our{' '}
+                                <Text
+                                    onPress={handleLinktoTOS}
+                                    style={{ color: activeColors.primary }}
+                                    className="font-nunito-bold underline"
+                                >
+                                    Terms of Service
+                                </Text>{' '}
+                                and{' '}
+                                <Text
+                                    onPress={handleLinkToPrivacy}
+                                    style={{ color: activeColors.primary }}
+                                    className="font-nunito-bold underline"
+                                >
+                                    Privacy Policy
+                                </Text>
+                                .
+                            </Text>
+                        </View>
+                    </Card>
+
+                    {/* Footer Navigation Link */}
+                    <View className="flex-row items-center justify-center py-6">
                         <Text
-                            style={{ color: activeColors.primary }}
-                            className="text-sm font-nunito-bold"
+                            style={{ color: activeColors.mutedForeground }}
+                            className="text-sm font-nunito-medium mr-1"
                         >
-                            Sign In
+                            Already have an account?
                         </Text>
-                    </TouchableOpacity>
-                </View>
+                        <TouchableOpacity
+                            onPress={() => router.push('/signin' as any)}
+                            activeOpacity={0.7}
+                        >
+                            <Text
+                                style={{ color: activeColors.primary }}
+                                className="text-sm font-nunito-bold"
+                            >
+                                Sign In
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScreenWrapper>
             </ScrollView>
 
             {/* Verification Code Modal */}
@@ -331,6 +334,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
+        flexGrow: 1,
         paddingHorizontal: 20,
         paddingTop: 12,
         paddingBottom: 40,
