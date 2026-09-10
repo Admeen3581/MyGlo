@@ -97,7 +97,7 @@ export default function SignUpScreen() {
             iconName = 'alert-circle';
         }
 
-        return <Ionicons name={iconName} size={16} color={color} />;
+        return <Ionicons name={iconName} size={20} color={color} />;
     };
 
     const emailStatus = getEmailStatus(email, emailBlurred, isEmailUnavailable);
@@ -217,16 +217,6 @@ export default function SignUpScreen() {
                         rightIcon={
                             <View className="flex-row items-center gap-2">
                                 {renderStatusIcon(passwordStatus)}
-                                <TouchableOpacity
-                                    onPress={() => setShowPassword(!showPassword)}
-                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                                >
-                                    <Ionicons
-                                        name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                        size={18}
-                                        color={activeColors.mutedForeground}
-                                    />
-                                </TouchableOpacity>
                             </View>
                         }
                         isDarkMode={isDarkMode}
@@ -245,16 +235,6 @@ export default function SignUpScreen() {
                         rightIcon={
                             <View className="flex-row items-center gap-2">
                                 {renderStatusIcon(confirmPasswordStatus)}
-                                <TouchableOpacity
-                                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                                >
-                                    <Ionicons
-                                        name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
-                                        size={18}
-                                        color={activeColors.mutedForeground}
-                                    />
-                                </TouchableOpacity>
                             </View>
                         }
                         isDarkMode={isDarkMode}
