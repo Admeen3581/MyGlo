@@ -35,10 +35,7 @@ export default function SignUpScreen() {
     const [isEmailUnavailable] = useState(false); // Extensible flag for backend check
 
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     const [showPrivacyModal, setShowPrivacyModal] = useState(false);
@@ -210,7 +207,7 @@ export default function SignUpScreen() {
                         placeholder="Enter your password"
                         value={password}
                         onChangeText={setPassword}
-                        secureTextEntry={!showPassword}
+                        secureTextEntry={true}
                         leftIcon={
                             <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                         }
@@ -228,7 +225,7 @@ export default function SignUpScreen() {
                         placeholder="Reenter your password"
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
-                        secureTextEntry={!showConfirmPassword}
+                        secureTextEntry={true}
                         leftIcon={
                             <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                         }
