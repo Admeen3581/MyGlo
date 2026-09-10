@@ -22,72 +22,74 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({
   };
 
   return (
-    <View className="w-full space-y-3">
+    <View className="w-full">
       {/* Divider */}
       <View className="flex-row items-center my-4">
         <View
           style={{ backgroundColor: activeColors.border }}
-          className="flex-1 h-[1px]"
+          className="flex-1 h-px"
         />
         <Text
           style={{ color: activeColors.mutedForeground }}
-          className="px-4 text-xs font-quicksand-bold uppercase tracking-wider"
+          className="px-4 text-xs font-quicksand-bold uppercase tracking-wider m-5"
         >
-          Or continue with
+          Or drift in with
         </Text>
         <View
           style={{ backgroundColor: activeColors.border }}
-          className="flex-1 h-[1px]"
+          className="flex-1 h-px"
         />
       </View>
 
-      {/* Google Button */}
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={handleSocialPress}
-        style={{
-          backgroundColor: isDarkMode ? 'rgba(22, 34, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)',
-          borderColor: activeColors.border,
-        }}
-        className="w-full h-12 rounded-full border flex-row items-center justify-center px-6"
-      >
-        <Ionicons
-          name="logo-google"
-          size={18}
-          color={activeColors.foreground}
-          style={{ marginRight: 10 }}
-        />
-        <Text
-          style={{ color: activeColors.foreground }}
-          className="text-base font-nunito-bold"
+      <View className="flex-row gap-3">
+        {/* Google Button */}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={handleSocialPress}
+          style={{
+            backgroundColor: isDarkMode ? 'rgba(22, 34, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)',
+            borderColor: activeColors.border,
+          }}
+          className="flex-1 h-12 rounded-full border flex-row items-center justify-center px-3"
         >
-          Continue with Google
-        </Text>
-      </TouchableOpacity>
+          <Ionicons
+            name="logo-google"
+            size={18}
+            color={activeColors.foreground}
+            style={{ marginRight: 8 }}
+          />
+          <Text
+            style={{ color: activeColors.foreground }}
+            className="text-sm font-nunito-bold"
+          >
+            Google
+          </Text>
+        </TouchableOpacity>
 
-      {/* Apple Button */}
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={handleSocialPress}
-        style={{
-          backgroundColor: isDarkMode ? 'rgba(22, 34, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)',
-          borderColor: activeColors.border,
-        }}
-        className="w-full h-12 rounded-full border flex-row items-center justify-center px-6"
-      >
-        <Ionicons
-          name="logo-apple"
-          size={20}
-          color={activeColors.foreground}
-          style={{ marginRight: 10 }}
-        />
-        <Text
-          style={{ color: activeColors.foreground }}
-          className="text-base font-nunito-bold"
+        {/* Apple Button */}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={handleSocialPress}
+          style={{
+            backgroundColor: isDarkMode ? 'rgba(22, 34, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)',
+            borderColor: activeColors.border,
+          }}
+          className="flex-1 h-12 rounded-full border flex-row items-center justify-center px-3"
         >
-          Continue with Apple
-        </Text>
-      </TouchableOpacity>
+          <Ionicons
+            name="logo-apple"
+            size={20}
+            color={activeColors.foreground}
+            style={{ marginRight: 8 }}
+          />
+          <Text
+            style={{ color: activeColors.foreground }}
+            className="text-sm font-nunito-bold"
+          >
+            Apple
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

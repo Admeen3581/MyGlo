@@ -28,11 +28,11 @@ export const Input: React.FC<InputProps> = ({
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
   return (
-    <View className={`w-full ${containerClassName}`}>
+    <View className={`w-full mb-5 px-1 ${containerClassName}`}>
       {label && (
         <Text
           style={{ color: activeColors.foreground }}
-          className="text-sm font-nunito-semibold mb-2 ml-2"
+          className="text-sm font-nunito-semibold mb-1 ml-2"
         >
           {label}
         </Text>
@@ -52,7 +52,9 @@ export const Input: React.FC<InputProps> = ({
               fontFamily: 'Nunito-Regular',
               fontSize: 14,
               color: activeColors.foreground,
-            },
+              outlineStyle: 'none',
+              outlineWidth: 0,
+            } as any,
             style,
           ]}
           placeholderTextColor={placeholderTextColor || activeColors.mutedForeground}
