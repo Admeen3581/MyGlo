@@ -17,16 +17,29 @@ import { BlobBackground } from '@/components/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { SocialAuthButtons } from '@/components/SocialAuthButtons';
 import { VerificationModal } from '@/components/VerificationModal';
-import {TermsOfService} from "@/components/TermsOfService";
-import {PrivacyPolicy} from "@/components/PrivacyPolicy";
+import { TermsOfService } from "@/components/TermsOfService";
+import { PrivacyPolicy } from "@/components/PrivacyPolicy";
+import {
+    getEmailStatus,
+    getPasswordStatus,
+    getConfirmPasswordStatus,
+    ValidationStatus,
+} from '@/lib/validation';
 
 export default function SignUpScreen() {
     const router = useRouter();
     const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
 
     const [email, setEmail] = useState('');
+    const [emailBlurred, setEmailBlurred] = useState(false);
+    const [isEmailUnavailable] = useState(false); // Extensible flag for backend check
+
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     const [showPrivacyModal, setShowPrivacyModal] = useState(false);
     const [showTOSModal, setShowTOSModal] = useState(false);
@@ -37,16 +50,59 @@ export default function SignUpScreen() {
 
     const handleLinkToPrivacy = () => {
         setShowPrivacyModal(true);
-    }
+    };
 
     const handleLinktoTOS = () => {
         setShowTOSModal(true);
-    }
+    };
 
     const handleVerificationSuccess = () => {
         setShowVerificationModal(false);
         router.replace('/');
     };
+
+    // Helper to render status text message outside the textbox (in rightLabel)
+    const renderStatusLabel = (status: ValidationStatus | null) => {
+        if (!status) return null;
+
+        let color = activeColors.success;
+        if (status.type === 'warning') {
+            color = activeColors.warning;
+        } else if (status.type === 'destructive') {
+            color = activeColors.destructive;
+        }
+
+        return (
+            <Text
+                style={{ color }}
+                className="text-xs font-nunito-semibold"
+            >
+                {status.text}
+            </Text>
+        );
+    };
+
+    // Helper to render status symbol icon inside the textbox (in rightIcon)
+    const renderStatusIcon = (status: ValidationStatus | null) => {
+        if (!status) return null;
+
+        let color = activeColors.success;
+        let iconName: keyof typeof Ionicons.glyphMap = 'checkmark-circle';
+
+        if (status.type === 'warning') {
+            color = activeColors.warning;
+            iconName = 'alert-circle';
+        } else if (status.type === 'destructive') {
+            color = activeColors.destructive;
+            iconName = 'alert-circle';
+        }
+
+        return <Ionicons name={iconName} size={16} color={color} />;
+    };
+
+    const emailStatus = getEmailStatus(email, emailBlurred, isEmailUnavailable);
+    const passwordStatus = getPasswordStatus(password);
+    const confirmPasswordStatus = getConfirmPasswordStatus(confirmPassword, password);
 
     return (
         <SafeAreaView
@@ -134,19 +190,23 @@ export default function SignUpScreen() {
                 <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
                     <Input
                         label="Email Address"
+                        rightLabel={renderStatusLabel(emailStatus)}
                         placeholder="name@example.com"
                         value={email}
                         onChangeText={setEmail}
+                        onBlur={() => setEmailBlurred(true)}
                         keyboardType="email-address"
                         autoCapitalize="none"
                         leftIcon={
                             <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
                         }
+                        rightIcon={renderStatusIcon(emailStatus)}
                         isDarkMode={isDarkMode}
                     />
 
                     <Input
                         label="Password"
+                        rightLabel={renderStatusLabel(passwordStatus)}
                         placeholder="Enter your password"
                         value={password}
                         onChangeText={setPassword}
@@ -155,40 +215,47 @@ export default function SignUpScreen() {
                             <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                         }
                         rightIcon={
-                            <TouchableOpacity
-                                onPress={() => setShowPassword(!showPassword)}
-                                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                            >
-                                <Ionicons
-                                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                    size={18}
-                                    color={activeColors.mutedForeground}
-                                />
-                            </TouchableOpacity>
+                            <View className="flex-row items-center gap-2">
+                                {renderStatusIcon(passwordStatus)}
+                                <TouchableOpacity
+                                    onPress={() => setShowPassword(!showPassword)}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                                >
+                                    <Ionicons
+                                        name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                                        size={18}
+                                        color={activeColors.mutedForeground}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         }
                         isDarkMode={isDarkMode}
                     />
 
                     <Input
                         label="Verify Password"
+                        rightLabel={renderStatusLabel(confirmPasswordStatus)}
                         placeholder="Reenter your password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={!showPassword}
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        secureTextEntry={!showConfirmPassword}
                         leftIcon={
                             <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                         }
                         rightIcon={
-                            <TouchableOpacity
-                                onPress={() => setShowPassword(!showPassword)}
-                                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                            >
-                                <Ionicons
-                                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                    size={18}
-                                    color={activeColors.mutedForeground}
-                                />
-                            </TouchableOpacity>
+                            <View className="flex-row items-center gap-2">
+                                {renderStatusIcon(confirmPasswordStatus)}
+                                <TouchableOpacity
+                                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                                >
+                                    <Ionicons
+                                        name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
+                                        size={18}
+                                        color={activeColors.mutedForeground}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         }
                         isDarkMode={isDarkMode}
                     />

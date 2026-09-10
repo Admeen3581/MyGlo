@@ -38,8 +38,8 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
 
   useEffect(() => {
     if (visible) {
-      setCode('');
       const timer = setTimeout(() => {
+        setCode('');
         inputRef.current?.focus();
       }, 150);
       return () => clearTimeout(timer);
