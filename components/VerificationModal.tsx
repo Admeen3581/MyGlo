@@ -177,7 +177,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
               style={{ color: activeColors.primary }}
               className="text-xs font-nunito-bold text-center"
             >
-              No code? Resend
+              Didn&#39;t receive? Resend
             </Text>
           </TouchableOpacity>
         </Card>

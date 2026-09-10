@@ -171,7 +171,7 @@ export default function SignInScreen() {
                         style={{ color: activeColors.mutedForeground }}
                         className="text-sm font-nunito-medium mr-1"
                     >
-                        Don't have an account?
+                        Don&#39;t have an account?
                     </Text>
                     <TouchableOpacity
                         onPress={() => router.push('/signup' as any)}
