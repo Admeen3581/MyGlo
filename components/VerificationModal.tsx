@@ -84,7 +84,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         <Card
           variant="default"
           isDarkMode={isDarkMode}
-          className="w-full max-w-[340px] p-6 items-center"
+          className="w-full max-w-85 p-6 items-center"
         >
           {/* Top Header Row */}
           <View className="w-full flex-row justify-between items-center mb-4">

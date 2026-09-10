@@ -46,6 +46,7 @@ yarn-error.log*
 # generated native folders
 /ios
 /android
+/scratch
 
 #Guides & AI Tools
 CLAUDE.md
