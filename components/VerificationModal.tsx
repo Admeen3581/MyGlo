@@ -142,7 +142,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
               >
                 <Text
                   style={{ color: activeColors.foreground }}
-                  className={isMobile ? 'text-5xl font-fraunces-bold' : 'text-xl font-fraunces-bold'}
+                  className={isMobile ? 'text-5xl font-fraunces-bold' : 'text-3xl font-fraunces-bold'}
                 >
                   {digits[index] || ''}
                 </Text>
