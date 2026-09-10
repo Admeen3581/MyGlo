@@ -2,11 +2,11 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/hooks/useTheme';
@@ -103,7 +103,9 @@ export default function OnboardingScreen() {
                         <Image
                             source={images.onboarding}
                             style={styles.illustrationImage}
-                            resizeMode="cover"
+                            contentFit="cover"
+                            priority="high"
+                            transition={200}
                         />
                     </Card>
                 </View>
