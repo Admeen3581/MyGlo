@@ -27,6 +27,7 @@ export default function SignInScreen() {
 
     // Blank onPress function as explicitly instructed by prompt
     const handleSignIn = () => {};
+    const handleForgotPassword = () => {};
 
     return (
         <SafeAreaView
@@ -106,7 +107,7 @@ export default function SignInScreen() {
                         style={{ color: activeColors.mutedForeground }}
                         className="text-sm font-nunito-semibold leading-relaxed"
                     >
-                        Sign in to continue to your account.
+                        Take a deep breath and feel the joy of giving.
                     </Text>
                 </View>
 
@@ -131,6 +132,20 @@ export default function SignInScreen() {
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry={!showPassword}
+                        rightLabel={
+                            <TouchableOpacity
+                                onPress={handleForgotPassword}
+                                activeOpacity={0.7}
+                                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                            >
+                                <Text
+                                    style={{ color: activeColors.primary }}
+                                    className="text-xs font-nunito-bold"
+                                >
+                                    Forgot Password?
+                                </Text>
+                            </TouchableOpacity>
+                        }
                         leftIcon={
                             <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                         }

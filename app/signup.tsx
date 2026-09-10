@@ -17,8 +17,8 @@ import { BlobBackground } from '@/components/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { SocialAuthButtons } from '@/components/SocialAuthButtons';
 import { VerificationModal } from '@/components/VerificationModal';
-import TermsOfService from "@/components/TermsOfService";
-import PrivacyPolicy from "@/components/PrivacyPolicy";
+import {TermsOfService} from "@/components/TermsOfService";
+import {PrivacyPolicy} from "@/components/PrivacyPolicy";
 
 export default function SignUpScreen() {
     const router = useRouter();
@@ -120,13 +120,13 @@ export default function SignUpScreen() {
                         style={{ color: activeColors.foreground }}
                         className="text-3xl font-fraunces-black mb-2"
                     >
-                        Create Account
+                        Join the Circle
                     </Text>
                     <Text
                         style={{ color: activeColors.mutedForeground }}
                         className="text-sm font-nunito-semibold leading-relaxed"
                     >
-                        Start sharing and receiving thoughtful gifts with your loved ones.
+                        Take a deep breath and prepare to feel the joy of giving.
                     </Text>
                 </View>
 

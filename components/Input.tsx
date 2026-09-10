@@ -5,6 +5,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 
 interface InputProps extends TextInputProps {
   label?: string;
+  rightLabel?: React.ReactNode;
   error?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -14,6 +15,7 @@ interface InputProps extends TextInputProps {
 
 export const Input: React.FC<InputProps> = ({
   label,
+  rightLabel,
   error,
   leftIcon,
   rightIcon,
@@ -29,13 +31,29 @@ export const Input: React.FC<InputProps> = ({
 
   return (
     <View className={`w-full mb-5 px-1 ${containerClassName}`}>
-      {label && (
-        <Text
-          style={{ color: activeColors.foreground }}
-          className="text-sm font-nunito-semibold mb-1 ml-2"
-        >
-          {label}
-        </Text>
+      {(label || rightLabel) && (
+        <View className="flex-row items-center justify-between mb-1 px-2">
+          {label ? (
+            <Text
+              style={{ color: activeColors.foreground }}
+              className="text-sm font-nunito-semibold"
+            >
+              {label}
+            </Text>
+          ) : (
+            <View />
+          )}
+          {typeof rightLabel === 'string' ? (
+            <Text
+              style={{ color: activeColors.mutedForeground }}
+              className="text-xs font-nunito-semibold"
+            >
+              {rightLabel}
+            </Text>
+          ) : (
+            rightLabel
+          )}
+        </View>
       )}
       <View
         style={{
