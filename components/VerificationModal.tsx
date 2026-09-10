@@ -117,7 +117,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => inputRef.current?.focus()}
-          className={isMobile ? 'flex-row items-center justify-center gap-2.5 mb-8' : 'flex-row items-center justify-center gap-2 mb-6'}
+          className={isMobile ? 'flex-row items-center justify-center gap-4.5 mb-8' : 'flex-row items-center justify-center gap-2 mb-6'}
         >
           {[0, 1, 2, 3, 4, 5].map((index) => {
             const isFilled = index < digits.length;
@@ -138,11 +138,11 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                     borderWidth: isCurrentFocus ? 2 : 1,
                   },
                 ]}
-                className={isMobile ? 'w-12 h-14 rounded-xl items-center justify-center shadow-sm pt-2' : 'w-10 h-12 rounded-xl items-center justify-center shadow-sm'}
+                className={isMobile ? 'w-14 h-16 rounded-xl items-center justify-center shadow-sm pt-2' : 'w-10 h-12 rounded-xl items-center justify-center shadow-sm'}
               >
                 <Text
                   style={{ color: activeColors.foreground }}
-                  className={isMobile ? 'text-5xl font-fraunces-bold' : 'text-3xl font-fraunces-bold'}
+                  className={isMobile ? 'text-6xl font-fraunces-bold' : 'text-3xl font-fraunces-bold'}
                 >
                   {digits[index] || ''}
                 </Text>
