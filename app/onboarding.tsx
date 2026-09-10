@@ -21,19 +21,11 @@ export default function OnboardingScreen() {
     const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
 
     const handleGetStarted = () => {
-        if (router.canGoBack()) {
-            router.back();
-        } else {
-            router.push('/');
-        }
+        router.push('/signup' as any);
     };
 
     const handleExistingAccount = () => {
-        if (router.canGoBack()) {
-            router.back();
-        } else {
-            router.push('/');
-        }
+        router.push('/signin' as any);
     };
 
     return (

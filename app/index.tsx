@@ -116,7 +116,7 @@ export default function Index() {
             style={{ color: activeColors.mutedForeground }}
             className="text-sm font-nunito-medium mb-4"
           >
-            Test implemented application pages and onboarding user flows.
+            Test implemented application pages, authentication screens, and onboarding user flows.
           </Text>
 
           <Card variant="tl-large" isDarkMode={isDarkMode} className="space-y-4">
@@ -134,23 +134,45 @@ export default function Index() {
               style={{ color: activeColors.foreground }}
               className="text-xl font-fraunces-semibold mb-1"
             >
-              Onboarding Screen
+              Onboarding & Auth Flows
             </Text>
 
             <Text
               style={{ color: activeColors.mutedForeground }}
               className="text-sm font-nunito mb-4"
             >
-              Pixel-perfect implementation of the warm wabi-sabi onboarding screen featuring centered illustration card, typography, and clear action CTAs.
+              Pixel-perfect implementation of Onboarding, Sign Up (with 6-digit Verification Modal), and Sign In screens.
             </Text>
 
-            <Button
-              title="Open Onboarding Screen"
-              variant="primary"
-              size="md"
-              isDarkMode={isDarkMode}
-              onPress={() => router.push('/onboarding')}
-            />
+            <View className="flex-col gap-2">
+              <Button
+                title="Open Onboarding Screen"
+                variant="primary"
+                size="md"
+                isDarkMode={isDarkMode}
+                onPress={() => router.push('/onboarding' as any)}
+              />
+              <View className="flex-row gap-2">
+                <View className="flex-1">
+                  <Button
+                    title="Sign Up Screen"
+                    variant="outline"
+                    size="md"
+                    isDarkMode={isDarkMode}
+                    onPress={() => router.push('/signup' as any)}
+                  />
+                </View>
+                <View className="flex-1">
+                  <Button
+                    title="Sign In Screen"
+                    variant="outline"
+                    size="md"
+                    isDarkMode={isDarkMode}
+                    onPress={() => router.push('/signin' as any)}
+                  />
+                </View>
+              </View>
+            </View>
           </Card>
         </View>
 
@@ -507,7 +529,7 @@ export default function Index() {
                 style={{ color: activeColors.mutedForeground }}
                 className="text-base font-nunito-semibold"
               >
-                Primary Subheading — Explanatory intro under main headers.
+                Primary Subheading \u2014 Explanatory intro under main headers.
               </Text>
             </View>
 
@@ -522,7 +544,7 @@ export default function Index() {
                 style={{ color: activeColors.mutedForeground }}
                 className="text-sm font-nunito-medium"
               >
-                Secondary Subheading — Group headers and sub-navigation descriptors.
+                Secondary Subheading \u2014 Group headers and sub-navigation descriptors.
               </Text>
             </View>
 
@@ -537,7 +559,7 @@ export default function Index() {
                 style={{ color: activeColors.foreground }}
                 className="text-lg font-nunito"
               >
-                Large Body — Lead paragraph copy for featured articles and callouts.
+                Large Body \u2014 Lead paragraph copy for featured articles and callouts.
               </Text>
             </View>
 
@@ -552,7 +574,7 @@ export default function Index() {
                 style={{ color: activeColors.foreground }}
                 className="text-base font-nunito"
               >
-                Base Body — Comfortable reading copy for wishlist items and descriptions.
+                Base Body \u2014 Comfortable reading copy for wishlist items and descriptions.
               </Text>
             </View>
 
@@ -567,7 +589,7 @@ export default function Index() {
                 style={{ color: activeColors.mutedForeground }}
                 className="text-sm font-nunito"
               >
-                Small Body — Compact text for helper notes, secondary card text, and labels.
+                Small Body \u2014 Compact text for helper notes, secondary card text, and labels.
               </Text>
             </View>
           </Card>
@@ -592,7 +614,7 @@ export default function Index() {
                 style={{ color: activeColors.mutedForeground }}
                 className="text-xs font-quicksand-bold uppercase tracking-widest"
               >
-                WISHLIST ITEM • CATEGORY TAG
+                WISHLIST ITEM \u2022 CATEGORY TAG
               </Text>
             </View>
 
@@ -607,7 +629,7 @@ export default function Index() {
                 style={{ color: activeColors.mutedForeground }}
                 className="text-xs font-quicksand-semibold"
               >
-                Added 2 days ago • Requested by Alex
+                Added 2 days ago \u2022 Requested by Alex
               </Text>
             </View>
 
@@ -622,7 +644,7 @@ export default function Index() {
                 style={{ color: activeColors.mutedForeground }}
                 className="text-xs font-quicksand-medium"
               >
-                © 2026 MyGlo Gift Giving App • Terms & Privacy
+                \u00a9 2026 MyGlo Gift Giving App \u2022 Terms & Privacy
               </Text>
             </View>
           </Card>
@@ -804,7 +826,7 @@ export default function Index() {
             style={{ color: activeColors.mutedForeground }}
             className="text-xs font-quicksand-semibold mb-1"
           >
-            MyGlo Design System • NativeWind v5 + Tailwind v4
+            MyGlo Design System \u2022 NativeWind v5 + Tailwind v4
           </Text>
           <Text
             style={{ color: activeColors.mutedForeground }}
