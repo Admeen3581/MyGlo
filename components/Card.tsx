@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, ViewProps, StyleSheet } from 'react-native';
 import { blobShapes } from '@/constants/theme';
 import { LightColors, DarkColors } from '@/constants/colors';
+import { ThemeContext } from '@/context/ThemeContext';
 
 interface CardProps extends ViewProps {
   variant?: 'default' | 'tl-large' | 'tr-large' | 'br-large' | 'bl-large';
@@ -15,9 +16,11 @@ export const Card: React.FC<CardProps> = ({
   children,
   className = '',
   style,
-  isDarkMode = false,
+  isDarkMode: customDarkMode,
   ...props
 }) => {
+  const context = useContext(ThemeContext);
+  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
   const getRadiusStyle = () => {

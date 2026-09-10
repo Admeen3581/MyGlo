@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text } from 'react-native';
 import { LightColors, DarkColors } from '@/constants/colors';
+import { ThemeContext } from '@/context/ThemeContext';
 
 interface BadgeProps {
   label: string;
@@ -15,8 +16,10 @@ export const Badge: React.FC<BadgeProps> = ({
   variant = 'primary',
   size = 'md',
   icon,
-  isDarkMode = false,
+  isDarkMode: customDarkMode,
 }) => {
+  const context = useContext(ThemeContext);
+  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
   const getVariantStyles = () => {

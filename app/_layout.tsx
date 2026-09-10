@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { Image } from 'expo-image';
+import { ThemeProvider } from '@/context/ThemeContext';
+import { images } from '@/constants/images';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,6 +28,11 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    // Prefetch critical onboarding asset for instant rendering on mobile
+    Image.prefetch(images.onboarding);
+  }, []);
+
+  useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
     }
@@ -35,10 +43,12 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
+    <ThemeProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </ThemeProvider>
   );
 }

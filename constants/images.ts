@@ -1,34 +1,40 @@
 export const images = {
-  emptyState: require('@/assets/images/emptyState.jpg'),
-  splashIcon: require('@/assets/images/splash-icon.png'),
-  reactLogo: require('@/assets/images/react-logo.png'),
-  logoIcon: require('@/assets/logo/myglo-light-icon.svg'),
-  logoIconWhite: require('@/assets/logo/myglo-white-icon.svg'),
-  trayIcon: require('@/assets/icons/tray.and.arrow.down.png'),
+    //Spacer Images
+    emptyState: require('@/assets/images/emptyState.jpg'),
+    splashIcon: require('@/assets/images/splash-icon.png'),
+    reactLogo: require('@/assets/images/react-logo.png'),
+    //B-Roll Images
+    onboarding: require('@/assets/images/onboarding.jpg'),
 
-  // Organized logo dictionary containing all 12 SVG variants
-  logos: {
-    light: {
-      standard: require('@/assets/logo/myglo-light.svg'),
-      icon: require('@/assets/logo/myglo-light-icon.svg'),
-      subtext: require('@/assets/logo/myglo-light-subtext.svg'),
+    //Organized icons
+    icons: {
+        tray: require('@/assets/icons/tray.and.arrow.down.png'),
+        gift: require('@/assets/icons/gift.png'),
     },
-    dark: {
-      standard: require('@/assets/logo/myglo-dark.svg'),
-      icon: require('@/assets/logo/myglo-dark-icon.svg'),
-      subtext: require('@/assets/logo/myglo-dark-subtext.svg'),
+
+    //Organized logo dictionary containing all 12 SVG variants
+    logos: {
+        light: {
+            standard: require('@/assets/logo/myglo-light.webp'),
+            icon: require('@/assets/logo/myglo-light-icon.webp'),
+            subtext: require('@/assets/logo/myglo-light-subtext.webp'),
+        },
+        dark: {
+            standard: require('@/assets/logo/myglo-dark.webp'),
+            icon: require('@/assets/logo/myglo-dark-icon.webp'),
+            subtext: require('@/assets/logo/myglo-dark-subtext.webp'),
+        },
+        black: {
+            standard: require('@/assets/logo/myglo-black.webp'),
+            icon: require('@/assets/logo/myglo-black-icon.webp'),
+            subtext: require('@/assets/logo/myglo-black-subtext.webp'),
+        },
+        white: {
+            standard: require('@/assets/logo/myglo-white.webp'),
+            icon: require('@/assets/logo/myglo-white-icon.webp'),
+            subtext: require('@/assets/logo/myglo-white-subtext.webp'),
+        },
     },
-    black: {
-      standard: require('@/assets/logo/myglo-black.svg'),
-      icon: require('@/assets/logo/myglo-black-icon.svg'),
-      subtext: require('@/assets/logo/myglo-black-subtext.svg'),
-    },
-    white: {
-      standard: require('@/assets/logo/myglo-white.svg'),
-      icon: require('@/assets/logo/myglo-white-icon.svg'),
-      subtext: require('@/assets/logo/myglo-white-subtext.svg'),
-    },
-  },
 };
 
 export default images;
