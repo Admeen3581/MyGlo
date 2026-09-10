@@ -226,7 +226,10 @@ export default function Index() {
               >
                 Light Theme Variants ({'color="light"'})
               </Text>
-              <View className="flex-row items-center flex-wrap gap-4">
+              <View
+                  style={{backgroundColor: '#F7F7F6' }}
+                  className="p-3 rounded-xl flex-row items-center flex-wrap gap-4"
+              >
                 <MyGloLogo type="standard" color="light" size="sm" />
                 <MyGloLogo type="icon" color="light" size="sm" />
                 <MyGloLogo type="subtext" color="light" size="sm" />
@@ -242,7 +245,7 @@ export default function Index() {
                 Dark Theme Variants ({'color="dark"'})
               </Text>
               <View
-                style={{ backgroundColor: isDarkMode ? '#0E151A' : '#1E293B' }}
+                style={{ backgroundColor: '#0E151A' }}
                 className="p-3 rounded-xl flex-row items-center flex-wrap gap-4"
               >
                 <MyGloLogo type="standard" color="dark" size="sm" />
@@ -259,7 +262,10 @@ export default function Index() {
               >
                 Black Monochrome Variants ({'color="black"'})
               </Text>
-              <View className="flex-row items-center flex-wrap gap-4">
+              <View
+                  style={{ backgroundColor: '#FFFFFF' }}
+                  className="p-3 rounded-xl flex-row items-center flex-wrap gap-4"
+              >
                 <MyGloLogo type="standard" color="black" size="sm" />
                 <MyGloLogo type="icon" color="black" size="sm" />
                 <MyGloLogo type="subtext" color="black" size="sm" />
