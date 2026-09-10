@@ -5,6 +5,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 
 interface InputProps extends TextInputProps {
   label?: string;
+  rightLabel?: React.ReactNode;
   error?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -14,6 +15,7 @@ interface InputProps extends TextInputProps {
 
 export const Input: React.FC<InputProps> = ({
   label,
+  rightLabel,
   error,
   leftIcon,
   rightIcon,
@@ -28,14 +30,30 @@ export const Input: React.FC<InputProps> = ({
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
   return (
-    <View className={`w-full ${containerClassName}`}>
-      {label && (
-        <Text
-          style={{ color: activeColors.foreground }}
-          className="text-sm font-nunito-semibold mb-2 ml-2"
-        >
-          {label}
-        </Text>
+    <View className={`w-full mb-5 px-1 ${containerClassName}`}>
+      {(label || rightLabel) && (
+        <View className="flex-row items-center justify-between mb-1 px-2">
+          {label ? (
+            <Text
+              style={{ color: activeColors.foreground }}
+              className="text-sm font-nunito-semibold"
+            >
+              {label}
+            </Text>
+          ) : (
+            <View />
+          )}
+          {typeof rightLabel === 'string' ? (
+            <Text
+              style={{ color: activeColors.mutedForeground }}
+              className="text-xs font-nunito-semibold"
+            >
+              {rightLabel}
+            </Text>
+          ) : (
+            rightLabel
+          )}
+        </View>
       )}
       <View
         style={{
@@ -52,7 +70,9 @@ export const Input: React.FC<InputProps> = ({
               fontFamily: 'Nunito-Regular',
               fontSize: 14,
               color: activeColors.foreground,
-            },
+              outlineStyle: 'none',
+              outlineWidth: 0,
+            } as any,
             style,
           ]}
           placeholderTextColor={placeholderTextColor || activeColors.mutedForeground}
