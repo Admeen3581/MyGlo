@@ -17,24 +17,31 @@ import { BlobBackground } from '@/components/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { SocialAuthButtons } from '@/components/SocialAuthButtons';
 import { VerificationModal } from '@/components/VerificationModal';
+import TermsOfService from "@/components/TermsOfService";
+import PrivacyPolicy from "@/components/PrivacyPolicy";
 
 export default function SignUpScreen() {
     const router = useRouter();
     const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
 
-    const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showVerificationModal, setShowVerificationModal] = useState(false);
+    const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+    const [showTOSModal, setShowTOSModal] = useState(false);
 
     const handleCreateAccount = () => {
         setShowVerificationModal(true);
     };
 
-    const handleLinkToRoot = () => {
-        router.push('/');
-    };
+    const handleLinkToPrivacy = () => {
+        setShowPrivacyModal(true);
+    }
+
+    const handleLinktoTOS = () => {
+        setShowTOSModal(true);
+    }
 
     const handleVerificationSuccess = () => {
         setShowVerificationModal(false);
@@ -209,7 +216,7 @@ export default function SignUpScreen() {
                         >
                             By signing up, you agree to our{' '}
                             <Text
-                                onPress={handleLinkToRoot}
+                                onPress={handleLinktoTOS}
                                 style={{ color: activeColors.primary }}
                                 className="font-nunito-bold underline"
                             >
@@ -217,7 +224,7 @@ export default function SignUpScreen() {
                             </Text>{' '}
                             and{' '}
                             <Text
-                                onPress={handleLinkToRoot}
+                                onPress={handleLinkToPrivacy}
                                 style={{ color: activeColors.primary }}
                                 className="font-nunito-bold underline"
                             >
@@ -258,6 +265,19 @@ export default function SignUpScreen() {
                 onSuccess={handleVerificationSuccess}
                 isDarkMode={isDarkMode}
             />
+
+            {/* Policies Modals */}
+            <TermsOfService
+                visible={showTOSModal}
+                onClose={() => setShowTOSModal(false)}
+                isDarkMode={isDarkMode}
+            />
+            <PrivacyPolicy
+                visible={showPrivacyModal}
+                onClose={() => setShowPrivacyModal(false)}
+                isDarkMode={isDarkMode}
+            />
+
         </SafeAreaView>
     );
 }
