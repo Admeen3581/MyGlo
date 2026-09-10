@@ -13,7 +13,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 
 export type LogoType = 'standard' | 'icon' | 'subtext';
 export type LogoColor = 'auto' | 'light' | 'dark' | 'black' | 'white';
-export type LogoSize = 'sm' | 'md' | 'lg' | 'xl' | number;
+export type LogoSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
 export type LogoAlign = 'left' | 'center' | 'right' | 'none';
 
 export interface LogoProps {
@@ -52,10 +52,11 @@ const ASPECT_RATIOS: Record<LogoType, number> = {
 
 // Preset heights for each size category
 const PRESET_HEIGHTS: Record<Extract<LogoSize, string>, number> = {
-  sm: 28,
-  md: 40,
-  lg: 60,
-  xl: 80,
+    xs: 24, //should only be used for the icon
+    sm: 32,
+    md: 48,
+    lg: 72,
+    xl: 108,
 };
 
 export const MyGloLogo: React.FC<LogoProps> = ({
