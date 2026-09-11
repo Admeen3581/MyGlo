@@ -6,7 +6,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
+import { useAuth, useClerk } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
@@ -20,8 +21,18 @@ import { ScreenWrapper } from '@/components/ScreenWrapper';
 
 export default function Index() {
   const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { signOut } = useClerk();
   const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
   const [inputValue, setInputValue] = useState('');
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (!isSignedIn) {
+    return <Redirect href="/onboarding" />;
+  }
 
   const dividerStyle = {
     borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)',
@@ -123,12 +134,12 @@ export default function Index() {
 
             <Card variant="tl-large" isDarkMode={isDarkMode} className="space-y-4">
               <View className="flex-row items-center justify-between mb-1">
-                <Badge label="NEW SCREEN" variant="primary" size="sm" isDarkMode={isDarkMode} />
+                <Badge label="AUTHENTICATED" variant="success" size="sm" isDarkMode={isDarkMode} />
                 <Text
                   style={{ color: activeColors.mutedForeground }}
                   className="text-xs font-quicksand-semibold"
                 >
-                  /onboarding
+                  / (Home)
                 </Text>
               </View>
 
@@ -148,11 +159,11 @@ export default function Index() {
 
               <View className="flex-col gap-2">
                 <Button
-                  title="Open Onboarding Screen"
+                  title="Sign Out"
                   variant="primary"
                   size="md"
                   isDarkMode={isDarkMode}
-                  onPress={() => router.push('/onboarding' as any)}
+                  onPress={() => signOut()}
                 />
                 <View className="flex-row gap-2">
                   <View className="flex-1">

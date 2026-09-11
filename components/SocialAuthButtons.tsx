@@ -1,9 +1,14 @@
-import React, { useContext } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useSSO } from '@clerk/expo';
+import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 import { LightColors, DarkColors } from '@/constants/colors';
 import { ThemeContext } from '@/context/ThemeContext';
+
+WebBrowser.maybeCompleteAuthSession();
 
 interface SocialAuthButtonsProps {
   isDarkMode?: boolean;
@@ -17,8 +22,27 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({
   const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
   const activeColors = isDarkMode ? DarkColors : LightColors;
 
-  const handleSocialPress = () => {
-    router.push('/');
+  const { startSSOFlow } = useSSO();
+  const [loadingStrategy, setLoadingStrategy] = useState<string | null>(null);
+
+  const handleSocialPress = async (strategy: 'oauth_google' | 'oauth_apple') => {
+    try {
+      setLoadingStrategy(strategy);
+      const redirectUrl = Linking.createURL('oauth-callback');
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy,
+        redirectUrl,
+      });
+
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        router.replace('/');
+      }
+    } catch (err: any) {
+      console.error('Social auth error:', err);
+    } finally {
+      setLoadingStrategy(null);
+    }
   };
 
   return (
@@ -45,49 +69,63 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({
         {/* Google Button */}
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={handleSocialPress}
+          disabled={loadingStrategy !== null}
+          onPress={() => handleSocialPress('oauth_google')}
           style={{
             backgroundColor: isDarkMode ? 'rgba(22, 34, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)',
             borderColor: activeColors.border,
           }}
           className="flex-1 h-12 rounded-full border flex-row items-center justify-center px-3"
         >
-          <Ionicons
-            name="logo-google"
-            size={18}
-            color={activeColors.foreground}
-            style={{ marginRight: 8 }}
-          />
-          <Text
-            style={{ color: activeColors.foreground }}
-            className="text-sm font-nunito-bold"
-          >
-            Google
-          </Text>
+          {loadingStrategy === 'oauth_google' ? (
+            <ActivityIndicator size="small" color={activeColors.foreground} />
+          ) : (
+            <>
+              <Ionicons
+                name="logo-google"
+                size={18}
+                color={activeColors.foreground}
+                style={{ marginRight: 8 }}
+              />
+              <Text
+                style={{ color: activeColors.foreground }}
+                className="text-sm font-nunito-bold"
+              >
+                Google
+              </Text>
+            </>
+          )}
         </TouchableOpacity>
 
         {/* Apple Button */}
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={handleSocialPress}
+          disabled={loadingStrategy !== null}
+          onPress={() => handleSocialPress('oauth_apple')}
           style={{
             backgroundColor: isDarkMode ? 'rgba(22, 34, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)',
             borderColor: activeColors.border,
           }}
           className="flex-1 h-12 rounded-full border flex-row items-center justify-center px-3"
         >
-          <Ionicons
-            name="logo-apple"
-            size={20}
-            color={activeColors.foreground}
-            style={{ marginRight: 8 }}
-          />
-          <Text
-            style={{ color: activeColors.foreground }}
-            className="text-sm font-nunito-bold"
-          >
-            Apple
-          </Text>
+          {loadingStrategy === 'oauth_apple' ? (
+            <ActivityIndicator size="small" color={activeColors.foreground} />
+          ) : (
+            <>
+              <Ionicons
+                name="logo-apple"
+                size={20}
+                color={activeColors.foreground}
+                style={{ marginRight: 8 }}
+              />
+              <Text
+                style={{ color: activeColors.foreground }}
+                className="text-sm font-nunito-bold"
+              >
+                Apple
+              </Text>
+            </>
+          )}
         </TouchableOpacity>
       </View>
     </View>
