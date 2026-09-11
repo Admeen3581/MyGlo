@@ -18,6 +18,7 @@ import { BlobBackground } from '@/components/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { SocialAuthButtons } from '@/components/SocialAuthButtons';
 import { VerificationModal } from '@/components/VerificationModal';
+import { ForgotPasswordModal } from '@/components/ForgotPasswordModal';
 import { ScreenWrapper } from '@/components/ScreenWrapper';
 
 export default function SignInScreen() {
@@ -34,6 +35,7 @@ export default function SignInScreen() {
     const [isLoading, setIsLoading] = useState(false);
 
     const [showVerificationModal, setShowVerificationModal] = useState(false);
+    const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
     if (!isAuthLoaded) {
         return null;
@@ -93,7 +95,7 @@ export default function SignInScreen() {
     };
 
     const handleForgotPassword = () => {
-        // Placeholder or reset flow trigger
+        setShowForgotPasswordModal(true);
     };
 
     const handleVerificationSuccess = () => {
@@ -298,6 +300,18 @@ export default function SignInScreen() {
                 mode="signin"
                 onClose={() => setShowVerificationModal(false)}
                 onSuccess={handleVerificationSuccess}
+                isDarkMode={isDarkMode}
+            />
+
+            {/* Forgot Password Recovery Modal */}
+            <ForgotPasswordModal
+                visible={showForgotPasswordModal}
+                initialEmail={email}
+                onClose={() => setShowForgotPasswordModal(false)}
+                onSuccess={() => {
+                    setShowForgotPasswordModal(false);
+                    router.replace('/');
+                }}
                 isDarkMode={isDarkMode}
             />
         </SafeAreaView>
