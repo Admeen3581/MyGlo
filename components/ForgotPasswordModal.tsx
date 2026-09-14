@@ -87,6 +87,14 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             });
 
             if (createError) {
+                {/*CyberFeature -- if user types in unknown email -> redirects as a success. Email not sent.*/}
+                if(createError.message.toLowerCase().includes("couldn't find your account")) {
+                    setStep('verify');
+                    setTimeout(() => codeInputRef.current?.focus(), 200);
+                    setIsLoading(false);
+                    return;
+                }
+
                 setErrorMessage(createError.message || 'Failed to locate account. Please check your email.');
                 setIsLoading(false);
                 return;
@@ -103,6 +111,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             setTimeout(() => codeInputRef.current?.focus(), 200);
         } catch (err: any) {
             console.error('Send reset code error:', err);
+
             const clerkMsg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message;
             setErrorMessage(clerkMsg || 'Failed to send recovery code.');
         } finally {
@@ -133,6 +142,12 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             });
 
             if (verifyError) {
+                {/*CyberFeature -- if user types in unknown email -> redirects as a success. Code not sent.*/}
+                if(verifyError.message.toLowerCase().includes("we were unable to complete factor one verification")) {
+                    setErrorMessage("Invalid recovery code. Please try again.");
+                    setIsLoading(false);
+                    return;
+                }
                 setErrorMessage(verifyError.message || 'Invalid recovery code. Please try again.');
                 setIsLoading(false);
                 return;
@@ -171,6 +186,14 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             const { error } = await signIn.resetPasswordEmailCode.sendCode();
 
             if (error) {
+                {/*CyberFeature -- if user types in unknown email -> redirects as a success. Code not sent.*/}
+                if(error.message.toLowerCase().includes("clerk: reset password email code"))
+                {
+                    setResendStatus('sent');
+                    setErrorMessage('');
+                    setTimeout(() => setResendStatus('idle'), 3000);
+                    return;
+                }
                 setErrorMessage(error.message || 'Failed to resend recovery code.');
                 setResendStatus('idle');
                 return;
