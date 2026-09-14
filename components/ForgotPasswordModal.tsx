@@ -73,6 +73,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     }, [visible, initialEmail]);
 
     const handleSendCode = async () => {
+        if (isLoading) return;
+
         if (!email.trim()) {
             setErrorMessage('Please enter your email address.');
             return;
@@ -120,6 +122,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     };
 
     const handleResetPassword = async () => {
+        if (isLoading) return;
+
         if (code.trim().length !== 6) {
             setErrorMessage('Please enter the 6-digit recovery code.');
             return;
@@ -279,6 +283,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                             }}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            returnKeyType="send"
+                            onSubmitEditing={handleSendCode}
                             leftIcon={
                                 <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -377,6 +383,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                             maxLength={6}
                             style={styles.hiddenInput}
                             caretHidden
+                            returnKeyType="next"
+                            onSubmitEditing={handleResetPassword}
                         />
 
                         {/* Password Inputs */}
@@ -389,20 +397,10 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                                 if (errorMessage) setErrorMessage('');
                             }}
                             secureTextEntry={!showPassword}
+                            returnKeyType="next"
+                            onSubmitEditing={handleResetPassword}
                             leftIcon={
                                 <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
-                            }
-                            rightIcon={
-                                <TouchableOpacity
-                                    onPress={() => setShowPassword(!showPassword)}
-                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                                >
-                                    <Ionicons
-                                        name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                        size={18}
-                                        color={activeColors.mutedForeground}
-                                    />
-                                </TouchableOpacity>
                             }
                             isDarkMode={isDarkMode}
                         />
@@ -417,6 +415,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                                     if (errorMessage) setErrorMessage('');
                                 }}
                                 secureTextEntry={!showPassword}
+                                returnKeyType="done"
+                                onSubmitEditing={handleResetPassword}
                                 leftIcon={
                                     <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                                 }
