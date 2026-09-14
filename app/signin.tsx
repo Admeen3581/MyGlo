@@ -7,8 +7,9 @@ import {
     StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth, useSignIn, useClerk } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -16,19 +17,93 @@ import { Card } from '@/components/Card';
 import { BlobBackground } from '@/components/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { SocialAuthButtons } from '@/components/SocialAuthButtons';
+import { VerificationModal } from '@/components/VerificationModal';
+import { ForgotPasswordModal } from '@/components/ForgotPasswordModal';
 import { ScreenWrapper } from '@/components/ScreenWrapper';
 
 export default function SignInScreen() {
     const router = useRouter();
+    const { isLoaded: isAuthLoaded, isSignedIn } = useAuth();
+    const { signIn } = useSignIn();
+    const { setActive } = useClerk();
     const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Blank onPress function as explicitly instructed by prompt
-    const handleSignIn = () => {};
-    const handleForgotPassword = () => {};
+    const [showVerificationModal, setShowVerificationModal] = useState(false);
+    const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+
+    if (!isAuthLoaded) {
+        return null;
+    }
+
+    if (isSignedIn) {
+        return <Redirect href="/" />;
+    }
+
+    const handleSignIn = async () => {
+        if (isLoading) return;
+
+        if (!email.trim() || !password) {
+            setErrorMessage('Please enter both email and password.');
+            return;
+        }
+
+        setErrorMessage('');
+        setIsLoading(true);
+
+        try {
+            const { error: signInError } = await signIn.password({
+                emailAddress: email.trim(),
+                password,
+            });
+
+            if (signInError) {
+                setErrorMessage(signInError.message || 'Invalid email or password.');
+                setIsLoading(false);
+                return;
+            }
+
+            if (signIn.status === 'complete' && signIn.createdSessionId) {
+                await setActive({ session: signIn.createdSessionId });
+                router.replace('/');
+            } else if (
+                signIn.status === 'needs_client_trust' ||
+                signIn.status === 'needs_first_factor' ||
+                signIn.status === 'needs_second_factor'
+            ) {
+                // Trigger sending email verification code for device trust / MFA
+                if (signIn.status === 'needs_second_factor') {
+                    await signIn.mfa.sendEmailCode();
+                } else {
+                    await signIn.emailCode.sendCode();
+                }
+                setShowVerificationModal(true);
+            } else {
+                setErrorMessage('Sign in incomplete. Additional verification required.');
+                setIsLoading(false);
+            }
+        } catch (err: any) {
+            console.error('Sign in error:', err);
+            const clerkMsg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message;
+            setErrorMessage(clerkMsg || 'An unexpected error occurred during sign in.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleForgotPassword = () => {
+        setShowForgotPasswordModal(true);
+    };
+
+    const handleVerificationSuccess = () => {
+        setShowVerificationModal(false);
+        router.replace('/');
+    };
 
     return (
         <SafeAreaView
@@ -119,9 +194,14 @@ export default function SignInScreen() {
                             label="Email Address"
                             placeholder="name@example.com"
                             value={email}
-                            onChangeText={setEmail}
+                            onChangeText={(text) => {
+                                setEmail(text);
+                                if (errorMessage) setErrorMessage('');
+                            }}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            returnKeyType="next"
+                            onSubmitEditing={handleSignIn}
                             leftIcon={
                                 <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -132,8 +212,13 @@ export default function SignInScreen() {
                             label="Password"
                             placeholder="Enter your password"
                             value={password}
-                            onChangeText={setPassword}
+                            onChangeText={(text) => {
+                                setPassword(text);
+                                if (errorMessage) setErrorMessage('');
+                            }}
                             secureTextEntry={!showPassword}
+                            returnKeyType="done"
+                            onSubmitEditing={handleSignIn}
                             rightLabel={
                                 <TouchableOpacity
                                     onPress={handleForgotPassword}
@@ -166,21 +251,30 @@ export default function SignInScreen() {
                             isDarkMode={isDarkMode}
                         />
 
-                        {/* Sign In Action Button (Blank onPress function) */}
+                        {errorMessage ? (
+                            <Text
+                                style={{ color: activeColors.destructive }}
+                                className="text-xs font-nunito-semibold text-center mt-1"
+                            >
+                                {errorMessage}
+                            </Text>
+                        ) : null}
+
+                        {/* Sign In Action Button */}
                         <View className="pt-2">
                             <Button
-                                title="Sign In"
+                                title={isLoading ? 'Signing In...' : 'Sign In'}
                                 variant="primary"
                                 size="lg"
                                 isDarkMode={isDarkMode}
                                 onPress={handleSignIn}
+                                disabled={isLoading}
                             />
                         </View>
 
                         {/* Social Auth Buttons Component */}
                         <SocialAuthButtons isDarkMode={isDarkMode} />
                     </Card>
-
 
                     {/* Footer Navigation Link */}
                     <View className="flex-row items-center justify-center py-6">
@@ -204,6 +298,28 @@ export default function SignInScreen() {
                     </View>
                 </ScreenWrapper>
             </ScrollView>
+
+            {/* Verification Modal for Device Trust / MFA Verification */}
+            <VerificationModal
+                visible={showVerificationModal}
+                email={email}
+                mode="signin"
+                onClose={() => setShowVerificationModal(false)}
+                onSuccess={handleVerificationSuccess}
+                isDarkMode={isDarkMode}
+            />
+
+            {/* Forgot Password Recovery Modal */}
+            <ForgotPasswordModal
+                visible={showForgotPasswordModal}
+                initialEmail={email}
+                onClose={() => setShowForgotPasswordModal(false)}
+                onSuccess={() => {
+                    setShowForgotPasswordModal(false);
+                    router.replace('/');
+                }}
+                isDarkMode={isDarkMode}
+            />
         </SafeAreaView>
     );
 }

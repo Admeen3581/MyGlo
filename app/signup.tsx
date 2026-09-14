@@ -7,7 +7,7 @@ import {
     StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/Button';
@@ -26,24 +26,86 @@ import {
     getConfirmPasswordStatus,
     ValidationStatus,
 } from '@/lib/validation';
+import { useAuth, useSignUp } from '@clerk/expo';
 
 export default function SignUpScreen() {
     const router = useRouter();
     const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
 
+    const { isLoaded, isSignedIn } = useAuth();
+    const { signUp } = useSignUp();
+
     const [email, setEmail] = useState('');
     const [emailBlurred, setEmailBlurred] = useState(false);
-    const [isEmailUnavailable] = useState(false); // Extensible flag for backend check
+    const [isEmailUnavailable] = useState(false);
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     const [showPrivacyModal, setShowPrivacyModal] = useState(false);
     const [showTOSModal, setShowTOSModal] = useState(false);
 
-    const handleCreateAccount = () => {
-        setShowVerificationModal(true);
+    // UX input status symbols
+    const emailStatus = getEmailStatus(email, emailBlurred, isEmailUnavailable);
+    const passwordStatus = getPasswordStatus(password);
+    const confirmPasswordStatus = getConfirmPasswordStatus(confirmPassword, password);
+
+    if (!isLoaded) {
+        return null;
+    }
+
+    if (isSignedIn) {
+        return <Redirect href="/" />;
+    }
+
+    // Handles logic upon hitting "Create Account" button
+    const handleCreateAccount = async () => {
+        if (isLoading) return;
+
+        if (!email.trim() || !password || !confirmPassword) {
+            setErrorMessage('Please fill in all required fields.');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setErrorMessage('Passwords do not match.');
+            return;
+        }
+
+        setErrorMessage('');
+        setIsLoading(true);
+
+        try {
+            const { error: signUpError } = await signUp.password({
+                emailAddress: email.trim(),
+                password,
+            });
+
+            if (signUpError) {
+                setErrorMessage(signUpError.message || 'Failed to create account.');
+                setIsLoading(false);
+                return;
+            }
+
+            const { error: codeError } = await signUp.verifications.sendEmailCode();
+            if (codeError) {
+                setErrorMessage(codeError.message || 'Failed to send verification code.');
+                setIsLoading(false);
+                return;
+            }
+
+            setShowVerificationModal(true);
+        } catch (err: any) {
+            console.error('Sign up error:', err);
+            const clerkMsg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message;
+            setErrorMessage(clerkMsg || 'An unexpected error occurred during sign up.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleLinkToPrivacy = () => {
@@ -97,10 +159,6 @@ export default function SignUpScreen() {
 
         return <Ionicons name={iconName} size={20} color={color} />;
     };
-
-    const emailStatus = getEmailStatus(email, emailBlurred, isEmailUnavailable);
-    const passwordStatus = getPasswordStatus(password);
-    const confirmPasswordStatus = getConfirmPasswordStatus(confirmPassword, password);
 
     return (
         <SafeAreaView
@@ -192,10 +250,15 @@ export default function SignUpScreen() {
                             rightLabel={renderStatusLabel(emailStatus)}
                             placeholder="name@example.com"
                             value={email}
-                            onChangeText={setEmail}
+                            onChangeText={(text) => {
+                                setEmail(text);
+                                if (errorMessage) setErrorMessage('');
+                            }}
                             onBlur={() => setEmailBlurred(true)}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            returnKeyType="next"
+                            onSubmitEditing={handleCreateAccount}
                             leftIcon={
                                 <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -208,8 +271,13 @@ export default function SignUpScreen() {
                             rightLabel={renderStatusLabel(passwordStatus)}
                             placeholder="Enter your password"
                             value={password}
-                            onChangeText={setPassword}
+                            onChangeText={(text) => {
+                                setPassword(text);
+                                if (errorMessage) setErrorMessage('');
+                            }}
                             secureTextEntry={true}
+                            returnKeyType="next"
+                            onSubmitEditing={handleCreateAccount}
                             leftIcon={
                                 <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -226,8 +294,13 @@ export default function SignUpScreen() {
                             rightLabel={renderStatusLabel(confirmPasswordStatus)}
                             placeholder="Reenter your password"
                             value={confirmPassword}
-                            onChangeText={setConfirmPassword}
+                            onChangeText={(text) => {
+                                setConfirmPassword(text);
+                                if (errorMessage) setErrorMessage('');
+                            }}
                             secureTextEntry={true}
+                            returnKeyType="done"
+                            onSubmitEditing={handleCreateAccount}
                             leftIcon={
                                 <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -239,20 +312,29 @@ export default function SignUpScreen() {
                             isDarkMode={isDarkMode}
                         />
 
+                        {errorMessage ? (
+                            <Text
+                                style={{ color: activeColors.destructive }}
+                                className="text-xs font-nunito-semibold text-center mt-1"
+                            >
+                                {errorMessage}
+                            </Text>
+                        ) : null}
+
                         {/* Create Account Primary Action Button */}
                         <View className="pt-2">
                             <Button
-                                title="Create Account"
+                                title={isLoading ? 'Creating Account...' : 'Create Account'}
                                 variant="primary"
                                 size="lg"
                                 isDarkMode={isDarkMode}
                                 onPress={handleCreateAccount}
+                                disabled={isLoading}
                             />
                         </View>
 
                         {/* Social Auth Buttons Component */}
                         <SocialAuthButtons isDarkMode={isDarkMode} />
-
 
                         {/* Terms & Privacy Policy Note */}
                         <View className="pt-2 px-1 mt-3">
@@ -325,6 +407,7 @@ export default function SignUpScreen() {
                 isDarkMode={isDarkMode}
             />
 
+            <View nativeID={"clerk-captcha"} />
         </SafeAreaView>
     );
 }

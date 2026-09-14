@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
+import { useAuth } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
@@ -19,7 +20,16 @@ import { images } from '@/constants/images';
 
 export default function OnboardingScreen() {
     const router = useRouter();
+    const { isLoaded, isSignedIn } = useAuth();
     const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
+
+    if (!isLoaded) {
+        return null;
+    }
+
+    if (isSignedIn) {
+        return <Redirect href="/" />;
+    }
 
     const handleGetStarted = () => {
         router.push('/signup' as any);
