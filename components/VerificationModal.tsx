@@ -93,15 +93,18 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
 
                 if (result?.error) {
                     setErrorMessage(result.error.message || 'Invalid verification code. Please try again.');
+                    setCode('');
                     setIsVerifying(false);
                     return;
                 }
 
                 if (signIn.createdSessionId) {
+                    setCode('');
                     await setActive({ session: signIn.createdSessionId });
                     onSuccess();
                 } else {
                     setErrorMessage('Verification incomplete. Additional steps required.');
+                    setCode('');
                     setIsVerifying(false);
                 }
             } else {
@@ -109,15 +112,18 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
                 const { error: codeError } = await signUp.verifications.verifyEmailCode({ code: codeValue });
                 if (codeError) {
                     setErrorMessage(codeError.message || 'Invalid verification code. Please try again.');
+                    setCode('');
                     setIsVerifying(false);
                     return;
                 }
 
                 if (signUp.createdSessionId) {
+                    setCode('');
                     await setActive({ session: signUp.createdSessionId });
                     onSuccess();
                 } else {
                     setErrorMessage('Verification incomplete. Additional steps required.');
+                    setCode('');
                     setIsVerifying(false);
                 }
             }
@@ -125,6 +131,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
             console.error('Verification error:', err);
             const clerkMsg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message;
             setErrorMessage(clerkMsg || 'Verification failed. Please try again.');
+            setCode('');
             setIsVerifying(false);
         }
     };
@@ -133,6 +140,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
         try {
             setErrorMessage('');
             setResendStatus('sending');
+            setCode('');
             if (mode === 'signin') {
                 if (signIn.status === 'needs_second_factor') {
                     await signIn.mfa.sendEmailCode();
