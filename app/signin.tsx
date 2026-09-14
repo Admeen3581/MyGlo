@@ -46,6 +46,8 @@ export default function SignInScreen() {
     }
 
     const handleSignIn = async () => {
+        if (isLoading) return;
+
         if (!email.trim() || !password) {
             setErrorMessage('Please enter both email and password.');
             return;
@@ -198,6 +200,8 @@ export default function SignInScreen() {
                             }}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            returnKeyType="next"
+                            onSubmitEditing={handleSignIn}
                             leftIcon={
                                 <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -213,6 +217,8 @@ export default function SignInScreen() {
                                 if (errorMessage) setErrorMessage('');
                             }}
                             secureTextEntry={!showPassword}
+                            returnKeyType="done"
+                            onSubmitEditing={handleSignIn}
                             rightLabel={
                                 <TouchableOpacity
                                     onPress={handleForgotPassword}

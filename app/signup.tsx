@@ -64,6 +64,8 @@ export default function SignUpScreen() {
 
     // Handles logic upon hitting "Create Account" button
     const handleCreateAccount = async () => {
+        if (isLoading) return;
+
         if (!email.trim() || !password || !confirmPassword) {
             setErrorMessage('Please fill in all required fields.');
             return;
@@ -255,6 +257,8 @@ export default function SignUpScreen() {
                             onBlur={() => setEmailBlurred(true)}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            returnKeyType="next"
+                            onSubmitEditing={handleCreateAccount}
                             leftIcon={
                                 <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -272,6 +276,8 @@ export default function SignUpScreen() {
                                 if (errorMessage) setErrorMessage('');
                             }}
                             secureTextEntry={true}
+                            returnKeyType="next"
+                            onSubmitEditing={handleCreateAccount}
                             leftIcon={
                                 <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -293,6 +299,8 @@ export default function SignUpScreen() {
                                 if (errorMessage) setErrorMessage('');
                             }}
                             secureTextEntry={true}
+                            returnKeyType="done"
+                            onSubmitEditing={handleCreateAccount}
                             leftIcon={
                                 <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                             }

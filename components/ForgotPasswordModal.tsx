@@ -53,6 +53,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
+    const [isCodeVerified, setIsCodeVerified] = useState(false);
 
     const codeInputRef = useRef<TextInput>(null);
 
@@ -67,6 +68,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 setErrorMessage('');
                 setIsLoading(false);
                 setResendStatus('idle');
+                setIsCodeVerified(false);
             }, 150);
             return () => clearTimeout(timer);
         }
@@ -92,6 +94,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 {/*CyberFeature -- if user types in unknown email -> redirects as a success. Email not sent.*/}
                 if(createError.message.toLowerCase().includes("couldn't find your account")) {
                     setStep('verify');
+                    setIsCodeVerified(false);
                     setTimeout(() => codeInputRef.current?.focus(), 200);
                     setIsLoading(false);
                     return;
@@ -110,6 +113,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             }
 
             setStep('verify');
+            setIsCodeVerified(false);
             setTimeout(() => codeInputRef.current?.focus(), 200);
         } catch (err: any) {
             console.error('Send reset code error:', err);
@@ -141,20 +145,23 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         setIsLoading(true);
 
         try {
-            const { error: verifyError } = await signIn.resetPasswordEmailCode.verifyCode({
-                code: code.trim(),
-            });
+            if (!isCodeVerified) {
+                const { error: verifyError } = await signIn.resetPasswordEmailCode.verifyCode({
+                    code: code.trim(),
+                });
 
-            if (verifyError) {
-                {/*CyberFeature -- if user types in unknown email -> redirects as a success. Code not sent.*/}
-                if(verifyError.message.toLowerCase().includes("we were unable to complete factor one verification")) {
-                    setErrorMessage("Invalid recovery code. Please try again.");
+                if (verifyError) {
+                    {/*CyberFeature -- if user types in unknown email -> redirects as a success. Code not sent.*/}
+                    if(verifyError.message.toLowerCase().includes("we were unable to complete factor one verification")) {
+                        setErrorMessage("Invalid recovery code. Please try again.");
+                        setIsLoading(false);
+                        return;
+                    }
+                    setErrorMessage(verifyError.message || 'Invalid recovery code. Please try again.');
                     setIsLoading(false);
                     return;
                 }
-                setErrorMessage(verifyError.message || 'Invalid recovery code. Please try again.');
-                setIsLoading(false);
-                return;
+                setIsCodeVerified(true);
             }
 
             const { error: submitError } = await signIn.resetPasswordEmailCode.submitPassword({
@@ -187,6 +194,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         try {
             setErrorMessage('');
             setResendStatus('sending');
+            setIsCodeVerified(false);
             const { error } = await signIn.resetPasswordEmailCode.sendCode();
 
             if (error) {
@@ -215,6 +223,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     const handleCodeChange = (text: string) => {
         const cleaned = text.replace(/[^0-9]/g, '').slice(0, 6);
         setCode(cleaned);
+        setIsCodeVerified(false);
         if (errorMessage) setErrorMessage('');
     };
 
@@ -401,6 +410,18 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                             onSubmitEditing={handleResetPassword}
                             leftIcon={
                                 <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
+                            }
+                            rightIcon={
+                                <TouchableOpacity
+                                    onPress={() => setShowPassword(!showPassword)}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                                >
+                                    <Ionicons
+                                        name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                                        size={18}
+                                        color={activeColors.mutedForeground}
+                                    />
+                                </TouchableOpacity>
                             }
                             isDarkMode={isDarkMode}
                         />
