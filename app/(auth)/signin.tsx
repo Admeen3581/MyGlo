@@ -11,15 +11,15 @@ import { useRouter, Redirect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth, useSignIn, useClerk } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
-import { Card } from '@/components/Card';
-import { BlobBackground } from '@/components/BlobBackground';
-import { AuthHeader } from '@/components/AuthHeader';
-import { SocialAuthButtons } from '@/components/SocialAuthButtons';
-import { VerificationModal } from '@/components/VerificationModal';
-import { ForgotPasswordModal } from '@/components/ForgotPasswordModal';
-import { ScreenWrapper } from '@/components/ScreenWrapper';
+import { Button } from '@/components/core/Button';
+import { Input } from '@/components/core/Input';
+import { Card } from '@/components/core/Card';
+import { BlobBackground } from '@/components/core/BlobBackground';
+import { AuthHeader } from '@/components/auth/AuthHeader';
+import { SocialAuthButtons } from '@/components/auth/SocialAuthButtons';
+import { VerificationModal } from '@/components/auth/VerificationModal';
+import { ForgotPasswordModal } from '@/components/auth/ForgotPasswordModal';
+import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
 import { getClerkErrorMessage } from '@/lib/clerk';
 
 export default function SignInScreen() {

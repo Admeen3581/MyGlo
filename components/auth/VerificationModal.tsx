@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Card } from '@/components/Card';
-import { CodeInput } from '@/components/CodeInput';
-import { ModalWrapper } from './ModalWrapper';
+import { Card } from '@/components/core/Card';
+import { CodeInput } from '@/components/auth/CodeInput';
+import { ModalWrapper } from '../wrapper/ModalWrapper';
 import { useTheme } from '@/hooks/useTheme';
 import { getClerkErrorMessage } from '@/lib/clerk';
 import { useSignUp, useSignIn, useClerk } from '@clerk/expo';

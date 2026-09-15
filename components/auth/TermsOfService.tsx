@@ -1,16 +1,16 @@
 import React from 'react';
-import { ParagraphModal, ParagraphModalProps } from '@/components/ParagraphModal';
-import { privacyPolicyData } from '@/data/privacyPolicyData';
+import { ParagraphModal, ParagraphModalProps } from '@/components/core/ParagraphModal';
+import { termsOfServiceData } from '@/data/termsOfServiceData';
 import { PolicyData } from '@/types/policy';
 
-export interface PrivacyPolicyProps extends Omit<ParagraphModalProps, 'data'> {
+export interface TermsOfServiceProps extends Omit<ParagraphModalProps, 'data'> {
   data?: PolicyData;
 }
 
-export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
+export const TermsOfService: React.FC<TermsOfServiceProps> = ({
   visible,
   onClose,
-  data = privacyPolicyData,
+  data = termsOfServiceData,
   isDarkMode,
   actionButtonText,
   onAction,
@@ -29,4 +29,4 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
   );
 };
 
-export default PrivacyPolicy;
+export default TermsOfService;

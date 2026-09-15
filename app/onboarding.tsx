@@ -11,11 +11,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Redirect } from 'expo-router';
 import { useAuth } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
-import { BlobBackground } from '@/components/BlobBackground';
-import { AuthHeader } from '@/components/AuthHeader';
-import { ScreenWrapper } from '@/components/ScreenWrapper';
+import { Button } from '@/components/core/Button';
+import { Card } from '@/components/core/Card';
+import { BlobBackground } from '@/components/core/BlobBackground';
+import { AuthHeader } from '@/components/auth/AuthHeader';
+import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
 import { images } from '@/constants/images';
 
 export default function OnboardingScreen() {

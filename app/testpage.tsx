@@ -11,15 +11,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Redirect } from 'expo-router';
 import { useAuth, useClerk } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
-import { Input } from '@/components/Input';
-import { Badge } from '@/components/Badge';
-import { FloatingNav } from '@/components/FloatingNav';
-import { ColorSwatch } from '@/components/ColorSwatch';
-import { BlobBackground } from '@/components/BlobBackground';
+import { Button } from '@/components/core/Button';
+import { Card } from '@/components/core/Card';
+import { Input } from '@/components/core/Input';
+import { Badge } from '@/components/core/Badge';
+import { FloatingNav } from '@/components/palette/FloatingNav';
+import { ColorSwatch } from '@/components/palette/ColorSwatch';
+import { BlobBackground } from '@/components/core/BlobBackground';
 import { MyGloLogo } from '@/components/MyGloLogo';
-import { ScreenWrapper } from '@/components/ScreenWrapper';
+import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
 
 export default function TestPage() {
   const router = useRouter();

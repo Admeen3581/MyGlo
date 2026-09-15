@@ -7,11 +7,11 @@ import {
     ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Card } from '@/components/Card';
-import { Input } from '@/components/Input';
-import { Button } from '@/components/Button';
-import { CodeInput } from '@/components/CodeInput';
-import { ModalWrapper } from './ModalWrapper';
+import { Card } from '@/components/core/Card';
+import { Input } from '@/components/core/Input';
+import { Button } from '@/components/core/Button';
+import { CodeInput } from '@/components/auth/CodeInput';
+import { ModalWrapper } from '../wrapper/ModalWrapper';
 import { useTheme } from '@/hooks/useTheme';
 import { getClerkErrorMessage } from '@/lib/clerk';
 import { useSignIn, useClerk } from '@clerk/expo';
