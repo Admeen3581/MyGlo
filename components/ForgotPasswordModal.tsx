@@ -292,6 +292,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                             }}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            autoComplete="email"
+                            textContentType="emailAddress"
                             returnKeyType="send"
                             onSubmitEditing={handleSendCode}
                             leftIcon={

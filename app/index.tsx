@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
+    View,
+    Text,
+    ScrollView,
+    StyleSheet, Platform, useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Redirect } from 'expo-router';
@@ -25,6 +25,9 @@ export default function Index() {
   const { signOut } = useClerk();
   const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
   const [inputValue, setInputValue] = useState('');
+
+  const {width} = useWindowDimensions();
+  const isMobile = Platform.OS !== 'web' || width < 640;
 
   if (!isLoaded) {
     return null;
@@ -165,7 +168,7 @@ export default function Index() {
                   isDarkMode={isDarkMode}
                   onPress={() => signOut()}
                 />
-                <View className="flex-row gap-2">
+                <View className={isMobile ? 'flex-col gap-2' : "flex-row gap-2"}>
                   <View className="flex-1">
                     <Button
                       title="Sign Up Screen"
