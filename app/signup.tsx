@@ -40,6 +40,7 @@ export default function SignUpScreen() {
     const [isEmailUnavailable] = useState(false);
 
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -277,16 +278,25 @@ export default function SignUpScreen() {
                                 setPassword(text);
                                 if (errorMessage) setErrorMessage('');
                             }}
-                            secureTextEntry={true}
+                            secureTextEntry={!showPassword}
                             returnKeyType="next"
                             onSubmitEditing={handleCreateAccount}
                             leftIcon={
                                 <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                             }
                             rightIcon={
-                                <View className="flex-row items-center gap-2">
-                                    {renderStatusIcon(passwordStatus)}
-                                </View>
+                                <>
+                                    <TouchableOpacity
+                                        onPress={() => setShowPassword(!showPassword)}
+                                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                                    >
+                                        <Ionicons
+                                            name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                                            size={18}
+                                            color={activeColors.mutedForeground}
+                                        />
+                                    </TouchableOpacity>
+                                </>
                             }
                             isDarkMode={isDarkMode}
                         />
@@ -300,7 +310,7 @@ export default function SignUpScreen() {
                                 setConfirmPassword(text);
                                 if (errorMessage) setErrorMessage('');
                             }}
-                            secureTextEntry={true}
+                            secureTextEntry={!showPassword}
                             returnKeyType="done"
                             onSubmitEditing={handleCreateAccount}
                             leftIcon={
