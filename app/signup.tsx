@@ -257,6 +257,8 @@ export default function SignUpScreen() {
                             onBlur={() => setEmailBlurred(true)}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            autoComplete="email"
+                            textContentType="emailAddress"
                             returnKeyType="next"
                             onSubmitEditing={handleCreateAccount}
                             leftIcon={

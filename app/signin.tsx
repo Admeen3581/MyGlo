@@ -200,6 +200,8 @@ export default function SignInScreen() {
                             }}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            autoComplete="email"
+                            textContentType="emailAddress"
                             returnKeyType="next"
                             onSubmitEditing={handleSignIn}
                             leftIcon={
