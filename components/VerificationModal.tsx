@@ -174,7 +174,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
             className={
                 isMobile
                     ? 'w-full h-full flex-1 p-6 items-center justify-between'
-                    : 'w-full max-w-85 p-6 items-center'
+                    : 'w-full max-w-md p-8 items-center'
             }
         >
             {/* Top Header Row */}
@@ -218,7 +218,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
                 <TouchableOpacity
                     activeOpacity={1}
                     onPress={() => inputRef.current?.focus()}
-                    className={isMobile ? 'flex-row items-center justify-center gap-3 mb-6' : 'flex-row items-center justify-center gap-3 mb-4'}
+                    className={isMobile ? 'flex-row items-center justify-center gap-3 mb-6' : 'flex-row items-center justify-center gap-4 mb-4'}
                 >
                     {[0, 1, 2, 3, 4, 5].map((index) => {
                         const isFilled = index < digits.length;
@@ -241,11 +241,11 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
                                         borderWidth: isCurrentFocus || errorMessage ? 2 : 1,
                                     },
                                 ]}
-                                className={isMobile ? 'w-11 h-14 rounded-xl items-center justify-center shadow-sm' : 'w-10 h-12 rounded-xl items-center justify-center shadow-sm'}
+                                className={isMobile ? 'w-11 h-14 rounded-xl items-center justify-center shadow-sm' : 'w-12 h-15 rounded-xl items-center justify-center shadow-sm'}
                             >
                                 <Text
                                     style={{ color: activeColors.foreground }}
-                                    className={isMobile ? 'text-4xl font-fraunces-bold' : 'text-2xl font-fraunces-bold'}
+                                    className={isMobile ? 'text-4xl font-fraunces-bold' : 'text-5xl font-fraunces-bold'}
                                 >
                                     {digits[index] || ''}
                                 </Text>
