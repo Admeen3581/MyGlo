@@ -392,6 +392,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                             maxLength={6}
                             style={styles.hiddenInput}
                             caretHidden
+                            textContentType="oneTimeCode"
                             returnKeyType="next"
                             onSubmitEditing={handleResetPassword}
                         />
@@ -497,7 +498,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             onRequestClose={onClose}
         >
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 style={[
                     isMobile ? styles.mobileOverlayContainer : styles.overlayContainer,
                     { backgroundColor: isDarkMode ? 'rgba(7, 11, 14, 0.75)' : 'rgba(16, 33, 41, 0.65)' },
@@ -557,7 +558,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 1,
         height: 1,
-        opacity: 0,
+        opacity: 0.01,
     },
 });
 

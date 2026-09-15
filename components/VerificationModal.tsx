@@ -39,7 +39,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
     const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
     const activeColors = isDarkMode ? DarkColors : LightColors;
     const { width } = useWindowDimensions();
-    const isMobile = width < 640;
+    const isMobile = Platform.OS !== 'web' || width < 640;
 
     const [code, setCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -218,7 +218,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
                 <TouchableOpacity
                     activeOpacity={1}
                     onPress={() => inputRef.current?.focus()}
-                    className={isMobile ? 'flex-row items-center justify-center gap-4.5 mb-6' : 'flex-row items-center justify-center gap-2 mb-4'}
+                    className={isMobile ? 'flex-row items-center justify-center gap-3 mb-6' : 'flex-row items-center justify-center gap-3 mb-4'}
                 >
                     {[0, 1, 2, 3, 4, 5].map((index) => {
                         const isFilled = index < digits.length;
@@ -241,11 +241,11 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
                                         borderWidth: isCurrentFocus || errorMessage ? 2 : 1,
                                     },
                                 ]}
-                                className={isMobile ? 'w-14 h-16 rounded-xl items-center justify-center shadow-sm pt-2' : 'w-10 h-12 rounded-xl items-center justify-center shadow-sm'}
+                                className={isMobile ? 'w-11 h-14 rounded-xl items-center justify-center shadow-sm' : 'w-10 h-12 rounded-xl items-center justify-center shadow-sm'}
                             >
                                 <Text
                                     style={{ color: activeColors.foreground }}
-                                    className={isMobile ? 'text-6xl font-fraunces-bold' : 'text-3xl font-fraunces-bold'}
+                                    className={isMobile ? 'text-4xl font-fraunces-bold' : 'text-2xl font-fraunces-bold'}
                                 >
                                     {digits[index] || ''}
                                 </Text>
@@ -272,7 +272,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
                     maxLength={6}
                     style={styles.hiddenInput}
                     caretHidden
-                    autoFocus
+                    textContentType="oneTimeCode"
                 />
 
                 {/* Resend Helper */}
@@ -308,7 +308,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = (
             onRequestClose={onClose}
         >
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 style={[
                     isMobile ? styles.mobileOverlayContainer : styles.overlayContainer,
                     { backgroundColor: isDarkMode ? 'rgba(7, 11, 14, 0.75)' : 'rgba(16, 33, 41, 0.65)' },
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 1,
         height: 1,
-        opacity: 0,
+        opacity: 0.01,
     },
 });
 
