@@ -31,13 +31,13 @@ export default function RootLayout() {
 
     //Prefetch critical onboarding asset for instant rendering on mobile
     useEffect(() => {
-        Image.prefetch(images.onboarding);
+        Image.prefetch(images.onboarding).then();
     }, []);
 
     //Async Init Screen
     useEffect(() => {
         if (loaded || error) {
-            SplashScreen.hideAsync();
+            SplashScreen.hideAsync().then();
         }
     }, [loaded, error]);
 
