@@ -11,22 +11,23 @@ import { useRouter, Redirect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth, useSignIn, useClerk } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
-import { Card } from '@/components/Card';
-import { BlobBackground } from '@/components/BlobBackground';
-import { MyGloLogo } from '@/components/MyGloLogo';
-import { SocialAuthButtons } from '@/components/SocialAuthButtons';
-import { VerificationModal } from '@/components/VerificationModal';
-import { ForgotPasswordModal } from '@/components/ForgotPasswordModal';
-import { ScreenWrapper } from '@/components/ScreenWrapper';
+import { Button } from '@/components/core/Button';
+import { Input } from '@/components/core/Input';
+import { Card } from '@/components/core/Card';
+import { BlobBackground } from '@/components/core/BlobBackground';
+import { AuthHeader } from '@/components/auth/AuthHeader';
+import { SocialAuthButtons } from '@/components/auth/SocialAuthButtons';
+import { VerificationModal } from '@/components/auth/VerificationModal';
+import { ForgotPasswordModal } from '@/components/auth/ForgotPasswordModal';
+import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
+import { getClerkErrorMessage } from '@/lib/clerk';
 
 export default function SignInScreen() {
     const router = useRouter();
     const { isLoaded: isAuthLoaded, isSignedIn } = useAuth();
     const { signIn } = useSignIn();
     const { setActive } = useClerk();
-    const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
+    const { isDarkMode, activeColors } = useTheme();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -76,7 +77,6 @@ export default function SignInScreen() {
                 signIn.status === 'needs_first_factor' ||
                 signIn.status === 'needs_second_factor'
             ) {
-                // Trigger sending email verification code for device trust / MFA
                 if (signIn.status === 'needs_second_factor') {
                     await signIn.mfa.sendEmailCode();
                 } else {
@@ -87,10 +87,9 @@ export default function SignInScreen() {
                 setErrorMessage('Sign in incomplete. Additional verification required.');
                 setIsLoading(false);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Sign in error:', err);
-            const clerkMsg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message;
-            setErrorMessage(clerkMsg || 'An unexpected error occurred during sign in.');
+            setErrorMessage(getClerkErrorMessage(err, 'An unexpected error occurred during sign in.'));
         } finally {
             setIsLoading(false);
         }
@@ -112,7 +111,6 @@ export default function SignInScreen() {
                 { backgroundColor: activeColors.background },
             ]}
         >
-            {/* Organic Background Blobs */}
             <BlobBackground
                 color={activeColors.secondary}
                 size={300}
@@ -138,41 +136,12 @@ export default function SignInScreen() {
                 keyboardShouldPersistTaps="handled"
             >
                 <ScreenWrapper variant="auth">
-                    {/* Top Header Navigation */}
-                    <View className="flex-row items-center justify-between mb-6 pt-2">
-                        <TouchableOpacity
-                            onPress={() => router.back()}
-                            activeOpacity={0.7}
-                            style={{
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                                borderColor: activeColors.border,
-                            }}
-                            className="w-10 h-10 rounded-full border items-center justify-center"
-                        >
-                            <Ionicons name="arrow-back" size={20} color={activeColors.foreground} />
-                        </TouchableOpacity>
+                    <AuthHeader
+                        showBackButton
+                        onBackPress={() => router.back()}
+                        isDarkMode={isDarkMode}
+                    />
 
-                        <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
-
-                        <TouchableOpacity
-                            onPress={toggleDarkMode}
-                            activeOpacity={0.8}
-                            style={{
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                                borderColor: activeColors.border,
-                            }}
-                            className="px-3 py-1.5 rounded-full border flex-row items-center"
-                        >
-                            <Text
-                                style={{ color: activeColors.foreground }}
-                                className="text-xs font-nunito-bold"
-                            >
-                                {isDarkMode ? 'Light' : 'Dark'}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Title Section */}
                     <View className="mb-6">
                         <Text
                             style={{ color: activeColors.foreground }}
@@ -188,7 +157,6 @@ export default function SignInScreen() {
                         </Text>
                     </View>
 
-                    {/* Form Container Card */}
                     <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
                         <Input
                             label="Email Address"
@@ -200,6 +168,8 @@ export default function SignInScreen() {
                             }}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            autoComplete="email"
+                            textContentType="emailAddress"
                             returnKeyType="next"
                             onSubmitEditing={handleSignIn}
                             leftIcon={
@@ -260,7 +230,6 @@ export default function SignInScreen() {
                             </Text>
                         ) : null}
 
-                        {/* Sign In Action Button */}
                         <View className="pt-2">
                             <Button
                                 title={isLoading ? 'Signing In...' : 'Sign In'}
@@ -272,11 +241,9 @@ export default function SignInScreen() {
                             />
                         </View>
 
-                        {/* Social Auth Buttons Component */}
                         <SocialAuthButtons isDarkMode={isDarkMode} />
                     </Card>
 
-                    {/* Footer Navigation Link */}
                     <View className="flex-row items-center justify-center py-6">
                         <Text
                             style={{ color: activeColors.mutedForeground }}
@@ -299,7 +266,6 @@ export default function SignInScreen() {
                 </ScreenWrapper>
             </ScrollView>
 
-            {/* Verification Modal for Device Trust / MFA Verification */}
             <VerificationModal
                 visible={showVerificationModal}
                 email={email}
@@ -309,7 +275,6 @@ export default function SignInScreen() {
                 isDarkMode={isDarkMode}
             />
 
-            {/* Forgot Password Recovery Modal */}
             <ForgotPasswordModal
                 visible={showForgotPasswordModal}
                 initialEmail={email}

@@ -11,17 +11,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Redirect } from 'expo-router';
 import { useAuth } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
-import { BlobBackground } from '@/components/BlobBackground';
-import { MyGloLogo } from '@/components/MyGloLogo';
-import { ScreenWrapper } from '@/components/ScreenWrapper';
+import { Button } from '@/components/core/Button';
+import { Card } from '@/components/core/Card';
+import { BlobBackground } from '@/components/core/BlobBackground';
+import { AuthHeader } from '@/components/auth/AuthHeader';
+import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
 import { images } from '@/constants/images';
 
 export default function OnboardingScreen() {
     const router = useRouter();
     const { isLoaded, isSignedIn } = useAuth();
-    const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
+    const { isDarkMode, activeColors } = useTheme();
 
     if (!isLoaded) {
         return null;
@@ -46,7 +46,6 @@ export default function OnboardingScreen() {
                 { backgroundColor: activeColors.background },
             ]}
         >
-            {/* Organic Background Blobs */}
             <BlobBackground
                 color={activeColors.secondary}
                 size={320}
@@ -72,28 +71,11 @@ export default function OnboardingScreen() {
                 bounces={false}
             >
                 <ScreenWrapper variant="auth" className="flex-1 justify-between">
-                    {/* Top Header Navigation */}
-                    <View className="flex-row items-center justify-between mb-6 pt-2">
-                        <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
-                        <TouchableOpacity
-                            onPress={toggleDarkMode}
-                            activeOpacity={0.8}
-                            style={{
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                                borderColor: activeColors.border,
-                            }}
-                            className="px-3 py-1.5 rounded-full border flex-row items-center"
-                        >
-                            <Text
-                                style={{ color: activeColors.foreground }}
-                                className="text-xs font-nunito-bold"
-                            >
-                                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
+                    <AuthHeader
+                        showBackButton={false}
+                        isDarkMode={isDarkMode}
+                    />
 
-                    {/* Center Illustration Frame */}
                     <View className="items-center justify-center my-4">
                         <Card
                             variant="tl-large"
@@ -114,7 +96,6 @@ export default function OnboardingScreen() {
                         </Card>
                     </View>
 
-                    {/* Text Content Section */}
                     <View className="mt-6 mb-8 px-2 items-center">
                         <Text
                             style={{ color: activeColors.foreground }}
@@ -137,7 +118,6 @@ export default function OnboardingScreen() {
                         </Text>
                     </View>
 
-                    {/* Bottom Actions */}
                     <View className="w-full mt-auto space-y-4 pt-4">
                         <Button
                             title="Get Started"

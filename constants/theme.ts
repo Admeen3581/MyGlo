@@ -11,17 +11,11 @@ export const blobShapes = {
 
 export const shadows = {
   soft: {
-    shadowColor: '#01377D',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
+    boxShadow: '0px 8px 16px rgba(1, 55, 125, 0.12)',
     elevation: 4,
   },
   glow: {
-    shadowColor: '#005F73',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
+    boxShadow: '0px 4px 12px rgba(0, 95, 115, 0.25)',
     elevation: 6,
   },
 } as const;

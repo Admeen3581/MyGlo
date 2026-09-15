@@ -1,12 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useSSO } from '@clerk/expo';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
-import { LightColors, DarkColors } from '@/constants/colors';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -18,10 +17,7 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({
   isDarkMode: customDarkMode,
 }) => {
   const router = useRouter();
-  const context = useContext(ThemeContext);
-  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
-  const activeColors = isDarkMode ? DarkColors : LightColors;
-
+  const { isDarkMode, activeColors } = useTheme(customDarkMode);
   const { startSSOFlow } = useSSO();
   const [loadingStrategy, setLoadingStrategy] = useState<string | null>(null);
 
@@ -47,7 +43,6 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({
 
   return (
     <View className="w-full">
-      {/* Divider */}
       <View className="flex-row items-center my-4">
         <View
           style={{ backgroundColor: activeColors.border }}
@@ -66,7 +61,6 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({
       </View>
 
       <View className="flex-row gap-3">
-        {/* Google Button */}
         <TouchableOpacity
           activeOpacity={0.8}
           disabled={loadingStrategy !== null}
@@ -97,7 +91,6 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({
           )}
         </TouchableOpacity>
 
-        {/* Apple Button */}
         <TouchableOpacity
           activeOpacity={0.8}
           disabled={loadingStrategy !== null}
