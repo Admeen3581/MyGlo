@@ -29,10 +29,10 @@ export const BlobBackground: React.FC<BlobBackgroundProps> = ({
           height: size,
           backgroundColor: color,
           opacity: opacity,
+          pointerEvents: 'none',
         },
         style,
       ]}
-      pointerEvents="none"
     />
   );
 };

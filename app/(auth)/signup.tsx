@@ -14,7 +14,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Card } from '@/components/Card';
 import { BlobBackground } from '@/components/BlobBackground';
-import { MyGloLogo } from '@/components/MyGloLogo';
+import { AuthHeader } from '@/components/AuthHeader';
 import { SocialAuthButtons } from '@/components/SocialAuthButtons';
 import { VerificationModal } from '@/components/VerificationModal';
 import { TermsOfService } from "@/components/TermsOfService";
@@ -27,10 +27,11 @@ import {
     ValidationStatus,
 } from '@/lib/validation';
 import { useAuth, useSignUp } from '@clerk/expo';
+import { getClerkErrorMessage } from '@/lib/clerk';
 
 export default function SignUpScreen() {
     const router = useRouter();
-    const { isDarkMode, toggleDarkMode, activeColors } = useTheme();
+    const { isDarkMode, activeColors } = useTheme();
 
     const { isLoaded, isSignedIn } = useAuth();
     const { signUp } = useSignUp();
@@ -50,7 +51,6 @@ export default function SignUpScreen() {
     const [showPrivacyModal, setShowPrivacyModal] = useState(false);
     const [showTOSModal, setShowTOSModal] = useState(false);
 
-    // UX input status symbols
     const emailStatus = getEmailStatus(email, emailBlurred, isEmailUnavailable);
     const passwordStatus = getPasswordStatus(password);
     const confirmPasswordStatus = getConfirmPasswordStatus(confirmPassword, password);
@@ -63,7 +63,6 @@ export default function SignUpScreen() {
         return <Redirect href="/" />;
     }
 
-    // Handles logic upon hitting "Create Account" button
     const handleCreateAccount = async () => {
         if (isLoading) return;
 
@@ -100,10 +99,9 @@ export default function SignUpScreen() {
             }
 
             setShowVerificationModal(true);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Sign up error:', err);
-            const clerkMsg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message;
-            setErrorMessage(clerkMsg || 'An unexpected error occurred during sign up.');
+            setErrorMessage(getClerkErrorMessage(err, 'An unexpected error occurred during sign up.'));
         } finally {
             setIsLoading(false);
         }
@@ -122,7 +120,6 @@ export default function SignUpScreen() {
         router.replace('/');
     };
 
-    // Helper to render status text message outside the textbox (in rightLabel)
     const renderStatusLabel = (status: ValidationStatus | null) => {
         if (!status) return null;
 
@@ -143,7 +140,6 @@ export default function SignUpScreen() {
         );
     };
 
-    // Helper to render status symbol icon inside the textbox (in rightIcon)
     const renderStatusIcon = (status: ValidationStatus | null) => {
         if (!status) return null;
 
@@ -168,7 +164,6 @@ export default function SignUpScreen() {
                 { backgroundColor: activeColors.background },
             ]}
         >
-            {/* Organic Background Blobs */}
             <BlobBackground
                 color={activeColors.secondary}
                 size={300}
@@ -194,41 +189,12 @@ export default function SignUpScreen() {
                 keyboardShouldPersistTaps="handled"
             >
                 <ScreenWrapper variant="auth">
-                    {/* Top Header Navigation */}
-                    <View className="flex-row items-center justify-between mb-6 pt-2">
-                        <TouchableOpacity
-                            onPress={() => router.back()}
-                            activeOpacity={0.7}
-                            style={{
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                                borderColor: activeColors.border,
-                            }}
-                            className="w-10 h-10 rounded-full border items-center justify-center"
-                        >
-                            <Ionicons name="arrow-back" size={20} color={activeColors.foreground} />
-                        </TouchableOpacity>
+                    <AuthHeader
+                        showBackButton
+                        onBackPress={() => router.back()}
+                        isDarkMode={isDarkMode}
+                    />
 
-                        <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
-
-                        <TouchableOpacity
-                            onPress={toggleDarkMode}
-                            activeOpacity={0.8}
-                            style={{
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                                borderColor: activeColors.border,
-                            }}
-                            className="px-3 py-1.5 rounded-full border flex-row items-center"
-                        >
-                            <Text
-                                style={{ color: activeColors.foreground }}
-                                className="text-xs font-nunito-bold"
-                            >
-                                {isDarkMode ? 'Light' : 'Dark'}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Title Section */}
                     <View className="mb-6">
                         <Text
                             style={{ color: activeColors.foreground }}
@@ -244,7 +210,6 @@ export default function SignUpScreen() {
                         </Text>
                     </View>
 
-                    {/* Form Container Card */}
                     <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
                         <Input
                             label="Email Address"
@@ -333,7 +298,6 @@ export default function SignUpScreen() {
                             </Text>
                         ) : null}
 
-                        {/* Create Account Primary Action Button */}
                         <View className="pt-2">
                             <Button
                                 title={isLoading ? 'Creating Account...' : 'Create Account'}
@@ -345,10 +309,8 @@ export default function SignUpScreen() {
                             />
                         </View>
 
-                        {/* Social Auth Buttons Component */}
                         <SocialAuthButtons isDarkMode={isDarkMode} />
 
-                        {/* Terms & Privacy Policy Note */}
                         <View className="pt-2 px-1 mt-3">
                             <Text
                                 style={{ color: activeColors.mutedForeground }}
@@ -375,7 +337,6 @@ export default function SignUpScreen() {
                         </View>
                     </Card>
 
-                    {/* Footer Navigation Link */}
                     <View className="flex-row items-center justify-center py-6">
                         <Text
                             style={{ color: activeColors.mutedForeground }}
@@ -398,7 +359,6 @@ export default function SignUpScreen() {
                 </ScreenWrapper>
             </ScrollView>
 
-            {/* Verification Code Modal */}
             <VerificationModal
                 visible={showVerificationModal}
                 email={email}
@@ -407,7 +367,6 @@ export default function SignUpScreen() {
                 isDarkMode={isDarkMode}
             />
 
-            {/* Policies Modals */}
             <TermsOfService
                 visible={showTOSModal}
                 onClose={() => setShowTOSModal(false)}

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Modal,
   View,
@@ -11,8 +11,7 @@ import {
 } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { Ionicons } from '@expo/vector-icons';
-import { LightColors, DarkColors } from '@/constants/colors';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import { PolicyData, PolicyParagraph, PolicySection, PolicyTextSegment } from '@/types/policy';
 
 export interface ParagraphModalProps {
@@ -42,9 +41,7 @@ export const ParagraphModal: React.FC<ParagraphModalProps> = ({
   actionButtonText,
   onAction,
 }) => {
-  const context = useContext(ThemeContext);
-  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
-  const activeColors = isDarkMode ? DarkColors : LightColors;
+  const { isDarkMode, activeColors } = useTheme(customDarkMode);
 
   const displayTitle = data?.title ?? customTitle ?? 'Information';
   const displaySubtitle = data?.subtitle ?? customSubtitle;
@@ -143,7 +140,6 @@ export const ParagraphModal: React.FC<ParagraphModalProps> = ({
           ]}
           className="w-full max-w-lg rounded-3xl border shadow-xl overflow-hidden"
         >
-          {/* Modal Header */}
           <View
             style={{ borderBottomColor: activeColors.border }}
             className="flex-row items-start justify-between px-6 pt-6 pb-4 border-b"
@@ -175,7 +171,6 @@ export const ParagraphModal: React.FC<ParagraphModalProps> = ({
               )}
             </View>
 
-            {/* Exit Button at top right */}
             <TouchableOpacity
               onPress={onClose}
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
@@ -189,7 +184,6 @@ export const ParagraphModal: React.FC<ParagraphModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Wall of Text Scrollable Area */}
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
@@ -235,7 +229,6 @@ export const ParagraphModal: React.FC<ParagraphModalProps> = ({
             )}
           </ScrollView>
 
-          {/* Modal Footer Action Button (Optional) */}
           {(actionButtonText || onAction) && (
             <View
               style={{ borderTopColor: activeColors.border }}

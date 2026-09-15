@@ -40,7 +40,7 @@ export function getEmailStatus(
 export function getPasswordStatus(password: string): ValidationStatus | null {
     if (!password) return null;
 
-    if (password.length < 8) {
+    if (password.length < 9) {
         return { type: 'destructive', text: 'Password must be at least 9 characters' };
     }
 
@@ -59,7 +59,7 @@ export function getPasswordStatus(password: string): ValidationStatus | null {
 
     const typeCount = (hasLower ? 1 : 0) + (hasUpper ? 1 : 0) + 1 + (hasSpecial ? 1 : 0);
 
-    if (typeCount <= 2 && password.length < 10) {
+    if (typeCount <= 2 && password.length < 9) {
         return { type: 'destructive', text: 'Poor' };
     } else if (typeCount >= 4 || (typeCount >= 3 && password.length >= 10)) {
         return { type: 'success', text: 'Strong' };

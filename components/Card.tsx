@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, ViewProps, StyleSheet } from 'react-native';
 import { blobShapes } from '@/constants/theme';
-import { LightColors, DarkColors } from '@/constants/colors';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 interface CardProps extends ViewProps {
   variant?: 'default' | 'tl-large' | 'tr-large' | 'br-large' | 'bl-large';
@@ -19,9 +18,7 @@ export const Card: React.FC<CardProps> = ({
   isDarkMode: customDarkMode,
   ...props
 }) => {
-  const context = useContext(ThemeContext);
-  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
-  const activeColors = isDarkMode ? DarkColors : LightColors;
+  const { isDarkMode, activeColors } = useTheme(customDarkMode);
 
   const getRadiusStyle = () => {
     switch (variant) {
@@ -41,7 +38,7 @@ export const Card: React.FC<CardProps> = ({
   const dynamicCardStyle = {
     backgroundColor: isDarkMode ? activeColors.muted : '#FFFFFF',
     borderColor: activeColors.border,
-    shadowColor: activeColors.shadowTint,
+    boxShadow: `0px 8px 16px ${isDarkMode ? 'rgba(2, 8, 17, 0.4)' : 'rgba(1, 55, 125, 0.12)'}`,
   };
 
   return (
@@ -57,9 +54,6 @@ export const Card: React.FC<CardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
     elevation: 4,
   },
 });

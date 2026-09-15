@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, TextInput as RNTextInput, TextInputProps, Text } from 'react-native';
-import { LightColors, DarkColors } from '@/constants/colors';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -25,9 +24,7 @@ export const Input: React.FC<InputProps> = ({
   placeholderTextColor,
   ...props
 }) => {
-  const context = useContext(ThemeContext);
-  const isDarkMode = customDarkMode !== undefined ? customDarkMode : (context?.isDarkMode ?? false);
-  const activeColors = isDarkMode ? DarkColors : LightColors;
+  const { isDarkMode, activeColors } = useTheme(customDarkMode);
 
   return (
     <View className={`w-full mb-5 px-1 ${containerClassName}`}>
