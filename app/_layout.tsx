@@ -3,11 +3,9 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { Image } from 'expo-image';
 import { ThemeProvider } from '@/context/ThemeContext';
-import { images } from '@/constants/images';
-import {ClerkProvider} from "@clerk/expo";
-import {tokenCache} from "@clerk/expo/token-cache";
+import { ClerkProvider } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,12 +27,7 @@ export default function RootLayout() {
         'Quicksand-Bold': require('../assets/fonts/quicksand_static/Quicksand-Bold.ttf'),
     });
 
-    //Prefetch critical onboarding asset for instant rendering on mobile
-    useEffect(() => {
-        Image.prefetch(images.onboarding).then();
-    }, []);
-
-    //Async Init Screen
+    // Async Init Screen
     useEffect(() => {
         if (loaded || error) {
             SplashScreen.hideAsync().then();
@@ -45,11 +38,11 @@ export default function RootLayout() {
         return null;
     }
 
-    //Clerk Auth
-    const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+    // Clerk Auth
+    const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
-    if(!publishableKey) {
-        throw new Error("No Clerk API Key found. Add your Clerk API key to the .env file. See more in ./app/_layout.tsx")
+    if (!publishableKey) {
+        throw new Error("No Clerk API Key found. Add your Clerk API key to the .env file. See more in ./app/_layout.tsx");
     }
 
     return (
