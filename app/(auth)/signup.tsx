@@ -214,6 +214,7 @@ export default function SignUpScreen() {
                         <Input
                             label="Email Address"
                             rightLabel={renderStatusLabel(emailStatus)}
+                            statusType={emailStatus?.type || (errorMessage && !email.trim() ? 'destructive' : null)}
                             placeholder="name@example.com"
                             value={email}
                             onChangeText={(text) => {
@@ -237,6 +238,7 @@ export default function SignUpScreen() {
                         <Input
                             label="Password"
                             rightLabel={renderStatusLabel(passwordStatus)}
+                            statusType={passwordStatus?.type || (errorMessage && !password ? 'destructive' : null)}
                             placeholder="Enter your password"
                             value={password}
                             onChangeText={(text) => {
@@ -269,6 +271,7 @@ export default function SignUpScreen() {
                         <Input
                             label="Verify Password"
                             rightLabel={renderStatusLabel(confirmPasswordStatus)}
+                            statusType={confirmPasswordStatus?.type || (errorMessage && (!confirmPassword || confirmPassword !== password) ? 'destructive' : null)}
                             placeholder="Reenter your password"
                             value={confirmPassword}
                             onChangeText={(text) => {

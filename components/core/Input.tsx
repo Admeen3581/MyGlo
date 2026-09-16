@@ -2,6 +2,8 @@ import React from 'react';
 import { View, TextInput as RNTextInput, TextInputProps, Text } from 'react-native';
 import { useTheme } from '@/hooks/useTheme';
 
+export type InputStatusType = 'success' | 'warning' | 'destructive' | null;
+
 interface InputProps extends TextInputProps {
   label?: string;
   rightLabel?: React.ReactNode;
@@ -10,6 +12,8 @@ interface InputProps extends TextInputProps {
   rightIcon?: React.ReactNode;
   containerClassName?: string;
   isDarkMode?: boolean;
+  statusType?: InputStatusType;
+  isDestructive?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -22,9 +26,33 @@ export const Input: React.FC<InputProps> = ({
   style,
   isDarkMode: customDarkMode,
   placeholderTextColor,
+  statusType,
+  isDestructive: customIsDestructive,
   ...props
 }) => {
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
+
+  const isDestructive = customIsDestructive || statusType === 'destructive' || Boolean(error);
+
+  const getBorderColor = () => {
+    if (isDestructive) {
+      return activeColors.destructive;
+    }
+    if (statusType === 'warning') {
+      return activeColors.warning;
+    }
+    if (statusType === 'success') {
+      return activeColors.border;
+    }
+    return activeColors.border;
+  };
+
+  const getBorderWidth = () => {
+    if (isDestructive || statusType === 'warning') {
+      return 1.5;
+    }
+    return 1;
+  };
 
   return (
     <View className={`w-full mb-5 px-1 ${containerClassName}`}>
@@ -55,9 +83,10 @@ export const Input: React.FC<InputProps> = ({
       <View
         style={{
           backgroundColor: isDarkMode ? 'rgba(22, 34, 42, 0.85)' : 'rgba(255, 255, 255, 0.80)',
-          borderColor: activeColors.border,
+          borderColor: getBorderColor(),
+          borderWidth: getBorderWidth(),
         }}
-        className="flex-row items-center border rounded-full h-12 px-5"
+        className="flex-row items-center rounded-full h-12 px-5"
       >
         {leftIcon && <View className="mr-3">{leftIcon}</View>}
         <RNTextInput

@@ -104,6 +104,20 @@ export default function SignInScreen() {
         router.replace('/');
     };
 
+    const isEmailDestructive =
+        !!errorMessage &&
+        (!email.trim() ||
+            errorMessage.toLowerCase().includes('email') ||
+            errorMessage.toLowerCase().includes('invalid') ||
+            errorMessage.toLowerCase().includes('both'));
+
+    const isPasswordDestructive =
+        !!errorMessage &&
+        (!password ||
+            errorMessage.toLowerCase().includes('password') ||
+            errorMessage.toLowerCase().includes('invalid') ||
+            errorMessage.toLowerCase().includes('both'));
+
     return (
         <SafeAreaView
             style={[
@@ -160,6 +174,7 @@ export default function SignInScreen() {
                     <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
                         <Input
                             label="Email Address"
+                            statusType={isEmailDestructive ? 'destructive' : null}
                             placeholder="name@example.com"
                             value={email}
                             onChangeText={(text) => {
@@ -180,6 +195,7 @@ export default function SignInScreen() {
 
                         <Input
                             label="Password"
+                            statusType={isPasswordDestructive ? 'destructive' : null}
                             placeholder="Enter your password"
                             value={password}
                             onChangeText={(text) => {

@@ -215,6 +215,28 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         if (errorMessage) setErrorMessage('');
     };
 
+    const isEmailDestructive =
+        !!errorMessage &&
+        step === 'request' &&
+        (!email.trim() ||
+            errorMessage.toLowerCase().includes('email') ||
+            errorMessage.toLowerCase().includes('account') ||
+            errorMessage.toLowerCase().includes('check') ||
+            errorMessage.toLowerCase().includes('enter'));
+
+    const isNewPasswordDestructive =
+        !!errorMessage &&
+        step === 'verify' &&
+        (!newPassword || errorMessage.toLowerCase().includes('password'));
+
+    const isConfirmPasswordDestructive =
+        !!errorMessage &&
+        step === 'verify' &&
+        (!confirmPassword ||
+            confirmPassword !== newPassword ||
+            errorMessage.toLowerCase().includes('match') ||
+            errorMessage.toLowerCase().includes('password'));
+
     return (
         <ModalWrapper visible={visible} onClose={onClose} isDarkMode={isDarkMode}>
             <Card
@@ -271,6 +293,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
                             <Input
                                 label="Email Address"
+                                statusType={isEmailDestructive ? 'destructive' : null}
                                 placeholder="name@example.com"
                                 value={email}
                                 onChangeText={(text) => {
@@ -346,6 +369,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
                             <Input
                                 label="New Password"
+                                statusType={isNewPasswordDestructive ? 'destructive' : null}
                                 placeholder="Enter new password"
                                 value={newPassword}
                                 onChangeText={(text) => {
@@ -376,6 +400,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                             <View className="mt-3">
                                 <Input
                                     label="Confirm New Password"
+                                    statusType={isConfirmPasswordDestructive ? 'destructive' : null}
                                     placeholder="Re-enter new password"
                                     value={confirmPassword}
                                     onChangeText={(text) => {
