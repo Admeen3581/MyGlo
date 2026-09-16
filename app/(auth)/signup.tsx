@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     View,
     Text,
     ScrollView,
     TouchableOpacity,
     StyleSheet,
+    TextInput as RNTextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Redirect } from 'expo-router';
@@ -35,6 +36,9 @@ export default function SignUpScreen() {
 
     const { isLoaded, isSignedIn } = useAuth();
     const { signUp } = useSignUp();
+
+    const passwordInputRef = useRef<RNTextInput>(null);
+    const confirmPasswordInputRef = useRef<RNTextInput>(null);
 
     const [email, setEmail] = useState('');
     const [emailBlurred, setEmailBlurred] = useState(false);
@@ -227,7 +231,7 @@ export default function SignUpScreen() {
                             autoComplete="email"
                             textContentType="emailAddress"
                             returnKeyType="next"
-                            onSubmitEditing={handleCreateAccount}
+                            onSubmitEditing={() => passwordInputRef.current?.focus()}
                             leftIcon={
                                 <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -236,6 +240,7 @@ export default function SignUpScreen() {
                         />
 
                         <Input
+                            ref={passwordInputRef}
                             label="Password"
                             rightLabel={renderStatusLabel(passwordStatus)}
                             statusType={passwordStatus?.type || (errorMessage && !password ? 'destructive' : null)}
@@ -247,7 +252,7 @@ export default function SignUpScreen() {
                             }}
                             secureTextEntry={!showPassword}
                             returnKeyType="next"
-                            onSubmitEditing={handleCreateAccount}
+                            onSubmitEditing={() => confirmPasswordInputRef.current?.focus()}
                             leftIcon={
                                 <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -269,6 +274,7 @@ export default function SignUpScreen() {
                         />
 
                         <Input
+                            ref={confirmPasswordInputRef}
                             label="Verify Password"
                             rightLabel={renderStatusLabel(confirmPasswordStatus)}
                             statusType={confirmPasswordStatus?.type || (errorMessage && (!confirmPassword || confirmPassword !== password) ? 'destructive' : null)}

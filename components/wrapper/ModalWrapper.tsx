@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo } from 'react';
 import {
     Modal,
     TouchableOpacity,
@@ -29,26 +29,28 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
     const { width } = useWindowDimensions();
     const isMobile = Platform.OS !== 'web' && width < 640;
 
-    const panY = useRef(new Animated.Value(0)).current;
+    const panY = useMemo(() => new Animated.Value(0), []);
 
-    const panResponder = useRef(
-        PanResponder.create({
-            onMoveShouldSetPanResponder: (_, gestureState) => {
-                return gestureState.dy > 20 && gestureState.vy > 0.3;
-            },
-            onPanResponderMove: Animated.event([null, { dy: panY }], { useNativeDriver: false }),
-            onPanResponderRelease: (_, gestureState) => {
-                if (gestureState.dy > 100 || gestureState.vy > 1.0) {
-                    onClose();
-                }
-                Animated.spring(panY, {
-                    toValue: 0,
-                    useNativeDriver: false,
-                    bounciness: 0,
-                }).start();
-            },
-        })
-    ).current;
+    const panResponder = useMemo(
+        () =>
+            PanResponder.create({
+                onMoveShouldSetPanResponder: (_, gestureState) => {
+                    return gestureState.dy > 20 && gestureState.vy > 0.3;
+                },
+                onPanResponderMove: Animated.event([null, { dy: panY }], { useNativeDriver: false }),
+                onPanResponderRelease: (_, gestureState) => {
+                    if (gestureState.dy > 100 || gestureState.vy > 1.0) {
+                        onClose();
+                    }
+                    Animated.spring(panY, {
+                        toValue: 0,
+                        useNativeDriver: false,
+                        bounciness: 0,
+                    }).start();
+                },
+            }),
+        [panY, onClose]
+    );
 
     return (
         <Modal

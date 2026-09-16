@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     View,
     Text,
     ScrollView,
     TouchableOpacity,
     StyleSheet,
+    TextInput as RNTextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Redirect } from 'expo-router';
@@ -28,6 +29,8 @@ export default function SignInScreen() {
     const { signIn } = useSignIn();
     const { setActive } = useClerk();
     const { isDarkMode, activeColors } = useTheme();
+
+    const passwordInputRef = useRef<RNTextInput>(null);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -186,7 +189,7 @@ export default function SignInScreen() {
                             autoComplete="email"
                             textContentType="emailAddress"
                             returnKeyType="next"
-                            onSubmitEditing={handleSignIn}
+                            onSubmitEditing={() => passwordInputRef.current?.focus()}
                             leftIcon={
                                 <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
                             }
@@ -194,6 +197,7 @@ export default function SignInScreen() {
                         />
 
                         <Input
+                            ref={passwordInputRef}
                             label="Password"
                             statusType={isPasswordDestructive ? 'destructive' : null}
                             placeholder="Enter your password"

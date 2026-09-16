@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { View, TextInput as RNTextInput, TextInputProps, Text } from 'react-native';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -16,7 +16,7 @@ interface InputProps extends TextInputProps {
     isDestructive?: boolean;
 }
 
-export const Input: React.FC<InputProps> = ({
+export const Input = forwardRef<RNTextInput, InputProps>(({
                                                 label,
                                                 rightLabel,
                                                 error,
@@ -29,7 +29,7 @@ export const Input: React.FC<InputProps> = ({
                                                 statusType,
                                                 isDestructive: customIsDestructive,
                                                 ...props
-                                            }) => {
+                                            }, ref) => {
     const { isDarkMode, activeColors } = useTheme(customDarkMode);
 
     const isDestructive = customIsDestructive || statusType === 'destructive' || Boolean(error);
@@ -85,6 +85,7 @@ export const Input: React.FC<InputProps> = ({
             >
                 {leftIcon && <View className="mr-3">{leftIcon}</View>}
                 <RNTextInput
+                    ref={ref}
                     style={[
                         {
                             flex: 1,
@@ -111,6 +112,8 @@ export const Input: React.FC<InputProps> = ({
             )}
         </View>
     );
-};
+});
+
+Input.displayName = 'Input';
 
 export default Input;
