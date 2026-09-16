@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     useWindowDimensions,
     ScrollView,
+    Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from '@/components/core/Card';
@@ -34,6 +35,9 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     const { isDarkMode, activeColors } = useTheme(customDarkMode);
     const { width } = useWindowDimensions();
     const isMobile = width < 640;
+
+    // Average keyboard heights used to create the safe skirt padding
+    const skirtHeight = Platform.OS === 'ios' ? 340 : 360;
 
     const { signIn } = useSignIn();
     const { setActive } = useClerk();
@@ -214,8 +218,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             <Card
                 variant="default"
                 isDarkMode={isDarkMode}
-                style={isMobile ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingTop: 32 } : undefined}
-                className={isMobile ? "w-full p-6" : 'w-full max-w-md p-6'}
+                style={isMobile ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingTop: 32, paddingBottom: skirtHeight, maxHeight: '100%' } : undefined}
+                className={isMobile ? "w-full p-6" : "w-full max-w-md p-6"}
             >
                 <View className="w-full flex-row justify-between items-center mb-4">
                     <View

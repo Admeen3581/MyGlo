@@ -28,6 +28,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
     const { isDarkMode, activeColors } = useTheme(customDarkMode);
     const { width } = useWindowDimensions();
     const isMobile = Platform.OS !== 'web' && width < 640;
+    const skirtHeight = Platform.OS === 'ios' ? 340 : 360;
 
     const [code, setCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -149,7 +150,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
             <Card
                 variant="default"
                 isDarkMode={isDarkMode}
-                style={isMobile ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingTop: 32 } : undefined}
+                style={isMobile ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingTop: 32, paddingBottom: skirtHeight, maxHeight: '100%' } : undefined}
                 className={isMobile ? "w-full p-8 items-center" : "w-full max-w-md p-8 items-center"}
             >
                 <View className="w-full flex-row justify-between items-center mb-4">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import {
     Modal,
     TouchableOpacity,
@@ -10,7 +10,6 @@ import {
     Animated,
     View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/hooks/useTheme';
 
 export interface ModalWrapperProps {
@@ -28,15 +27,13 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
                                                           }) => {
     const { isDarkMode } = useTheme(customDarkMode);
     const { width } = useWindowDimensions();
-    const insets = useSafeAreaInsets();
     const isMobile = Platform.OS !== 'web' && width < 640;
 
-    const [panY] = useState(() => new Animated.Value(0));
+    const panY = useRef(new Animated.Value(0)).current;
 
-    const [panResponder] = useState(() =>
+    const panResponder = useRef(
         PanResponder.create({
             onMoveShouldSetPanResponder: (_, gestureState) => {
-                // Only intercept deliberate downward swipes to avoid blocking child ScrollViews
                 return gestureState.dy > 20 && gestureState.vy > 0.3;
             },
             onPanResponderMove: Animated.event([null, { dy: panY }], { useNativeDriver: false }),
@@ -51,7 +48,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
                 }).start();
             },
         })
-    );
+    ).current;
 
     return (
         <Modal
@@ -62,6 +59,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
         >
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                enabled={!isMobile} // Disable for mobile so the skirt absorbs the keyboard
                 style={[
                     styles.overlayContainer,
                     {
@@ -82,9 +80,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
                         {...panResponder.panHandlers}
                         style={[
                             styles.mobileContentContainer,
-                            {
-                                transform: [{ translateY: panY }]
-                            }
+                            { transform: [{ translateY: panY }] }
                         ]}
                     >
                         <View style={styles.dragIndicatorContainer}>
@@ -108,6 +104,7 @@ const styles = StyleSheet.create({
     mobileContentContainer: {
         width: '100%',
         alignItems: 'center',
+        maxHeight: '100%', // Bound to screen height so tall modals don't push off-screen
     },
     dragIndicatorContainer: {
         width: '100%',
