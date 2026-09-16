@@ -174,9 +174,7 @@ export default function AccountLandingScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <ScreenWrapper variant="auth">
-          {/* Header without pagination */}
           <AuthHeader
-            showBackButton
             onBackPress={() => router.back()}
             isDarkMode={isDarkMode}
           />
