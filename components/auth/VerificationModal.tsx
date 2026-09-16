@@ -18,16 +18,16 @@ interface VerificationModalProps {
 }
 
 export const VerificationModal: React.FC<VerificationModalProps> = ({
-    visible,
-    email,
-    mode = 'signup',
-    onClose,
-    onSuccess,
-    isDarkMode: customDarkMode,
-}) => {
+                                                                        visible,
+                                                                        email,
+                                                                        mode = 'signup',
+                                                                        onClose,
+                                                                        onSuccess,
+                                                                        isDarkMode: customDarkMode,
+                                                                    }) => {
     const { isDarkMode, activeColors } = useTheme(customDarkMode);
     const { width } = useWindowDimensions();
-    const isMobile = Platform.OS !== 'web' || width < 640;
+    const isMobile = Platform.OS !== 'web' && width < 640;
 
     const [code, setCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -38,7 +38,6 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
     const { signIn } = useSignIn();
     const { setActive } = useClerk();
 
-    // Reset code state on modal open
     useEffect(() => {
         if (visible) {
             const timer = setTimeout(() => {
@@ -59,7 +58,6 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         }
     };
 
-    // Handles the verification code process for sign in MFA or sign up verification
     const handleVerify = async (codeToVerify?: string) => {
         const codeValue = codeToVerify || code;
         if (codeValue.length !== 6 || isVerifying) return;
@@ -93,7 +91,6 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                     setIsVerifying(false);
                 }
             } else {
-                // Sign Up email verification
                 const { error: codeError } = await signUp.verifications.verifyEmailCode({ code: codeValue });
                 if (codeError) {
                     setErrorMessage(codeError.message || 'Invalid verification code. Please try again.');
@@ -120,7 +117,6 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         }
     };
 
-    // Resend email verification code
     const handleResend = async () => {
         try {
             setErrorMessage('');
@@ -153,41 +149,35 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
             <Card
                 variant="default"
                 isDarkMode={isDarkMode}
-                style={isMobile ? { borderRadius: 0, borderWidth: 0, boxShadow: 'none', elevation: 0 } : undefined}
-                className={
-                    isMobile
-                        ? 'w-full h-full flex-1 p-6 items-center justify-between'
-                        : 'w-full max-w-md p-8 items-center'
-                }
+                style={isMobile ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingTop: 32 } : undefined}
+                className={isMobile ? "w-full p-8 items-center" : "w-full max-w-md p-8 items-center"}
             >
-                {/* Modal Header */}
                 <View className="w-full flex-row justify-between items-center mb-4">
                     <View
                         style={{ backgroundColor: isDarkMode ? activeColors.accent : '#E8F2EF' }}
-                        className={isMobile ? 'w-12 h-12 rounded-full items-center justify-center' : 'w-10 h-10 rounded-full items-center justify-center'}
+                        className="w-10 h-10 rounded-full items-center justify-center"
                     >
-                        <Ionicons name="mail" size={isMobile ? 24 : 20} color={activeColors.primary} />
+                        <Ionicons name="mail" size={20} color={activeColors.primary} />
                     </View>
                     <TouchableOpacity
                         onPress={onClose}
                         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                         activeOpacity={0.7}
                     >
-                        <Ionicons name="close" size={isMobile ? 26 : 22} color={activeColors.mutedForeground} />
+                        <Ionicons name="close" size={22} color={activeColors.mutedForeground} />
                     </TouchableOpacity>
                 </View>
 
-                {/* 6-Digit Code Entry Section */}
-                <View className={isMobile ? 'w-full items-center my-auto px-2' : 'w-full items-center'}>
+                <View className="w-full items-center pb-2">
                     <Text
                         style={{ color: activeColors.foreground }}
-                        className={isMobile ? 'text-4xl font-fraunces-bold text-center mb-3' : 'text-2xl font-fraunces-bold text-center mb-2'}
+                        className="text-2xl font-fraunces-bold text-center mb-2"
                     >
                         Enter Code
                     </Text>
                     <Text
                         style={{ color: activeColors.mutedForeground }}
-                        className={isMobile ? 'text-md font-nunito-semibold text-center mb-8 leading-relaxed px-4' : 'text-xs font-nunito-semibold text-center mb-6 leading-relaxed px-2'}
+                        className="text-xs font-nunito-semibold text-center mb-6 leading-relaxed px-2"
                     >
                         We sent a 6-digit verification code to{' '}
                         <Text style={{ color: activeColors.foreground }} className="font-nunito-bold">
@@ -222,7 +212,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                     >
                         <Text
                             style={{ color: activeColors.primary }}
-                            className={isMobile ? 'text-sm font-nunito-bold text-center' : 'text-xs font-nunito-bold text-center'}
+                            className="text-xs font-nunito-bold text-center"
                         >
                             {resendStatus === 'sending'
                                 ? 'Sending code...'
@@ -232,8 +222,6 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                         </Text>
                     </TouchableOpacity>
                 </View>
-
-                {isMobile && <View className="h-6" />}
             </Card>
         </ModalWrapper>
     );
