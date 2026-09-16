@@ -2,6 +2,7 @@ export interface UpdateProfileParams {
   userId: string;
   firstName: string;
   lastName: string;
+  image?: string | null;
 }
 
 export interface UpdateProfileResponse {
@@ -10,7 +11,7 @@ export interface UpdateProfileResponse {
 }
 
 /**
- * Saves the user's first and last name to the backend API route.
+ * Saves the user's first name, last name, and profile image to the backend API route.
  * Uses the Expo Router backend API endpoint `/api/user/profile`, which interacts
  * with Clerk Backend API via `clerkClient.users.updateUser(...)`.
  */

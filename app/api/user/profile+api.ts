@@ -3,7 +3,7 @@ import { clerkClient } from '@/lib/clerk';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { userId, firstName, lastName } = body;
+        const { userId, firstName, lastName, image } = body;
 
         if (!userId) {
             return Response.json(
@@ -15,6 +15,7 @@ export async function POST(request: Request) {
         const data = await clerkClient.users.updateUser(userId, {
             firstName: firstName ?? '',
             lastName: lastName ?? '',
+            image: image ?? null,
         });
 
         return Response.json({

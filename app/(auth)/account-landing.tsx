@@ -9,6 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useUser } from '@clerk/expo';
+import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/core/Button';
@@ -26,32 +27,53 @@ export default function AccountLandingScreen() {
   const { user } = useUser();
   const { isDarkMode, activeColors } = useTheme();
 
-  // Pre-fill full name if user already has first or last name in Clerk
+  // Pre-fill full name and avatar if user already has data in Clerk
   const defaultName = user?.fullName || [user?.firstName, user?.lastName].filter(Boolean).join(' ') || '';
+  const defaultAvatar = user?.imageUrl || (user?.unsafeMetadata?.avatar_url as string) || null;
 
   // Form State
-  const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  const [avatarUri, setAvatarUri] = useState<string | null>(defaultAvatar);
   const [name, setName] = useState(defaultName);
   const [nameError, setNameError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * Blank Method: handleAvatarPress
-   * Called when the user clicks on the avatar container or camera badge.
-   * Ready for backend image picker / file upload integration (e.g., expo-image-picker).
+   * handleAvatarPress
+   * Launches expo-image-picker to let the user select a profile photo from their device.
    */
   const handleAvatarPress = async () => {
-    // TODO: Connect expo-image-picker or image upload service here:
-    // const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, quality: 1 });
-    // if (!result.canceled) setAvatarUri(result.assets[0].uri);
-    console.log('[AccountLanding] handleAvatarPress triggered', typeof setAvatarUri);
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert('Permission to access photo library is required!');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.7,
+        base64: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        const imageBase64 = asset.base64
+          ? `data:${asset.mimeType || 'image/jpeg'};base64,${asset.base64}`
+          : asset.uri;
+        setAvatarUri(imageBase64);
+      }
+    } catch (err) {
+      console.error('[AccountLanding] Error selecting profile image:', err);
+    }
   };
 
   /**
    * Method: handleSaveAndContinue
    * Called when the user clicks "Save & Continue".
    * Validates required inputs (Full Name), parses first and last name using space substring,
-   * and saves the user profile to Clerk via both client SDK and backend API.
+   * and saves the user profile (including avatar photo) to Clerk via both client SDK and backend API.
    */
   const handleSaveAndContinue = async () => {
     if (isLoading) return;
@@ -80,11 +102,20 @@ export default function AccountLandingScreen() {
       console.log('[AccountLanding] Saving user profile:', {
         firstName,
         lastName,
-        avatarUri,
+        hasAvatar: Boolean(avatarUri),
       });
 
       // 1. Update user profile via Clerk client SDK if user is signed in
       if (user) {
+        // Update client profile image if selected
+        if (avatarUri && typeof user.setProfileImage === 'function') {
+          try {
+            await user.setProfileImage({ file: avatarUri });
+          } catch (imgErr) {
+            console.warn('[AccountLanding] Client setProfileImage warning:', imgErr);
+          }
+        }
+
         await user.update({
           firstName,
           lastName,
@@ -95,6 +126,7 @@ export default function AccountLandingScreen() {
           userId: user.id,
           firstName,
           lastName,
+          image: avatarUri,
         });
       }
 

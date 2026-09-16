@@ -117,7 +117,7 @@ export default function SignUpScreen() {
 
     const handleVerificationSuccess = () => {
         setShowVerificationModal(false);
-        router.replace('/');
+        router.replace('/account-landing');
     };
 
     const renderStatusLabel = (status: ValidationStatus | null) => {
