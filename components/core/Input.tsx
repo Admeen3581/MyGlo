@@ -40,7 +40,7 @@ export const Input: React.FC<InputProps> = ({
         } else {
             return activeColors.border;
         }
-    }
+    };
 
     const getBorderWidth = () => {
         if (isDestructive || statusType === 'warning') {
@@ -51,7 +51,7 @@ export const Input: React.FC<InputProps> = ({
 
     return (
         <View className={`w-full mb-5 px-1 ${containerClassName}`}>
-            {(label || rightLabel) && (
+            {Boolean(label || rightLabel) && (
                 <View className="flex-row items-center justify-between mb-1 px-2">
                     {label ? (
                         <Text
@@ -101,7 +101,7 @@ export const Input: React.FC<InputProps> = ({
                 />
                 {rightIcon && <View className="ml-3">{rightIcon}</View>}
             </View>
-            {error && (
+            {Boolean(error) && (
                 <Text
                     style={{ color: activeColors.destructive }}
                     className="text-xs font-nunito mt-1 ml-3"

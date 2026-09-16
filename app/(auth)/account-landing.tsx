@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useUser } from '@clerk/expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/core/Button';
@@ -17,15 +18,20 @@ import { BlobBackground } from '@/components/core/BlobBackground';
 import { AuthHeader } from '@/components/auth/AuthHeader';
 import { AvatarPicker } from '@/components/core/AvatarPicker';
 import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
+import { getClerkErrorMessage } from '@/lib/clerk';
+import { saveUserProfileBackend } from '@/lib/userApi';
 
 export default function AccountLandingScreen() {
   const router = useRouter();
+  const { user } = useUser();
   const { isDarkMode, activeColors } = useTheme();
+
+  // Pre-fill full name if user already has first or last name in Clerk
+  const defaultName = user?.fullName || [user?.firstName, user?.lastName].filter(Boolean).join(' ') || '';
 
   // Form State
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
-  const [name, setName] = useState('');
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState(defaultName);
   const [nameError, setNameError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,15 +48,17 @@ export default function AccountLandingScreen() {
   };
 
   /**
-   * Blank Method: handleSaveAndContinue
+   * Method: handleSaveAndContinue
    * Called when the user clicks "Save & Continue".
-   * Validates required inputs (Full Name) and provides a hook for backend profile saving.
+   * Validates required inputs (Full Name), parses first and last name using space substring,
+   * and saves the user profile to Clerk via both client SDK and backend API.
    */
   const handleSaveAndContinue = async () => {
     if (isLoading) return;
 
     // Validate Required Field: Name
-    if (!name.trim()) {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
       setNameError('Full name is required.');
       return;
     }
@@ -59,18 +67,43 @@ export default function AccountLandingScreen() {
     setIsLoading(true);
 
     try {
-      // TODO: Add backend / Clerk profile save implementation here
-      // e.g. await user.update({ firstName, lastName }) or save to Zustand / API endpoint
+      // Extract firstName and lastName from Full Name using substring on space (" ")
+      const spaceIndex = trimmedName.indexOf(' ');
+      let firstName = trimmedName;
+      let lastName = '';
+
+      if (spaceIndex !== -1) {
+        firstName = trimmedName.substring(0, spaceIndex);
+        lastName = trimmedName.substring(spaceIndex + 1).trim();
+      }
+
       console.log('[AccountLanding] Saving user profile:', {
-        name: name.trim(),
-        username: username.trim(),
+        firstName,
+        lastName,
         avatarUri,
       });
+
+      // 1. Update user profile via Clerk client SDK if user is signed in
+      if (user) {
+        await user.update({
+          firstName,
+          lastName,
+        });
+
+        // 2. Call backend API endpoint which invokes clerkClient.users.updateUser(...)
+        await saveUserProfileBackend({
+          userId: user.id,
+          firstName,
+          lastName,
+        });
+      }
 
       // Navigate to home screen or next step after saving profile
       router.replace('/');
     } catch (error) {
       console.error('[AccountLanding] Failed to save profile:', error);
+      const errorMessage = getClerkErrorMessage(error, 'Failed to save profile. Please try again.');
+      setNameError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -162,31 +195,13 @@ export default function AccountLandingScreen() {
                 if (nameError) setNameError('');
               }}
               statusType={nameError ? 'destructive' : null}
-              error={nameError}
+              error={nameError || undefined}
               autoCapitalize="words"
               autoComplete="name"
               textContentType="name"
               returnKeyType="next"
               leftIcon={
                 <Ionicons name="person-outline" size={18} color={activeColors.mutedForeground} />
-              }
-              isDarkMode={isDarkMode}
-            />
-
-            {/* Username Input (Optional) */}
-            <Input
-              label="Username"
-              rightLabel="(Optional)"
-              placeholder="@alexmorgan"
-              value={username}
-              onChangeText={setUsername}
-              autoCapitalize="none"
-              autoComplete="username"
-              textContentType="username"
-              returnKeyType="done"
-              onSubmitEditing={handleSaveAndContinue}
-              leftIcon={
-                <Ionicons name="at-outline" size={18} color={activeColors.mutedForeground} />
               }
               isDarkMode={isDarkMode}
             />
