@@ -152,23 +152,23 @@ export default function TestPage() {
                 style={{ color: activeColors.foreground }}
                 className="text-xl font-fraunces-semibold mb-1"
               >
-                Onboarding & Auth Flows
+                Onboarding & Profile Flows
               </Text>
 
               <Text
                 style={{ color: activeColors.mutedForeground }}
                 className="text-sm font-nunito mb-4"
               >
-                Pixel-perfect implementation of Onboarding, Sign Up (with 6-digit Verification Modal), and Sign In screens.
+                Pixel-perfect implementation of Onboarding, Sign Up, Sign In, and Account Landing pages.
               </Text>
 
               <View className="flex-col gap-2">
                 <Button
-                  title="Sign Out"
+                  title="Account Landing Page"
                   variant="primary"
                   size="md"
                   isDarkMode={isDarkMode}
-                  onPress={() => signOut()}
+                  onPress={() => router.push('/account-landing' as any)}
                 />
                 <View className={isMobile ? 'flex-col gap-2' : 'flex-row gap-2'}>
                   <View className="flex-1">
@@ -190,6 +190,13 @@ export default function TestPage() {
                     />
                   </View>
                 </View>
+                <Button
+                  title="Sign Out"
+                  variant="ghost"
+                  size="md"
+                  isDarkMode={isDarkMode}
+                  onPress={() => signOut()}
+                />
               </View>
             </Card>
           </View>

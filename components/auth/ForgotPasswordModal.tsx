@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     useWindowDimensions,
     ScrollView,
+    Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from '@/components/core/Card';
@@ -25,15 +26,18 @@ interface ForgotPasswordModalProps {
 }
 
 export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
-    visible,
-    initialEmail = '',
-    onClose,
-    onSuccess,
-    isDarkMode: customDarkMode,
-}) => {
+                                                                            visible,
+                                                                            initialEmail = '',
+                                                                            onClose,
+                                                                            onSuccess,
+                                                                            isDarkMode: customDarkMode,
+                                                                        }) => {
     const { isDarkMode, activeColors } = useTheme(customDarkMode);
     const { width } = useWindowDimensions();
     const isMobile = width < 640;
+
+    // Average keyboard heights used to create the safe skirt padding
+    const skirtHeight = Platform.OS === 'ios' ? 340 : 360;
 
     const { signIn } = useSignIn();
     const { setActive } = useClerk();
@@ -49,7 +53,6 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
     const [isCodeVerified, setIsCodeVerified] = useState(false);
 
-    // Reset internal state when modal visibility changes
     useEffect(() => {
         if (visible) {
             const timer = setTimeout(() => {
@@ -67,10 +70,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         }
     }, [visible, initialEmail]);
 
-    // Send reset code to user's email
     const handleSendCode = async () => {
         if (isLoading) return;
-
         if (!email.trim()) {
             setErrorMessage('Please enter your email address.');
             return;
@@ -85,14 +86,12 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             });
 
             if (createError) {
-                // CyberFeature: If account is not found, proceed to verification step silently to prevent account enumeration attacks
                 if (createError.message.toLowerCase().includes("couldn't find your account")) {
                     setStep('verify');
                     setIsCodeVerified(false);
                     setIsLoading(false);
                     return;
                 }
-
                 setErrorMessage(createError.message || 'Failed to locate account. Please check your email.');
                 setIsLoading(false);
                 return;
@@ -115,10 +114,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         }
     };
 
-    // Verify reset code and set new password
     const handleResetPassword = async () => {
         if (isLoading) return;
-
         if (code.trim().length !== 6) {
             setErrorMessage('Please enter the 6-digit recovery code.');
             return;
@@ -142,7 +139,6 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 });
 
                 if (verifyError) {
-                    // CyberFeature: Display generic invalid code error for unverified attempts
                     if (verifyError.message.toLowerCase().includes("we were unable to complete factor one verification")) {
                         setErrorMessage("Invalid recovery code. Please try again.");
                         setIsLoading(false);
@@ -180,7 +176,6 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         }
     };
 
-    // Resend 6-digit recovery code
     const handleResendCode = async () => {
         try {
             setErrorMessage('');
@@ -189,7 +184,6 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             const { error } = await signIn.resetPasswordEmailCode.sendCode();
 
             if (error) {
-                // CyberFeature: Mask rate-limit/account error as sent to preserve privacy
                 if (error.message.toLowerCase().includes("clerk: reset password email code")) {
                     setResendStatus('sent');
                     setErrorMessage('');
@@ -215,27 +209,26 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         if (errorMessage) setErrorMessage('');
     };
 
+    const isEmailDestructive = !!errorMessage && step === 'request' && (!email.trim() || errorMessage.toLowerCase().includes('email') || errorMessage.toLowerCase().includes('account') || errorMessage.toLowerCase().includes('check') || errorMessage.toLowerCase().includes('enter'));
+    const isNewPasswordDestructive = !!errorMessage && step === 'verify' && (!newPassword || errorMessage.toLowerCase().includes('password'));
+    const isConfirmPasswordDestructive = !!errorMessage && step === 'verify' && (!confirmPassword || confirmPassword !== newPassword || errorMessage.toLowerCase().includes('match') || errorMessage.toLowerCase().includes('password'));
+
     return (
         <ModalWrapper visible={visible} onClose={onClose} isDarkMode={isDarkMode}>
             <Card
                 variant="default"
                 isDarkMode={isDarkMode}
-                style={isMobile ? { borderRadius: 0, borderWidth: 0, boxShadow: 'none', elevation: 0 } : undefined}
-                className={
-                    isMobile
-                        ? 'w-full h-full flex-1 p-6 justify-between'
-                        : 'w-full max-w-md p-6'
-                }
+                style={isMobile ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingTop: 32, paddingBottom: skirtHeight, maxHeight: '100%' } : undefined}
+                className={isMobile ? "w-full p-6" : "w-full max-w-md p-6"}
             >
-                {/* Modal Header Row */}
                 <View className="w-full flex-row justify-between items-center mb-4">
                     <View
                         style={{ backgroundColor: isDarkMode ? activeColors.accent : '#E8F2EF' }}
-                        className={isMobile ? 'w-12 h-12 rounded-full items-center justify-center' : 'w-10 h-10 rounded-full items-center justify-center'}
+                        className="w-10 h-10 rounded-full items-center justify-center"
                     >
                         <Ionicons
                             name={step === 'request' ? 'key-outline' : 'lock-open-outline'}
-                            size={isMobile ? 24 : 20}
+                            size={20}
                             color={activeColors.primary}
                         />
                     </View>
@@ -244,21 +237,19 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                         activeOpacity={0.7}
                     >
-                        <Ionicons name="close" size={isMobile ? 26 : 22} color={activeColors.mutedForeground} />
+                        <Ionicons name="close" size={22} color={activeColors.mutedForeground} />
                     </TouchableOpacity>
                 </View>
 
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
                     keyboardShouldPersistTaps="handled"
                 >
                     {step === 'request' ? (
-                        /* Step 1: Request Password Reset */
-                        <View className="w-full">
+                        <View className="w-full pb-4">
                             <Text
                                 style={{ color: activeColors.foreground }}
-                                className={isMobile ? 'text-3xl font-fraunces-bold text-center mb-2' : 'text-2xl font-fraunces-bold text-center mb-2'}
+                                className="text-2xl font-fraunces-bold text-center mb-2"
                             >
                                 Reset Password
                             </Text>
@@ -271,8 +262,10 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
                             <Input
                                 label="Email Address"
+                                statusType={isEmailDestructive ? 'destructive' : null}
                                 placeholder="name@example.com"
                                 value={email}
+                                autoFocus={true}
                                 onChangeText={(text) => {
                                     setEmail(text);
                                     if (errorMessage) setErrorMessage('');
@@ -283,17 +276,12 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                                 textContentType="emailAddress"
                                 returnKeyType="send"
                                 onSubmitEditing={handleSendCode}
-                                leftIcon={
-                                    <Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />
-                                }
+                                leftIcon={<Ionicons name="mail-outline" size={18} color={activeColors.mutedForeground} />}
                                 isDarkMode={isDarkMode}
                             />
 
                             {errorMessage ? (
-                                <Text
-                                    style={{ color: activeColors.destructive }}
-                                    className="text-xs font-nunito-semibold text-center mt-2 px-2"
-                                >
+                                <Text style={{ color: activeColors.destructive }} className="text-xs font-nunito-semibold text-center mt-2 px-2">
                                     {errorMessage}
                                 </Text>
                             ) : null}
@@ -310,11 +298,10 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                             </View>
                         </View>
                     ) : (
-                        /* Step 2: Verify Code and Reset Password */
-                        <View className="w-full">
+                        <View className="w-full pb-4">
                             <Text
                                 style={{ color: activeColors.foreground }}
-                                className={isMobile ? 'text-3xl font-fraunces-bold text-center mb-2' : 'text-2xl font-fraunces-bold text-center mb-2'}
+                                className="text-2xl font-fraunces-bold text-center mb-2"
                             >
                                 New Password
                             </Text>
@@ -328,10 +315,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                                 </Text>
                             </Text>
 
-                            <Text
-                                style={{ color: activeColors.mutedForeground }}
-                                className="text-xs font-nunito-bold mb-2 uppercase tracking-wider"
-                            >
+                            <Text style={{ color: activeColors.mutedForeground }} className="text-xs font-nunito-bold mb-2 uppercase tracking-wider">
                                 Recovery Code
                             </Text>
 
@@ -346,6 +330,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
                             <Input
                                 label="New Password"
+                                statusType={isNewPasswordDestructive ? 'destructive' : null}
                                 placeholder="Enter new password"
                                 value={newPassword}
                                 onChangeText={(text) => {
@@ -355,9 +340,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                                 secureTextEntry={!showPassword}
                                 returnKeyType="next"
                                 onSubmitEditing={handleResetPassword}
-                                leftIcon={
-                                    <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
-                                }
+                                leftIcon={<Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />}
                                 rightIcon={
                                     <TouchableOpacity
                                         onPress={() => setShowPassword(!showPassword)}
@@ -376,6 +359,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                             <View className="mt-3">
                                 <Input
                                     label="Confirm New Password"
+                                    statusType={isConfirmPasswordDestructive ? 'destructive' : null}
                                     placeholder="Re-enter new password"
                                     value={confirmPassword}
                                     onChangeText={(text) => {
@@ -385,18 +369,13 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                                     secureTextEntry={!showPassword}
                                     returnKeyType="done"
                                     onSubmitEditing={handleResetPassword}
-                                    leftIcon={
-                                        <Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />
-                                    }
+                                    leftIcon={<Ionicons name="lock-closed-outline" size={18} color={activeColors.mutedForeground} />}
                                     isDarkMode={isDarkMode}
                                 />
                             </View>
 
                             {errorMessage ? (
-                                <Text
-                                    style={{ color: activeColors.destructive }}
-                                    className="text-xs font-nunito-semibold text-center mt-2 px-2"
-                                >
+                                <Text style={{ color: activeColors.destructive }} className="text-xs font-nunito-semibold text-center mt-2 px-2">
                                     {errorMessage}
                                 </Text>
                             ) : null}
@@ -418,15 +397,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                                 activeOpacity={0.7}
                                 className="py-3 flex-row items-center justify-center"
                             >
-                                <Text
-                                    style={{ color: activeColors.primary }}
-                                    className="text-xs font-nunito-bold text-center"
-                                >
-                                    {resendStatus === 'sending'
-                                        ? 'Sending code...'
-                                        : resendStatus === 'sent'
-                                            ? 'Code sent!'
-                                            : "Didn't receive code? Resend"}
+                                <Text style={{ color: activeColors.primary }} className="text-xs font-nunito-bold text-center">
+                                    {resendStatus === 'sending' ? 'Sending code...' : resendStatus === 'sent' ? 'Code sent!' : "Didn't receive code? Resend"}
                                 </Text>
                             </TouchableOpacity>
                         </View>

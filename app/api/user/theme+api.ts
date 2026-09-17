@@ -1,3 +1,5 @@
+import { clerkClient } from '@/lib/clerk';
+
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -18,37 +20,9 @@ export async function POST(request: Request) {
             );
         }
 
-        //find key
-        const secretKey = process.env.CLERK_SECRET_KEY!;
-        if (!secretKey) {
-            return Response.json(
-                { error: 'CLERK_SECRET_KEY environment variable is not defined' },
-                { status: 500 }
-            );
-        }
-
-        //Call Clerk Backend REST API to update user's unsafe_metadata
-        const response = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
-            method: 'PATCH',
-            headers: {
-                Authorization: `Bearer ${secretKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                unsafe_metadata: {
-                    theme: theme,
-                },
-            }),
+        const data = await clerkClient.users.updateUser(userId, {
+            unsafeMetadata: { theme },
         });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            return Response.json(
-                { error: data.errors || 'Failed to update user theme in Clerk backend' },
-                { status: response.status }
-            );
-        }
 
         return Response.json({
             success: true,
@@ -76,32 +50,7 @@ export async function GET(request: Request) {
             );
         }
 
-        //find key
-        const secretKey = process.env.CLERK_SECRET_KEY!;
-        if (!secretKey) {
-            return Response.json(
-                { error: 'CLERK_SECRET_KEY environment variable is not defined' },
-                { status: 500 }
-            );
-        }
-
-        const response = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${secretKey}`,
-                'Content-Type': 'application/json',
-            },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            return Response.json(
-                { error: data.errors || 'Failed to fetch user from Clerk backend' },
-                { status: response.status }
-            );
-        }
-
+        const data = await clerkClient.users.getUser(userId);
         const theme = data.unsafe_metadata?.theme || 'light';
 
         return Response.json({
