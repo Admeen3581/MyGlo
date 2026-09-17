@@ -3,13 +3,13 @@ import { query } from "./_generated/server";
 export const getFeed = query({
     args: {},
     handler: async (ctx) => {
-        // 1. Fetch wishlists marked as public
+        // Fetch wishlists marked as public
         const wishlists = await ctx.db
             .query("wishlists")
             .filter((q) => q.eq(q.field("visibility"), "public"))
             .collect();
 
-        // 2. Attach owner info and item counts for the UI card
+        // Attach owner info and item counts for the UI card
         return await Promise.all(
             wishlists.map(async (list) => {
                 const owner = await ctx.db.get(list.ownerId);
