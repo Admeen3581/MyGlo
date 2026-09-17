@@ -54,3 +54,4 @@ CLAUDE.md
 /.claude
 /skills-lock.json
 /app-example/*
+.env.local
