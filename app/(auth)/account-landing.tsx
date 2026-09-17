@@ -11,6 +11,8 @@ import { useRouter } from 'expo-router';
 import { useUser } from '@clerk/expo';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from 'convex/react';
+import { api } from '@/database/_generated/api';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/core/Button';
 import { Input } from '@/components/core/Input';
@@ -24,8 +26,11 @@ import { saveUserProfileBackend } from '@/lib/userApi';
 
 export default function AccountLandingScreen() {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const { isDarkMode, activeColors } = useTheme();
+
+  // Convex mutation to create/update user in the database
+  const createUser = useMutation(api.users.createUser);
 
   // Pre-fill full name and avatar if user already has data in Clerk
   const defaultName = user?.fullName || [user?.firstName, user?.lastName].filter(Boolean).join(' ') || '';
@@ -73,7 +78,8 @@ export default function AccountLandingScreen() {
    * Method: handleSaveAndContinue
    * Called when the user clicks "Save & Continue".
    * Validates required inputs (Full Name), parses first and last name using space substring,
-   * and saves the user profile (including avatar photo) to Clerk via both client SDK and backend API.
+   * updates user profile in Clerk, and saves user details (firstName, lastName, avatar, clerkId, creationTime, email)
+   * into the Convex database users table.
    */
   const handleSaveAndContinue = async () => {
     if (isLoading) return;
@@ -105,9 +111,39 @@ export default function AccountLandingScreen() {
         hasAvatar: Boolean(avatarUri),
       });
 
-      // 1. Update user profile via Clerk client SDK if user is signed in
       if (user) {
-        // Update client profile image if selected
+        const email = user.primaryEmailAddress?.emailAddress;
+        const creationTime = user.createdAt ? new Date(user.createdAt).getTime() : Date.now();
+
+        // 1. Primary Operation: Save user record to Convex database (schema.ts users table)
+        try {
+          console.log('[AccountLanding] Calling createUser Convex mutation:', {
+            clerkId: user.id,
+            firstName,
+            lastName,
+            name: trimmedName,
+            email,
+            creationTime,
+            hasAvatar: Boolean(avatarUri),
+          });
+
+          const createdUserId = await createUser({
+            clerkId: user.id,
+            firstName,
+            lastName,
+            name: trimmedName,
+            avatar: avatarUri ?? undefined,
+            avatarUrl: avatarUri ?? undefined,
+            email,
+            creationTime,
+          });
+
+          console.log('[AccountLanding] Successfully saved user to database with ID:', createdUserId);
+        } catch (dbErr) {
+          console.error('[AccountLanding] Error saving user to Convex database:', dbErr);
+        }
+
+        // 2. Secondary Operation: Update profile image in Clerk if provided
         if (avatarUri && typeof user.setProfileImage === 'function') {
           try {
             await user.setProfileImage({ file: avatarUri });
@@ -116,18 +152,29 @@ export default function AccountLandingScreen() {
           }
         }
 
-        await user.update({
-          firstName,
-          lastName,
-        });
+        // 3. Secondary Operation: Update Clerk user first/last name
+        try {
+          await user.update({
+            firstName,
+            lastName,
+          });
+        } catch (clerkErr) {
+          console.warn('[AccountLanding] Clerk user.update warning:', clerkErr);
+        }
 
-        // 2. Call backend API endpoint which invokes clerkClient.users.updateUser(...)
-        await saveUserProfileBackend({
-          userId: user.id,
-          firstName,
-          lastName,
-          image: avatarUri,
-        });
+        // 4. Secondary Operation: Call backend API endpoint
+        try {
+          await saveUserProfileBackend({
+            userId: user.id,
+            firstName,
+            lastName,
+            image: avatarUri,
+          });
+        } catch (apiErr) {
+          console.warn('[AccountLanding] saveUserProfileBackend warning:', apiErr);
+        }
+      } else {
+        console.warn('[AccountLanding] User is not logged in or Clerk user object is unavailable.', { isLoaded });
       }
 
       // Navigate to home screen or next step after saving profile

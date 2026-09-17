@@ -9,6 +9,7 @@
  */
 
 import type * as test from "../test.js";
+import type * as users from "../users.js";
 import type * as wishlists from "../wishlists.js";
 
 import type {
@@ -19,6 +20,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   test: typeof test;
+  users: typeof users;
   wishlists: typeof wishlists;
 }>;
 
