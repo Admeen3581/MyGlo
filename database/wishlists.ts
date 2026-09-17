@@ -1,4 +1,3 @@
-// convex/wishlists.ts
 import { query } from "./_generated/server";
 
 export const getFeed = query({

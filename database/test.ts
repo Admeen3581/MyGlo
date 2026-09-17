@@ -1,4 +1,3 @@
-// convex/test.ts
 import { mutation } from "./_generated/server";
 
 export const seedSampleData = mutation({

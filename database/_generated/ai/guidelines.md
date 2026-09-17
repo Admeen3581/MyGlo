@@ -137,7 +137,7 @@ export const g = query({
 - Use the `internal` object defined by the framework in `convex/_generated/api.ts` to call internal (or private) functions registered with `internalQuery`, `internalMutation`, or `internalAction`.
 - Convex uses file-based routing, so a public function defined in `convex/example.ts` named `f` has a function reference of `api.example.f`.
 - A private function defined in `convex/example.ts` named `g` has a function reference of `internal.example.g`.
-- Functions can also registered within directories nested within the `convex/` folder. For example, a public function `h` defined in `convex/messages/access.ts` has a function reference of `api.messages.access.h`.
+- Functions can also registered within directories nested within the `../../../convex` folder. For example, a public function `h` defined in `convex/messages/access.ts` has a function reference of `api.messages.access.h`.
 
 ### Pagination
 
@@ -181,7 +181,7 @@ For the return validator of a paginated query, use `paginationResultValidator(it
 
 ## Schema guidelines
 
-- Always define your schema in `convex/schema.ts`.
+- Always define your schema in `../../schema.ts`.
 - Always import the schema definition functions from `convex/server`.
 - System fields are automatically added to all documents and are prefixed with an underscore. The two system fields that are automatically added to all documents are `_creationTime` which has the validator `v.number()` and `_id` which has the validator `v.id(tableName)`.
 - Always include all index fields in the index name. For example, if an index is defined as `["field1", "field2"]`, the index name should be "by_field1_and_field2".
@@ -193,8 +193,8 @@ For the return validator of a paginated query, use `paginationResultValidator(it
 
 ## Authentication guidelines
 
-- Convex supports JWT-based authentication through `convex/auth.config.ts`. ALWAYS create this file when using authentication. Without it, `ctx.auth.getUserIdentity()` will always return `null`.
-- Example `convex/auth.config.ts`:
+- Convex supports JWT-based authentication through `../../auth.config.ts`. ALWAYS create this file when using authentication. Without it, `ctx.auth.getUserIdentity()` will always return `null`.
+- Example `../../auth.config.ts`:
 
 ```typescript
 export default {
@@ -317,7 +317,7 @@ export default app;
 - After mounting, the generated `components` object in `convex/_generated/api` references the component (e.g. `components.aggregate`), and is passed to the component's client class.
 - Component functions are not exposed to clients; the app's own queries and mutations wrap them. Perform authentication and authorization in the app functions before calling into a component.
 - Component reads and writes participate in the calling mutation's transaction. When a component mirrors state from one of your tables (like an aggregate over a table), update the component in the SAME mutation as every insert, patch, replace, or delete of that table - never from a separate function - so the two can never drift.
-- To author a LOCAL component: a directory under `convex/` with its own `convex.config.ts` (`export default defineComponent("myName");` - the argument is the name string), its own `schema.ts`, and functions built from that directory's own `_generated/server`. Mount it from the root config (`app.use(myName)` - no options), and reference its functions through the generated `components` object INCLUDING the module segment: a function in `convex/myName/index.ts` is `components.myName.index.myFunction`, never `components.myName.myFunction`.
+- To author a LOCAL component: a directory under `../../../convex` with its own `convex.config.ts` (`export default defineComponent("myName");` - the argument is the name string), its own `schema.ts`, and functions built from that directory's own `_generated/server`. Mount it from the root config (`app.use(myName)` - no options), and reference its functions through the generated `components` object INCLUDING the module segment: a function in `convex/myName/index.ts` is `components.myName.index.myFunction`, never `components.myName.myFunction`.
 - For per-key quotas, cooldowns, or throttling (N operations per period, retry-after), use the `@convex-dev/rate-limiter` component - hand-rolled counter or window-scan implementations admit races under concurrency and lose quota when a mutation fails.
 - For chat or assistant features where an LLM replies inside a durable conversation - per-user resumable histories, recorded tool-call steps, several assistants sharing one conversation - use the `@convex-dev/agent` component: mount it, create one component thread per conversation, and generate/read through it (`createThread(ctx, components.agent, ...)`, `new Agent(components.agent, { name, languageModel, tools }).generateText(ctx, { threadId }, { prompt })`, `listMessages`). Do not hand-roll a messages table or call an LLM SDK directly from your functions for these.
 - For async Convex functions needing bounded parallelism, serialized mutation work, or completion callbacks, use `@convex-dev/workpool`; retry only idempotent actions.
@@ -403,7 +403,7 @@ export default crons;
 
 - Use `convex-test` with `vitest` and `@edge-runtime/vm` to test Convex functions. Always install the latest versions of these packages. Configure vitest with `environment: "edge-runtime"` in `vitest.config.ts`.
 
-Test files go inside the `convex/` directory. You must pass a module map from `import.meta.glob` to `convexTest`:
+Test files go inside the `../../../convex` directory. You must pass a module map from `import.meta.glob` to `convexTest`:
 
 ```typescript
 /// <reference types="vite/client" />
@@ -425,7 +425,7 @@ test("some behavior", async () => {
 The `modules` argument is required so convex-test can discover and load function files. The `/// <reference types="vite/client" />` directive is needed for TypeScript to recognize `import.meta.glob`.
 
 - Only add the `/// <reference types="vite/client" />` directive at the top of test files that call `import.meta.glob`; do NOT add it to non-test files.
-- Do NOT add a `compilerOptions.types` allowlist to `tsconfig.json` for type packages you have not installed (e.g. `"node"` without `@types/node`, or `"vite/client"` without vite). Any unresolved entry in `types` fails typechecking with TS2688. Leave `types` unset unless a package genuinely requires it and is installed.
+- Do NOT add a `compilerOptions.types` allowlist to `../../../tsconfig.json` for type packages you have not installed (e.g. `"node"` without `@types/node`, or `"vite/client"` without vite). Any unresolved entry in `types` fails typechecking with TS2688. Leave `types` unset unless a package genuinely requires it and is installed.
 
 ## File storage guidelines
 

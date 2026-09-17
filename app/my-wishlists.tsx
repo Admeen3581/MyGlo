@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Redirect } from 'expo-router';
 import { useAuth } from '@clerk/expo';
 import { useQuery } from 'convex/react';
-import { api } from '../convex/_generated/api';
+import { api } from '@/database/_generated/api';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/core/Button';
 import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
@@ -90,7 +90,7 @@ export default function Index() {
                                 >
                                     <View className="flex-row items-center justify-between mb-2">
                                         <Text className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-                                            {item.ownerName}'s List
+                                            {item.ownerName}&#39;s List
                                         </Text>
                                         <View className="rounded-full bg-gray-100 px-2.5 py-0.5">
                                             <Text className="text-xs text-gray-600">
