@@ -1,14 +1,17 @@
 import { query } from "./_generated/server";
+import { v } from "convex/values";
 
+/**
+ * Query: getFeed
+ * Fetches all wishlists (public feed) with owner info and item counts.
+ */
 export const getFeed = query({
     args: {},
     handler: async (ctx) => {
-        // Fetch wishlists marked as public
         const wishlists = await ctx.db
             .query("wishlists")
             .collect();
 
-        // Attach owner info and item counts for the UI card
         return await Promise.all(
             wishlists.map(async (list) => {
                 const owner = await ctx.db.get(list.ownerId);
@@ -21,5 +24,37 @@ export const getFeed = query({
                 };
             })
         );
+    },
+});
+
+/**
+ * Query: getMyWishlists
+ * Fetches wishlists owned by a specific user (by Clerk ID).
+ */
+export const getMyWishlists = query({
+    args: { clerkId: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        if (!args.clerkId) {
+            return [];
+        }
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId!))
+            .first();
+
+        if (!user) {
+            return [];
+        }
+
+        const wishlists = await ctx.db
+            .query("wishlists")
+            .withIndex("by_owner", (q) => q.eq("ownerId", user._id))
+            .collect();
+
+        return wishlists.map((list) => ({
+            ...list,
+            itemCount: list.items?.length ?? 0,
+        }));
     },
 });
