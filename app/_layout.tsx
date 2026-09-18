@@ -4,8 +4,10 @@ import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { ThemeProvider } from '@/context/ThemeContext';
-import { ClerkProvider } from "@clerk/expo";
+import {ClerkProvider, useAuth} from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
+import {ConvexProviderWithClerk} from "convex/react-clerk";
+import {ConvexReactClient} from "convex/react";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,8 +40,11 @@ export default function RootLayout() {
         return null;
     }
 
-    // Clerk Auth
+    // Secrets
     const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+    const convexKey = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
+        unsavedChangesWarning: false,
+    })
 
     if (!publishableKey) {
         throw new Error("No Clerk API Key found. Add your Clerk API key to the .env file. See more in ./app/_layout.tsx");
@@ -47,13 +52,15 @@ export default function RootLayout() {
 
     return (
         <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-            <ThemeProvider>
-                <Stack
-                    screenOptions={{
-                        headerShown: false,
-                    }}
-                />
-            </ThemeProvider>
+            <ConvexProviderWithClerk client={convexKey} useAuth={useAuth}>
+                <ThemeProvider>
+                    <Stack
+                        screenOptions={{
+                            headerShown: false,
+                        }}
+                    />
+                </ThemeProvider>
+            </ConvexProviderWithClerk>
         </ClerkProvider>
     );
 }
