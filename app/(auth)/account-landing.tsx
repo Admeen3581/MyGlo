@@ -116,15 +116,6 @@ export default function AccountLandingScreen() {
 
         // 1. Primary Operation: Save user record to Convex database (schema.ts users table)
         try {
-          console.log('[AccountLanding] Calling createUser Convex mutation:', {
-            clerkId: user.id,
-            firstName,
-            lastName,
-            name: trimmedName,
-            email,
-            hasAvatar: Boolean(avatarUri),
-          });
-
           const createdUserId = await createUser({
             clerkId: user.id,
             firstName,
@@ -134,8 +125,6 @@ export default function AccountLandingScreen() {
             avatarUrl: avatarUri ?? undefined,
             email,
           });
-
-          console.log('[AccountLanding] Successfully saved user to database with ID:', createdUserId);
         } catch (dbErr) {
           console.error('[AccountLanding] Error saving user to Convex database:', dbErr);
         }
@@ -177,7 +166,6 @@ export default function AccountLandingScreen() {
       // Navigate to home screen or next step after saving profile
       router.replace('/');
     } catch (error) {
-      console.error('[AccountLanding] Failed to save profile:', error);
       const errorMessage = getClerkErrorMessage(error, 'Failed to save profile. Please try again.');
       setNameError(errorMessage);
     } finally {
@@ -289,6 +277,7 @@ export default function AccountLandingScreen() {
                 isDarkMode={isDarkMode}
                 onPress={handleSaveAndContinue}
                 disabled={isLoading}
+
               />
             </View>
           </Card>

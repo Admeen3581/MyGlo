@@ -44,7 +44,6 @@ export const createUser = mutation({
             return existingUser._id;
         }
 
-        console.log("[Convex database/users.ts] Inserting new user for clerkId:", args.clerkId);
         const newUserId = await ctx.db.insert("users", {
             clerkId: args.clerkId,
             firstName: args.firstName,
