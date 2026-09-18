@@ -78,7 +78,7 @@ export default function AccountLandingScreen() {
    * Method: handleSaveAndContinue
    * Called when the user clicks "Save & Continue".
    * Validates required inputs (Full Name), parses first and last name using space substring,
-   * updates user profile in Clerk, and saves user details (firstName, lastName, avatar, clerkId, creationTime, email)
+   * updates user profile in Clerk, and saves user details (firstName, lastName, avatar, clerkId, email)
    * into the Convex database users table.
    */
   const handleSaveAndContinue = async () => {
@@ -113,7 +113,6 @@ export default function AccountLandingScreen() {
 
       if (user) {
         const email = user.primaryEmailAddress?.emailAddress;
-        const creationTime = user.createdAt ? new Date(user.createdAt).getTime() : Date.now();
 
         // 1. Primary Operation: Save user record to Convex database (schema.ts users table)
         try {
@@ -123,7 +122,6 @@ export default function AccountLandingScreen() {
             lastName,
             name: trimmedName,
             email,
-            creationTime,
             hasAvatar: Boolean(avatarUri),
           });
 
@@ -135,7 +133,6 @@ export default function AccountLandingScreen() {
             avatar: avatarUri ?? undefined,
             avatarUrl: avatarUri ?? undefined,
             email,
-            creationTime,
           });
 
           console.log('[AccountLanding] Successfully saved user to database with ID:', createdUserId);

@@ -14,7 +14,6 @@ export const createUser = mutation({
         avatar: v.optional(v.string()),
         avatarUrl: v.optional(v.string()),
         email: v.optional(v.string()),
-        creationTime: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
         console.log("[Convex database/users.ts] createUser called with args:", args);
@@ -31,7 +30,6 @@ export const createUser = mutation({
             "";
 
         const avatarImage = args.avatar || args.avatarUrl;
-        const creationTime = args.creationTime ?? Date.now();
 
         if (existingUser) {
             console.log("[Convex database/users.ts] Updating existing user:", existingUser._id);
@@ -42,7 +40,6 @@ export const createUser = mutation({
                 avatar: avatarImage,
                 avatarUrl: avatarImage,
                 email: args.email,
-                creationTime,
             });
             return existingUser._id;
         }
@@ -56,7 +53,6 @@ export const createUser = mutation({
             avatar: avatarImage,
             avatarUrl: avatarImage,
             email: args.email,
-            creationTime,
         });
 
         console.log("[Convex database/users.ts] Successfully inserted new user with id:", newUserId);

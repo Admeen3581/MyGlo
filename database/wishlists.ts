@@ -13,16 +13,12 @@ export const getFeed = query({
         return await Promise.all(
             wishlists.map(async (list) => {
                 const owner = await ctx.db.get(list.ownerId);
-                const items = await ctx.db
-                    .query("items")
-                    .withIndex("by_wishlist", (q) => q.eq("wishlistId", list._id))
-                    .collect();
 
                 return {
                     ...list,
                     ownerName: owner?.name ?? "Anonymous",
                     ownerAvatar: owner?.avatarUrl,
-                    itemCount: items.length,
+                    itemCount: list.items?.length ?? 0,
                 };
             })
         );

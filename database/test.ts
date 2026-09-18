@@ -11,34 +11,36 @@ export const seedSampleData = mutation({
             avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
         });
 
-        // 2. Insert a wishlist for that user
+        // 2. Insert items directly inside the wishlist document
+        const items = [
+            {
+                id: "item_1",
+                title: "Noise-Cancelling Headphones",
+                price: 199.99,
+                priority: "high" as const,
+                url: "https://example.com/headphones",
+            },
+            {
+                id: "item_2",
+                title: "Insulated Water Bottle",
+                price: 35.0,
+                priority: "medium" as const,
+            },
+        ];
+
+        // 3. Insert a wishlist for that user
         const wishlistId = await ctx.db.insert("wishlists", {
             ownerId: userId,
             title: "Holiday Wishlist",
             description: "A few things I've been eyeing lately!",
             visibility: "public",
             keepPurchasesSecret: true,
-        });
-
-        // 3. Insert items into the wishlist
-        const item1 = await ctx.db.insert("items", {
-            wishlistId,
-            title: "Noise-Cancelling Headphones",
-            price: 199.99,
-            priority: "high",
-            url: "https://example.com/headphones",
-        });
-
-        const item2 = await ctx.db.insert("items", {
-            wishlistId,
-            title: "Insulated Water Bottle",
-            price: 35.0,
-            priority: "medium",
+            items,
         });
 
         return {
             success: true,
-            created: { userId, wishlistId, items: [item1, item2] },
+            created: { userId, wishlistId, items },
         };
     },
 });

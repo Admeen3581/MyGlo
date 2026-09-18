@@ -11,7 +11,6 @@ export default defineSchema({
         lastName: v.optional(v.string()),
         avatar: v.optional(v.string()),
         avatarUrl: v.optional(v.string()),
-        creationTime: v.optional(v.number()),
     })
         .index("by_clerkId", ["clerkId"]),
 
@@ -30,29 +29,31 @@ export default defineSchema({
         // true = owner cannot see claims/purchases (surprise preserved)
         // false = owner can view purchase progress live
         keepPurchasesSecret: v.boolean(),
+        // Embedded items list inside wishlist
+        items: v.optional(
+            v.array(
+                v.object({
+                    id: v.string(),
+                    title: v.string(),
+                    url: v.optional(v.string()),
+                    price: v.optional(v.number()),
+                    notes: v.optional(v.string()),
+                    priority: v.optional(
+                        v.union(v.literal("low"), v.literal("medium"), v.literal("high"))
+                    ),
+                    // Stores Convex native file storage ID for user-uploaded photos
+                    imageStorageId: v.optional(v.id("_storage")),
+                    // Fallback or scraped external image link
+                    externalImageUrl: v.optional(v.string()),
+                })
+            )
+        ),
     })
         .index("by_owner", ["ownerId"]),
 
-    // Items added to wishlists
-    items: defineTable({
-        wishlistId: v.id("wishlists"),
-        title: v.string(),
-        url: v.optional(v.string()),
-        price: v.optional(v.number()),
-        notes: v.optional(v.string()),
-        priority: v.optional(
-            v.union(v.literal("low"), v.literal("medium"), v.literal("high"))
-        ),
-        // Stores Convex native file storage ID for user-uploaded photos
-        imageStorageId: v.optional(v.id("_storage")),
-        // Fallback or scraped external image link
-        externalImageUrl: v.optional(v.string()),
-    })
-        .index("by_wishlist", ["wishlistId"]),
-
     // Separate claims table to isolate purchase state from item definitions
     claims: defineTable({
-        itemId: v.id("items"),
+        itemId: v.string(), // Item ID within a wishlist's items array
         claimedById: v.id("users"),
         status: v.union(v.literal("reserved"), v.literal("purchased")),
         // Optional secret note between buyers (e.g. "Splitting this with Mark")
