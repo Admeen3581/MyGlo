@@ -6,7 +6,6 @@ export const getFeed = query({
         // Fetch wishlists marked as public
         const wishlists = await ctx.db
             .query("wishlists")
-            .filter((q) => q.eq(q.field("visibility"), "public"))
             .collect();
 
         // Attach owner info and item counts for the UI card

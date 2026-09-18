@@ -3,44 +3,73 @@ import { mutation } from "./_generated/server";
 export const seedSampleData = mutation({
     args: {},
     handler: async (ctx) => {
-        // 1. Insert a dummy user
-        const userId = await ctx.db.insert("users", {
+        // Dummy users
+        const userIdUno = await ctx.db.insert("users", {
             clerkId: "user_test_mock_123",
             name: "Alex Rivera",
+            firstName: "Alex",
+            lastName: "Rivera",
             email: "alex@example.com",
             avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
         });
 
-        // 2. Insert items directly inside the wishlist document
+        const userIdDos = await ctx.db.insert("users", {
+            clerkId: "user_test_mock_456",
+            name: "John Doe",
+            firstName: "John",
+            lastName: "Doe",
+            email: "john.doe@example.com",
+            avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
+        });
+
+        // Items constant for wishlists
         const items = [
             {
                 id: "item_1",
                 title: "Noise-Cancelling Headphones",
                 price: 199.99,
-                priority: "high" as const,
+                priority: true,
                 url: "https://example.com/headphones",
+                itemClaimedBy: userIdDos,
             },
             {
                 id: "item_2",
                 title: "Insulated Water Bottle",
                 price: 35.0,
-                priority: "medium" as const,
+                priority: false,
+                url: "https://example.com/bottle",
             },
         ];
 
-        // 3. Insert a wishlist for that user
-        const wishlistId = await ctx.db.insert("wishlists", {
-            ownerId: userId,
+        // Dummy Wishlists
+        const wishlistIdAlex = await ctx.db.insert("wishlists", {
+            ownerId: userIdUno,
             title: "Holiday Wishlist",
             description: "A few things I've been eyeing lately!",
-            visibility: "public",
             keepPurchasesSecret: true,
             items,
         });
 
+        const wishlistIdJohn = await ctx.db.insert("wishlists", {
+            ownerId: userIdDos,
+            title: "Holiday Wishlist",
+            description: "A few things I've been eyeing lately!",
+            keepPurchasesSecret: true,
+            items,
+        });
+
+        // Update users with shared lists
+        await ctx.db.patch(userIdUno, {
+            sharedLists: [wishlistIdJohn],//John shared his list with Alex
+        });
+
+        await ctx.db.patch(userIdDos, {
+            sharedLists: [wishlistIdAlex],//Alex shared his list with John
+        });
+
         return {
             success: true,
-            created: { userId, wishlistId, items },
+            created: { userIdUno, userIdDos, wishlistIdAlex, wishlistIdJohn, items },
         };
     },
 });
