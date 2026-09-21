@@ -1,17 +1,24 @@
-import React, {useState} from 'react';
-import {ActivityIndicator, ScrollView, StyleSheet, Text, useWindowDimensions, View,} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Redirect, useRouter} from 'expo-router';
-import {useAuth, useUser} from '@clerk/expo';
-import {useQuery} from 'convex/react';
-import {api} from '@/database/_generated/api';
-import {useTheme} from '@/hooks/useTheme';
-import {ScreenWrapper} from '@/components/wrapper/ScreenWrapper';
-import {TopNavBar} from '@/components/navigation/TopNavBar';
-import {Sidebar} from '@/components/navigation/Sidebar';
-import {WishlistCard} from '@/components/wishlist/WishlistCard';
-import {FloatingActionButton} from '@/components/core/FloatingActionButton';
-import {Ionicons} from '@expo/vector-icons';
+import React, { useState } from 'react';
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Redirect, useRouter } from 'expo-router';
+import { useAuth, useUser } from '@clerk/expo';
+import { useQuery } from 'convex/react';
+import { api } from '@/database/_generated/api';
+import { useTheme } from '@/hooks/useTheme';
+import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
+import { TopNavBar } from '@/components/navigation/TopNavBar';
+import { Sidebar } from '@/components/navigation/Sidebar';
+import { WishlistCard } from '@/components/wishlist/WishlistCard';
+import { FloatingActionButton } from '@/components/core/FloatingActionButton';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function MyWishlistsScreen() {
   const router = useRouter();
@@ -27,9 +34,9 @@ export default function MyWishlistsScreen() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(isDesktop);
 
   // Fetch only wishlists owned/created by the logged-in user via Convex
-    const rawWishlists = useQuery(
-      api.wishlists.getMyWishlists,
-      user?.id ? {clerkId: user.id} : 'skip'
+  const rawWishlists = useQuery(
+    api.wishlists.getMyWishlists,
+    user?.id ? { clerkId: user.id } : 'skip'
   );
 
   // Filter user's owned wishlists based on search query
@@ -72,7 +79,6 @@ export default function MyWishlistsScreen() {
       ]}
     >
       <ScreenWrapper variant="default" className="flex-1">
-        {/* Top Navigation Bar: Left logo/hamburger, center search bar, right avatar */}
         <TopNavBar
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -84,9 +90,7 @@ export default function MyWishlistsScreen() {
           onMenuPress={() => setIsSidebarOpen((prev) => !prev)}
         />
 
-        {/* Main Content Layout Container */}
         <View className="flex-1 flex-row relative overflow-hidden">
-          {/* Desktop Fold-out Sidebar */}
           {isDesktop && (
             <Sidebar
               activeTab="my-wishlists"
@@ -94,9 +98,7 @@ export default function MyWishlistsScreen() {
             />
           )}
 
-          {/* Main Content Column */}
           <View className="flex-1 h-full relative">
-            {/* Titling Text Area */}
             <View className="px-5 pt-3 pb-2">
               <Text
                 style={{ color: activeColors.mutedForeground }}
@@ -132,17 +134,18 @@ export default function MyWishlistsScreen() {
                   </Text>
                 </View>
               ) : wishlists && wishlists.length > 0 ? (
-                /* Wishlist Cards List */
-                <View className="px-5 pt-2">
+                /* Wishlist Cards Grid */
+                <View className="px-5 pt-2 flex-row flex-wrap -mx-2">
                   {wishlists.map((item) => (
-                    <WishlistCard
-                      key={item._id}
-                      wishlist={item}
-                      isDarkMode={isDarkMode}
-                      onPress={() => {
-                        //TODO: Navigate to wishlist detail when implemented
-                      }}
-                    />
+                    <View key={item._id} className="w-1/2 md:w-1/3 lg:w-1/4 px-2">
+                      <WishlistCard
+                        wishlist={item}
+                        isDarkMode={isDarkMode}
+                        onPress={() => {
+                          //TODO: Navigate to wishlist detail when implemented
+                        }}
+                      />
+                    </View>
                   ))}
                 </View>
               ) : (

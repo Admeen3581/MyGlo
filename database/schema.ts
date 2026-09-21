@@ -42,6 +42,7 @@ export default defineSchema({
                 })
             )
         ),
+        isArchived: v.boolean(),
     })
         .index("by_owner", ["ownerId"]),
 });

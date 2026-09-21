@@ -138,17 +138,19 @@ export default function SharedListsScreen() {
                                     </Text>
                                 </View>
                             ) : wishlists && wishlists.length > 0 ? (
-                                /* Shared Wishlists Cards List */
-                                <View className="px-5 pt-2">
+                                /* Shared Wishlists Cards Grid */
+                                <View className="px-5 pt-2 flex-row flex-wrap -mx-2">
                                     {wishlists.map((item) => (
-                                        <WishlistCard
-                                            key={item._id}
-                                            wishlist={item}
-                                            isDarkMode={isDarkMode}
-                                            onPress={() => {
-                                                // Navigate to wishlist detail when implemented
-                                            }}
-                                        />
+                                        <View key={item._id} className="w-1/2 md:w-1/3 lg:w-1/4 px-2">
+                                            <WishlistCard
+                                                wishlist={item}
+                                                isDarkMode={isDarkMode}
+                                                isShared={true}
+                                                onPress={() => {
+                                                    // Navigate to wishlist detail when implemented
+                                                }}
+                                            />
+                                        </View>
                                     ))}
                                 </View>
                             ) : (
