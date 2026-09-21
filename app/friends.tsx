@@ -13,7 +13,6 @@ import { useAuth, useUser } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
 import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
 import { TopNavBar } from '@/components/navigation/TopNavBar';
-import { BottomNavBar } from '@/components/navigation/BottomNavBar';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { Ionicons } from '@expo/vector-icons';
 import FloatingActionButton from "@/components/core/FloatingActionButton";
@@ -146,13 +145,6 @@ export default function FriendsScreen() {
                         />
                     </View>
                 </View>
-
-                {/* Reusable Bottom Navigation Bar (Mobile only) */}
-                {!isDesktop && (
-                    <BottomNavBar
-                        initTab={'friends'}
-                    />
-                )}
             </ScreenWrapper>
         </SafeAreaView>
     );

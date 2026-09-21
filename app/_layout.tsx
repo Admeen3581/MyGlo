@@ -1,13 +1,15 @@
 import '@/global.css';
 import { useEffect } from 'react';
+import { View } from 'react-native';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { ThemeProvider } from '@/context/ThemeContext';
-import {ClerkProvider, useAuth} from "@clerk/expo";
+import { ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
-import {ConvexProviderWithClerk} from "convex/react-clerk";
-import {ConvexReactClient} from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { ConvexReactClient } from "convex/react";
+import { BottomNavBar } from '@/components/navigation/BottomNavBar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,11 +56,14 @@ export default function RootLayout() {
         <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
             <ConvexProviderWithClerk client={convexKey} useAuth={useAuth}>
                 <ThemeProvider>
-                    <Stack
-                        screenOptions={{
-                            headerShown: false,
-                        }}
-                    />
+                    <View style={{ flex: 1 }}>
+                        <Stack
+                            screenOptions={{
+                                headerShown: false,
+                            }}
+                        />
+                        <BottomNavBar />
+                    </View>
                 </ThemeProvider>
             </ConvexProviderWithClerk>
         </ClerkProvider>

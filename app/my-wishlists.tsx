@@ -8,7 +8,6 @@ import {api} from '@/database/_generated/api';
 import {useTheme} from '@/hooks/useTheme';
 import {ScreenWrapper} from '@/components/wrapper/ScreenWrapper';
 import {TopNavBar} from '@/components/navigation/TopNavBar';
-import {BottomNavBar} from '@/components/navigation/BottomNavBar';
 import {Sidebar} from '@/components/navigation/Sidebar';
 import {WishlistCard} from '@/components/wishlist/WishlistCard';
 import {FloatingActionButton} from '@/components/core/FloatingActionButton';
@@ -183,12 +182,6 @@ export default function MyWishlistsScreen() {
             />
           </View>
         </View>
-
-        {!isDesktop && (
-          <BottomNavBar
-            initTab={'my-wishlists'}
-          />
-        )}
       </ScreenWrapper>
     </SafeAreaView>
   );

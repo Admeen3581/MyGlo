@@ -15,7 +15,6 @@ import { api } from '@/database/_generated/api';
 import { useTheme } from '@/hooks/useTheme';
 import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
 import { TopNavBar } from '@/components/navigation/TopNavBar';
-import { BottomNavBar } from '@/components/navigation/BottomNavBar';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { WishlistCard } from '@/components/wishlist/WishlistCard';
 import { Ionicons } from '@expo/vector-icons';
@@ -189,13 +188,6 @@ export default function SharedListsScreen() {
                         />
                     </View>
                 </View>
-
-                {/* Reusable Bottom Navigation Bar (Mobile only) */}
-                {!isDesktop && (
-                    <BottomNavBar
-                        initTab={'shared-lists'}
-                    />
-                )}
             </ScreenWrapper>
         </SafeAreaView>
     );

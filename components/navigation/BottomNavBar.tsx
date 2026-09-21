@@ -1,21 +1,38 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
-import {router} from "expo-router";
+import { router, usePathname } from 'expo-router';
 
 export type NavTab = 'my-wishlists' | 'shared-lists' | 'friends' | 'profile';
 
 export interface BottomNavBarProps {
-    initTab: NavTab;
+    initTab?: NavTab;
 }
 
-export const BottomNavBar: React.FC<BottomNavBarProps> = ({initTab}) => {
+export const BottomNavBar: React.FC<BottomNavBarProps> = ({ initTab }) => {
     const insets = useSafeAreaInsets();
+    const pathname = usePathname();
+    const { width } = useWindowDimensions();
     const { isDarkMode, activeColors } = useTheme();
-    const [ activeTab, setActiveTab ] = React.useState<NavTab>(initTab);
 
+    const isDesktop = width >= 768;
+
+    const getCurrentTab = (): NavTab | null => {
+        if (pathname?.includes('shared-lists')) return 'shared-lists';
+        if (pathname?.includes('friends')) return 'friends';
+        if (pathname?.includes('profile')) return 'profile';
+        if (pathname?.includes('my-wishlists')) return 'my-wishlists';
+        return initTab || null;
+    };
+
+    const activeTab = getCurrentTab();
+
+    // Do not render bottom nav bar on desktop or non-tab routes
+    if (!activeTab || isDesktop) {
+        return null;
+    }
 
     const navItems: { id: NavTab; label: string; activeIcon: keyof typeof Ionicons.glyphMap; inactiveIcon: keyof typeof Ionicons.glyphMap }[] = [
         {
@@ -26,7 +43,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({initTab}) => {
         },
         {
             id: 'shared-lists',
-            label: "Shared with Me",
+            label: 'Shared with Me',
             activeIcon: 'gift',
             inactiveIcon: 'gift-outline',
         },
@@ -45,9 +62,8 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({initTab}) => {
     ];
 
     const handleTabPress = (tab: NavTab) => {
-        setActiveTab(tab);
-        router.push(`/${tab}` as any);
-        console.log('tab', tab);
+        if (activeTab === tab) return;
+        router.replace(`/${tab}` as any);
     };
 
     return (
@@ -101,11 +117,12 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({initTab}) => {
 
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute',
+        position: Platform.OS === 'web' ? ('fixed' as any) : 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
-        zIndex: 40,
+        zIndex: 9999,
+        elevation: 10,
     },
 });
 
