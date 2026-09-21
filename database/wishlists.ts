@@ -58,3 +58,43 @@ export const getMyWishlists = query({
         }));
     },
 });
+
+/**
+ * Query: getSharedWishlists
+ * Fetches wishlists shared with a specific user (via user.sharedLists array).
+ */
+export const getSharedWishlists = query({
+    args: { clerkId: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        if (!args.clerkId) {
+            return [];
+        }
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId!))
+            .first();
+
+        if (!user || !user.sharedLists || user.sharedLists.length === 0) {
+            return [];
+        }
+
+        const sharedLists = await Promise.all(
+            user.sharedLists.map(async (wishlistId) => {
+                const list = await ctx.db.get(wishlistId);
+                if (!list) return null;
+
+                const owner = await ctx.db.get(list.ownerId);
+
+                return {
+                    ...list,
+                    ownerName: owner?.name ?? owner?.firstName ?? "Friend",
+                    ownerAvatar: owner?.avatarUrl ?? owner?.avatar,
+                    itemCount: list.items?.length ?? 0,
+                };
+            })
+        );
+
+        return sharedLists.filter((item): item is NonNullable<typeof item> => item !== null);
+    },
+});

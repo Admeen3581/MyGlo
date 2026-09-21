@@ -10,6 +10,9 @@ export interface TopNavBarProps {
   avatarUrl?: string | null;
   onAvatarPress?: () => void;
   isDarkMode?: boolean;
+  showMenuButton?: boolean;
+  isSidebarOpen?: boolean;
+  onMenuPress?: () => void;
 }
 
 export const TopNavBar: React.FC<TopNavBarProps> = ({
@@ -18,19 +21,41 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
   avatarUrl,
   onAvatarPress,
   isDarkMode: customDarkMode,
+  showMenuButton = false,
+  isSidebarOpen = false,
+  onMenuPress,
 }) => {
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
 
   return (
     <View className="flex-row items-center justify-between px-4 py-2.5 w-full">
-      {/* Left: MyGlo Logo Icon */}
+      {/* Left: MyGlo Logo Icon OR Hamburger Menu Toggle on Desktop */}
       <View className="flex-row items-center mr-3">
-        <View
-          style={{ backgroundColor: activeColors.primary }}
-          className="w-10 h-10 rounded-full items-center justify-center shadow-sm"
-        >
-          <MyGloLogo type="icon" color="white" size="sm" align="center" />
-        </View>
+        {showMenuButton ? (
+          <TouchableOpacity
+            onPress={onMenuPress}
+            activeOpacity={0.7}
+            accessibilityLabel="Toggle navigation sidebar"
+          >
+            <View
+              style={{ backgroundColor: activeColors.primary }}
+              className="w-10 h-10 rounded-full items-center justify-center shadow-sm"
+            >
+              <Ionicons
+                name={isSidebarOpen ? "close" : "menu"}
+                size={22}
+                color="white"
+              />
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <View
+            style={{ backgroundColor: activeColors.primary }}
+            className="w-10 h-10 rounded-full items-center justify-center shadow-sm"
+          >
+            <MyGloLogo type="icon" color="white" size="sm" align="center" />
+          </View>
+        )}
       </View>
 
       {/* Center: Search Bar */}
