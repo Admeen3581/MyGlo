@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -13,6 +14,12 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   isDarkMode: customDarkMode,
 }) => {
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 768;
+
+  // On desktop, position near bottom of page (24px). On mobile, sit just above bottom nav bar / safe area.
+  const bottomInset = isDesktop ? 24 : Math.max(insets.bottom + 40, 75);
 
   return (
     <TouchableOpacity
@@ -21,6 +28,7 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
       style={[
         styles.fab,
         {
+          bottom: bottomInset,
           backgroundColor: activeColors.primary,
           boxShadow: isDarkMode
             ? '0px 6px 18px rgba(0, 0, 0, 0.5)'
@@ -38,7 +46,6 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 20,
-    bottom: 95,
     zIndex: 50,
     elevation: 6,
   },

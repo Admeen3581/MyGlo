@@ -28,6 +28,10 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
   const count = wishlist.itemCount ?? 0;
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
+  const displayTitle = wishlist.title.length > 36
+    ? `${wishlist.title.substring(0, 28)}...`
+    : wishlist.title;
+
   const handleDotsPress = () => {
     setIsMenuVisible(true);
   };
@@ -83,7 +87,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
               : '0px 8px 16px rgba(1, 55, 125, 0.08)',
           },
         ]}
-        className="p-5 mb-4 border border-solid rounded-3xl min-h-36 justify-between flex-col"
+        className="p-5 mb-4 border border-solid rounded-3xl min-h-40 justify-between flex-col"
       >
         {/* Top Row: Item Count & Archived Badges + Pagination Dots Button */}
         <View className="flex-row items-center justify-between mb-3">
@@ -137,7 +141,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
           style={{ color: activeColors.foreground }}
           className="text-xl font-fraunces-bold leading-snug"
         >
-          {wishlist.title}
+          {displayTitle}
         </Text>
       </TouchableOpacity>
 
@@ -173,7 +177,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                 className="font-fraunces-bold text-base flex-1 mr-2"
                 numberOfLines={1}
               >
-                {wishlist.title}
+                {displayTitle}
               </Text>
               <TouchableOpacity
                 onPress={() => setIsMenuVisible(false)}
