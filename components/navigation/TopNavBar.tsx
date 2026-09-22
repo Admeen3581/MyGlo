@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Image, StyleSheet, Text } from 'react-native';
+import { View, TextInput, TouchableOpacity, Image, StyleSheet, Text, useWindowDimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { useTheme } from '@/hooks/useTheme';
@@ -34,6 +34,8 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                                                         onAddFriendPress,
                                                     }) => {
     const { activeColors } = useTheme(customDarkMode);
+    const { width } = useWindowDimensions();
+    const isDesktop = width >= 768;
 
     const renderRightAction = () => {
         if (rightAction === 'add-friend') {
@@ -74,11 +76,11 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                             borderColor: activeColors.primary,
                             backgroundColor: activeColors.muted,
                         }}
-                        className="w-12 h-12 rounded-full border border-solid items-center justify-center shadow-sm"
+                        className="w-14 h-14 md:w-12 md:h-12 rounded-full border border-solid items-center justify-center shadow-sm"
                     >
                         <Ionicons
                             name="cloud-download-outline"
-                            size={22}
+                            size={isDesktop ? 22 : 28}
                             color={activeColors.primary}
                         />
                     </View>
@@ -157,7 +159,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                     </TouchableOpacity>
                 ) : (
                     <View
-                        className="pl-2 w-12 h-12 rounded-full items-center justify-center shadow-sm"
+                        className="pl-2 w-12 h-12 rounded-full items-center justify-center"
                     >
                         <MyGloLogo type="icon" color={customDarkMode ? 'dark' : 'light'} size="md" align="center" />
                     </View>

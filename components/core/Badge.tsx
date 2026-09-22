@@ -21,7 +21,7 @@ export const Badge: React.FC<BadgeProps> = ({
   className = '',
   style,
 }) => {
-  const { isDarkMode, activeColors } = useTheme(customDarkMode);
+  const { activeColors } = useTheme(customDarkMode);
 
   const getVariantStyles = () => {
     switch (variant) {
@@ -99,7 +99,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   const sizeStyles = {
     sm: { container: 'px-3 py-1', text: 'text-xs font-nunito-semibold' },
-    md: { container: 'px-4 py-1.25', text: 'text-xs font-nunito-semibold' },
+    md: { container: 'px-3 py-1.25', text: 'text-xs font-nunito-semibold' },
     lg: { container: 'px-4 py-1.5', text: 'text-sm font-nunito-bold' },
   };
 
@@ -108,7 +108,7 @@ export const Badge: React.FC<BadgeProps> = ({
       style={[variantStyles.container, style]}
       className={`rounded-full flex-row items-center justify-center ${sizeStyles[size].container} ${className}`}
     >
-      {icon && <View className="mr-1.5 flex-row items-center justify-center">{icon}</View>}
+      {icon && <View className="mr-1 flex-row items-center justify-center">{icon}</View>}
       <Text
         style={[variantStyles.text]}
         className={`${sizeStyles[size].text}`}

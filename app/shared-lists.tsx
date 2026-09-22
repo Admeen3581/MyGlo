@@ -6,20 +6,18 @@ import {
     ActivityIndicator,
     StyleSheet,
     useWindowDimensions,
-    Modal,
-    Pressable,
-    TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Redirect } from 'expo-router';
 import { useAuth, useUser } from '@clerk/expo';
-import { useQuery, useMutation } from 'convex/react';
+import { useQuery } from 'convex/react';
 import { api } from '@/database/_generated/api';
 import { useTheme } from '@/hooks/useTheme';
 import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
 import { TopNavBar } from '@/components/navigation/TopNavBar';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { WishlistCard } from '@/components/wishlist/WishlistCard';
+import { IncomingListsModal } from '@/components/wishlist/IncomingListsModal';
 import { Ionicons } from '@expo/vector-icons';
 import { FloatingActionButton } from "@/components/core/FloatingActionButton";
 
@@ -47,10 +45,6 @@ export default function SharedListsScreen() {
         api.wishlists.getPendingSharedLists,
         user?.id ? { clerkId: user.id } : 'skip'
     );
-
-    // Mutations to accept or ignore shared list invitations in Convex
-    const acceptSharedListMutation = useMutation(api.users.acceptSharedList);
-    const ignoreSharedListMutation = useMutation(api.users.ignoreSharedList);
 
     const pendingLists = pendingWishlistsRaw ?? [];
 
@@ -202,113 +196,12 @@ export default function SharedListsScreen() {
                 </View>
 
                 {/* Incoming List Invitations Modal */}
-                <Modal
-                    visible={isIncomingModalOpen}
-                    transparent
-                    animationType="fade"
-                    onRequestClose={() => setIsIncomingModalOpen(false)}
-                >
-                    <Pressable
-                        style={styles.modalOverlay}
-                        onPress={() => setIsIncomingModalOpen(false)}
-                    >
-                        <Pressable
-                            style={[
-                                styles.modalContent,
-                                {
-                                    backgroundColor: isDarkMode ? '#16222A' : '#FFFFFF',
-                                    borderColor: activeColors.border,
-                                },
-                            ]}
-                            onPress={(e) => e.stopPropagation()}
-                            className="w-80 md:w-96 rounded-3xl p-5 border shadow-xl max-h-[80%]"
-                        >
-                            {/* Modal Header */}
-                            <View className="flex-row items-center justify-between pb-3 mb-3 border-b border-gray-200 dark:border-gray-700">
-                                <View className="flex-row items-center">
-                                    <Ionicons name="cloud-download-outline" size={22} color={activeColors.primary} />
-                                    <Text style={{ color: activeColors.foreground }} className="text-lg font-fraunces-bold ml-2">
-                                        Incoming Lists
-                                    </Text>
-                                </View>
-                                <TouchableOpacity onPress={() => setIsIncomingModalOpen(false)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                                    <Ionicons name="close" size={20} color={activeColors.mutedForeground} />
-                                </TouchableOpacity>
-                            </View>
-
-                            {/* Modal Content / Invites List */}
-                            <ScrollView className="max-h-96" showsVerticalScrollIndicator={false}>
-                                {pendingLists.length === 0 ? (
-                                    <View className="items-center justify-center py-8 px-2">
-                                        <Ionicons name="checkmark-circle-outline" size={36} color={activeColors.mutedForeground} />
-                                        <Text style={{ color: activeColors.mutedForeground }} className="text-sm font-nunito mt-2 text-center">
-                                            No new list invitations at this time.
-                                        </Text>
-                                    </View>
-                                ) : (
-                                    pendingLists.map((item) => (
-                                        <View
-                                            key={item._id}
-                                            style={{ backgroundColor: isDarkMode ? '#24343E' : '#F7F7F6', borderColor: activeColors.border }}
-                                            className="p-4 rounded-2xl mb-3 border"
-                                        >
-                                            <Text style={{ color: activeColors.foreground }} className="text-base font-fraunces-bold mb-1">
-                                                {item.title}
-                                            </Text>
-                                            <Text style={{ color: activeColors.mutedForeground }} className="text-xs font-nunito mb-3">
-                                                Shared by {item.ownerName} ({item.itemCount} {item.itemCount === 1 ? 'Item' : 'Items'})
-                                            </Text>
-
-                                            <View className="flex-row items-center justify-end gap-2">
-                                                {/* Ignore Button: remove from pendingSharedLists in DB */}
-                                                <TouchableOpacity
-                                                    onPress={async () => {
-                                                        if (!user?.id) return;
-                                                        try {
-                                                            await ignoreSharedListMutation({
-                                                                clerkId: user.id,
-                                                                wishlistId: item._id as any,
-                                                            });
-                                                        } catch (err) {
-                                                            console.error('[SharedLists] Failed to ignore wishlist:', err);
-                                                        }
-                                                    }}
-                                                    style={{ backgroundColor: isDarkMode ? '#334155' : '#E2E8F0' }}
-                                                    className="px-3.5 py-1.5 rounded-full"
-                                                >
-                                                    <Text style={{ color: activeColors.mutedForeground }} className="text-xs font-nunito-bold">
-                                                        Ignore
-                                                    </Text>
-                                                </TouchableOpacity>
-
-                                                {/* Accept Button: move from pending to sharedLists in DB */}
-                                                <TouchableOpacity
-                                                    onPress={async () => {
-                                                        if (!user?.id) return;
-                                                        try {
-                                                            await acceptSharedListMutation({
-                                                                clerkId: user.id,
-                                                                wishlistId: item._id as any,
-                                                            });
-                                                        } catch (err) {
-                                                            console.error('[SharedLists] Failed to accept wishlist:', err);
-                                                        }
-                                                    }}
-                                                    style={{ backgroundColor: activeColors.primary }}
-                                                    className="px-4 py-1.5 rounded-full"
-                                                >
-                                                    <Text className="text-xs font-nunito-bold text-white">
-                                                        Accept
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                    ))
-                                )}
-                            </ScrollView>
-                        </Pressable>
-                    </Pressable>
-                </Modal>
+                <IncomingListsModal
+                    isVisible={isIncomingModalOpen}
+                    onClose={() => setIsIncomingModalOpen(false)}
+                    pendingLists={pendingLists}
+                    isDarkMode={isDarkMode}
+                />
             </ScreenWrapper>
         </SafeAreaView>
     );
@@ -324,15 +217,5 @@ const styles = StyleSheet.create({
     },
     desktopScrollContent: {
         paddingBottom: 5,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.45)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    modalContent: {
-        elevation: 10,
     },
 });

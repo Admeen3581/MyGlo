@@ -96,7 +96,7 @@ export const WishlistShareModal: React.FC<WishlistShareModalProps> = ({
             },
           ]}
           onPress={(e) => e.stopPropagation()}
-          className="w-80 md:w-96 rounded-3xl p-5 border shadow-xl max-h-[80%]"
+          className="w-full max-w-md md:w-96 rounded-3xl p-5 border shadow-xl max-h-[85%] md:max-h-[80%]"
         >
           {/* Header */}
           <View
@@ -156,7 +156,7 @@ export const WishlistShareModal: React.FC<WishlistShareModalProps> = ({
           </View>
 
           {/* Users List */}
-          <ScrollView className="max-h-80" showsVerticalScrollIndicator={false}>
+          <ScrollView className="max-h-96 md:max-h-80" showsVerticalScrollIndicator={false}>
             {availableUsers === undefined ? (
               <View className="py-8 items-center">
                 <ActivityIndicator size="small" color={activeColors.primary} />
@@ -222,16 +222,16 @@ export const WishlistShareModal: React.FC<WishlistShareModalProps> = ({
                         <Badge
                           label="Accepted"
                           variant="success"
-                          size="sm"
-                          icon={<Ionicons name="checkmark-done-circle" size={14} color={activeColors.success} />}
+                          size="md"
+                          icon={<Ionicons name="checkmark-circle" size={15} color={activeColors.success} />}
                           isDarkMode={isDarkMode}
                         />
                       ) : isSent ? (
                         <Badge
                           label="Sent!"
                           variant="warning"
-                          size="sm"
-                          icon={<Ionicons name="checkmark-circle" size={14} color={activeColors.warning} />}
+                          size="md"
+                          icon={<Ionicons name="checkmark-circle" size={15} color={activeColors.warning} />}
                           isDarkMode={isDarkMode}
                         />
                       ) : (
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 16,
   },
   menuContainer: {
     elevation: 10,
