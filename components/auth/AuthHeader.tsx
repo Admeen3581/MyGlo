@@ -35,7 +35,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
         <View style={{ width: 40 }} />
       )}
 
-      <MyGloLogo type="standard" isDarkMode={isDarkMode} size="sm" />
+      <MyGloLogo className="ml-12 justify-center" type="subtext" isDarkMode={isDarkMode} size="md" />
 
       <TouchableOpacity
         onPress={toggleDarkMode}

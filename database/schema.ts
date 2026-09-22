@@ -22,7 +22,8 @@ export default defineSchema({
             )
         )
     })
-        .index("by_clerkId", ["clerkId"]),
+        .index("by_clerkId", ["clerkId"])
+        .index("by_email", ["email"]),
 
     // Core wishlists
     wishlists: defineTable({

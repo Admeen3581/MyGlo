@@ -170,16 +170,22 @@ export const getAllUsers = query({
     },
 });
 
+
 /**
- * Query: getUserByClerkId
- * Fetches user document by Clerk ID.
+ * Query: checkEmailExists
+ * Checks if a given email address exists in the Convex database.
  */
-export const getUserByClerkId = query({
-    args: { clerkId: v.string() },
+export const checkEmailExists = query({
+    args: { email: v.string() },
     handler: async (ctx, args) => {
-        return await ctx.db
+        const normalizedEmail = args.email.trim().toLowerCase();
+        if (!normalizedEmail) return false;
+
+        const existingUser = await ctx.db
             .query("users")
-            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+            .withIndex("by_email", (q) => q.eq("email", normalizedEmail))
             .first();
+
+        return !!existingUser;
     },
 });

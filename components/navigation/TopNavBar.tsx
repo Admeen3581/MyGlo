@@ -76,7 +76,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                             borderColor: activeColors.primary,
                             backgroundColor: activeColors.muted,
                         }}
-                        className="w-14 h-14 md:w-12 md:h-12 rounded-full border border-solid items-center justify-center shadow-sm"
+                        className="w-12 h-12 rounded-full border border-solid items-center justify-center shadow-sm"
                     >
                         <Ionicons
                             name="cloud-download-outline"

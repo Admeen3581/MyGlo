@@ -6,14 +6,14 @@ export interface ValidationStatus {
 }
 
 /**
- * Validates email input upon blur.
+ * Validates email input upon typing/blur.
  */
 export function getEmailStatus(
     email: string,
     isBlurred: boolean,
     isUnavailable: boolean = false
 ): ValidationStatus | null {
-    if (!isBlurred || email.length === 0) return null;
+    if (email.length === 0) return null;
 
     const hasAt = email.includes('@');
     const hasDot = email.includes('.');
@@ -24,11 +24,12 @@ export function getEmailStatus(
         hasAt && hasDot && isValidLength && atIdx > 0 && dotIdx > atIdx + 1 && dotIdx < email.length - 1;
 
     if (!isValidEmail) {
+        if (!isBlurred) return null;
         return { type: 'destructive', text: 'Not an email' };
     }
 
     if (isUnavailable) {
-        return { type: 'destructive', text: 'Email unavailable' };
+        return { type: 'destructive', text: 'Email Unavailable' };
     }
 
     return { type: 'success', text: 'Email Available' };

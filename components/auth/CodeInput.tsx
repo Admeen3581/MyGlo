@@ -85,9 +85,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
             >
               <Text
                 style={{ color: activeColors.foreground }}
-                className={
-                  isMobile ? 'text-4xl font-fraunces-bold' : 'text-5xl font-fraunces-bold'
-                }
+                className='text-4xl font-fraunces-bold'
               >
                 {digits[index] || ''}
               </Text>
