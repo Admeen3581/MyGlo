@@ -8,8 +8,8 @@ import {
     useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, Redirect } from 'expo-router';
-import { useAuth, useUser } from '@clerk/expo';
+import { Redirect } from 'expo-router';
+import { useAuth } from '@clerk/expo';
 import { useTheme } from '@/hooks/useTheme';
 import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
 import { TopNavBar } from '@/components/navigation/TopNavBar';
@@ -18,9 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import FloatingActionButton from "@/components/core/FloatingActionButton";
 
 export default function FriendsScreen() {
-    const router = useRouter();
     const { isLoaded, isSignedIn } = useAuth();
-    const { user } = useUser();
     const { isDarkMode, activeColors } = useTheme();
     const { width } = useWindowDimensions();
 
@@ -33,6 +31,11 @@ export default function FriendsScreen() {
     const handleFabPress = () => {
         //TODO: Action for creating items/lists (screens not implemented yet)
         console.log('[MyWishlists] Create list/item FAB pressed');
+    };
+
+    const handleAddFriendPress = () => {
+        //TODO: Action for adding friends / opening add friend modal
+        console.log('[Friends] Add friend pressed');
     };
 
     if (!isLoaded) {
@@ -50,12 +53,6 @@ export default function FriendsScreen() {
         return <Redirect href="/onboarding" />;
     }
 
-    const avatarUrl = user?.imageUrl || (user?.unsafeMetadata?.avatar_url as string) || null;
-
-    const handleAvatarPress = () => {
-        router.push('/profile' as any);
-    };
-
     return (
         <SafeAreaView
             style={[
@@ -64,12 +61,12 @@ export default function FriendsScreen() {
             ]}
         >
             <ScreenWrapper variant="default" className="flex-1">
-                {/* Top Navigation Bar */}
+                {/* Top Navigation Bar with Friend+ Icon */}
                 <TopNavBar
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
-                    avatarUrl={avatarUrl}
-                    onAvatarPress={handleAvatarPress}
+                    rightAction="add-friend"
+                    onAddFriendPress={handleAddFriendPress}
                     isDarkMode={isDarkMode}
                     showMenuButton={isDesktop}
                     isSidebarOpen={isSidebarOpen}
