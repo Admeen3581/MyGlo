@@ -29,6 +29,8 @@ import {
 } from '@/lib/validation';
 import { useAuth, useSignUp } from '@clerk/expo';
 import { getClerkErrorMessage } from '@/lib/clerk';
+import { useQuery } from 'convex/react';
+import { api } from '@/database/_generated/api';
 
 export default function SignUpScreen() {
     const router = useRouter();
@@ -42,7 +44,6 @@ export default function SignUpScreen() {
 
     const [email, setEmail] = useState('');
     const [emailBlurred, setEmailBlurred] = useState(false);
-    const [isEmailUnavailable] = useState(false);
 
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -54,6 +55,23 @@ export default function SignUpScreen() {
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     const [showPrivacyModal, setShowPrivacyModal] = useState(false);
     const [showTOSModal, setShowTOSModal] = useState(false);
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const hasAt = normalizedEmail.includes('@');
+    const hasDot = normalizedEmail.includes('.');
+    const isValidLength = normalizedEmail.length >= 5;
+    const atIdx = normalizedEmail.indexOf('@');
+    const dotIdx = normalizedEmail.lastIndexOf('.');
+    const isValidEmailFormat =
+        hasAt && hasDot && isValidLength && atIdx > 0 && dotIdx > atIdx + 1 && dotIdx < normalizedEmail.length - 1;
+
+    // Real-time reactive lookup in Convex database indexed by email
+    const isTakenInConvex = useQuery(
+        api.users.checkEmailExists,
+        isValidEmailFormat ? { email: normalizedEmail } : 'skip'
+    );
+
+    const isEmailUnavailable = isTakenInConvex === true;
 
     const emailStatus = getEmailStatus(email, emailBlurred, isEmailUnavailable);
     const passwordStatus = getPasswordStatus(password);
@@ -77,6 +95,11 @@ export default function SignUpScreen() {
 
         if (password !== confirmPassword) {
             setErrorMessage('Passwords do not match.');
+            return;
+        }
+
+        if (isEmailUnavailable) {
+            setErrorMessage('Email address is already taken.');
             return;
         }
 
