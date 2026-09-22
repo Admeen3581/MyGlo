@@ -19,7 +19,7 @@ export const ColorSwatch: React.FC<ColorSwatchProps> = ({
   return (
     <View
       style={{
-        backgroundColor: isDarkMode ? activeColors.muted : '#FFFFFF',
+        backgroundColor: activeColors.card,
         borderColor: activeColors.border,
       }}
       className="w-[48%] mb-3 p-3 rounded-2xl border flex-row items-center space-x-3"
@@ -33,7 +33,7 @@ export const ColorSwatch: React.FC<ColorSwatchProps> = ({
       />
       <View className="flex-1 ml-2">
         <Text
-          style={{ color: activeColors.foreground }}
+          style={{ color: activeColors.cardForeground }}
           className="text-sm font-nunito-bold capitalize"
         >
           {name}

@@ -1,133 +1,204 @@
-// app/index.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    View,
-    Text,
-    FlatList,
-    ActivityIndicator,
-    Pressable,
-    StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, Redirect } from 'expo-router';
-import { useAuth } from '@clerk/expo';
+import { Redirect, useRouter } from 'expo-router';
+import { useAuth, useUser } from '@clerk/expo';
 import { useQuery } from 'convex/react';
 import { api } from '@/database/_generated/api';
 import { useTheme } from '@/hooks/useTheme';
-import { Button } from '@/components/core/Button';
 import { ScreenWrapper } from '@/components/wrapper/ScreenWrapper';
+import { TopNavBar } from '@/components/navigation/TopNavBar';
+import { Sidebar } from '@/components/navigation/Sidebar';
+import { WishlistCard } from '@/components/wishlist/WishlistCard';
+import { FloatingActionButton } from '@/components/core/FloatingActionButton';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function Index() {
-    const router = useRouter();
-    const { isLoaded, isSignedIn } = useAuth();
-    const { isDarkMode, activeColors } = useTheme();
+export default function MyWishlistsScreen() {
+  const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
+  const { isDarkMode, activeColors } = useTheme();
+  const { width } = useWindowDimensions();
 
-    // Reactive subscription to public wishlists from Convex
-    const wishlists = useQuery(api.wishlists.getFeed);
+  const isDesktop = width >= 768;
 
-    if (!isLoaded) {
-        return null;
-    }
+  // Navigation, search, and fold-out sidebar states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(isDesktop);
 
-    if (!isSignedIn) {
-        return <Redirect href="/onboarding" />;
-    }
+  // Fetch only wishlists owned/created by the logged-in user via Convex
+  const rawWishlists = useQuery(
+    api.wishlists.getMyWishlists,
+    user?.id ? { clerkId: user.id } : 'skip'
+  );
 
+  // Filter user's owned wishlists based on search query
+  const wishlists = rawWishlists?.filter((item) =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+  );
+
+  if (!isLoaded) {
     return (
-        <SafeAreaView
-            style={[
-                styles.safeArea,
-                { backgroundColor: activeColors.background },
-            ]}
-        >
-            <ScreenWrapper variant="default">
-                <View className="flex-1 px-4 pt-4">
-                    {/* Header */}
-                    <View className="flex-row items-center justify-between mb-4">
-                        <Text className="text-2xl font-bold text-gray-900">
-                            Explore Wishlists
-                        </Text>
-                        <Button
-                            title="Test Page"
-                            variant="primary"
-                            size="sm"
-                            isDarkMode={isDarkMode}
-                            onPress={() => router.push('/testpage' as any)}
-                        />
-                    </View>
-
-                    {/* Loading State */}
-                    {wishlists === undefined ? (
-                        <View className="flex-1 items-center justify-center py-20">
-                            <ActivityIndicator size="large" color="#4F46E5" />
-                            <Text className="mt-3 text-sm text-gray-500">
-                                Loading wishlists...
-                            </Text>
-                        </View>
-                    ) : wishlists.length === 0 ? (
-                        /* Empty State */
-                        <View className="flex-1 items-center justify-center py-20 px-4">
-                            <Text className="text-lg font-semibold text-gray-800">
-                                No wishlists found
-                            </Text>
-                            <Text className="text-center text-sm text-gray-500 mt-1 mb-6">
-                                Create a wishlist or trigger the seed mutation from your dashboard.
-                            </Text>
-                        </View>
-                    ) : (
-                        /* Feed List */
-                        <FlatList
-                            data={wishlists}
-                            keyExtractor={(item) => item._id}
-                            showsVerticalScrollIndicator={false}
-                            contentContainerStyle={{ paddingBottom: 32 }}
-                            renderItem={({ item }) => (
-                                <Pressable
-                                    className="mb-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 active:opacity-80"
-                                    onPress={() => {
-                                        // router.push(`/wishlist/${item._id}` as any);
-                                    }}
-                                >
-                                    <View className="flex-row items-center justify-between mb-2">
-                                        <Text className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-                                            {item.ownerName}&#39;s List
-                                        </Text>
-                                        <View className="rounded-full bg-gray-100 px-2.5 py-0.5">
-                                            <Text className="text-xs text-gray-600">
-                                                {item.itemCount} {item.itemCount === 1 ? 'item' : 'items'}
-                                            </Text>
-                                        </View>
-                                    </View>
-
-                                    <Text className="text-lg font-bold text-gray-900">
-                                        {item.title}
-                                    </Text>
-
-                                    {item.description ? (
-                                        <Text className="mt-1 text-sm text-gray-600" numberOfLines={2}>
-                                            {item.description}
-                                        </Text>
-                                    ) : null}
-
-                                    {item.keepPurchasesSecret && (
-                                        <View className="mt-3 self-start rounded bg-amber-50 px-2 py-0.5 border border-amber-200">
-                                            <Text className="text-[11px] font-medium text-amber-700">
-                                                Surprise Mode Active
-                                            </Text>
-                                        </View>
-                                    )}
-                                </Pressable>
-                            )}
-                        />
-                    )}
-                </View>
-            </ScreenWrapper>
-        </SafeAreaView>
+      <View
+        style={{ backgroundColor: activeColors.background }}
+        className="flex-1 items-center justify-center"
+      >
+        <ActivityIndicator size="large" color={activeColors.primary} />
+      </View>
     );
+  }
+
+  if (!isSignedIn) {
+    return <Redirect href="/onboarding" />;
+  }
+
+  const avatarUrl = user?.imageUrl || (user?.unsafeMetadata?.avatar_url as string) || null;
+  const firstName = user?.firstName || 'Back';
+
+  const handleAvatarPress = () => {
+    router.push('/profile' as any);
+  };
+
+  const handleFabPress = () => {
+    //TODO: Action for creating items/lists (screens not implemented yet)
+    console.log('[MyWishlists] Create list/item FAB pressed');
+  };
+
+  return (
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        { backgroundColor: activeColors.background },
+      ]}
+    >
+      <ScreenWrapper variant="default" className="flex-1">
+        <TopNavBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          avatarUrl={avatarUrl}
+          onAvatarPress={handleAvatarPress}
+          isDarkMode={isDarkMode}
+          showMenuButton={isDesktop}
+          isSidebarOpen={isSidebarOpen}
+          onMenuPress={() => setIsSidebarOpen((prev) => !prev)}
+        />
+
+        <View className="flex-1 flex-row relative overflow-hidden">
+          {isDesktop && (
+            <Sidebar
+              activeTab="my-wishlists"
+              isOpen={isSidebarOpen}
+            />
+          )}
+
+          <View className="flex-1 h-full relative">
+            <View className="px-5 pt-3 pb-2">
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-xs font-quicksand-bold uppercase tracking-widest mb-1"
+              >
+                WELCOME BACK, {firstName.toUpperCase()}
+              </Text>
+              <Text
+                style={{ color: activeColors.foreground }}
+                className="text-3xl font-fraunces-bold"
+              >
+                My Wishlists
+              </Text>
+            </View>
+
+            {/* Wishlist Cards ScrollView */}
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={[
+                styles.scrollContent,
+                isDesktop && styles.desktopScrollContent,
+              ]}
+            >
+              {rawWishlists === undefined ? (
+                /* Loading State */
+                <View className="flex-1 items-center justify-center py-20">
+                  <ActivityIndicator size="large" color={activeColors.primary} />
+                  <Text
+                    style={{ color: activeColors.mutedForeground }}
+                    className="mt-3 text-sm font-nunito-semibold"
+                  >
+                    Loading wishlists...
+                  </Text>
+                </View>
+              ) : wishlists && wishlists.length > 0 ? (
+                /* Wishlist Cards Grid */
+                <View className="px-5 pt-2 flex-row flex-wrap -mx-2">
+                  {wishlists.map((item) => (
+                    <View key={item._id} className="w-1/2 md:w-1/3 lg:w-1/4 px-2">
+                      <WishlistCard
+                        wishlist={item}
+                        isDarkMode={isDarkMode}
+                        onPress={() => {
+                          //TODO: Navigate to wishlist detail when implemented
+                        }}
+                      />
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                /* Empty State */
+                <View className="flex-1 items-center justify-center py-16 px-6">
+                  <View
+                    style={{ backgroundColor: activeColors.muted }}
+                    className="w-16 h-16 rounded-full items-center justify-center mb-4"
+                  >
+                    <Ionicons
+                      name="gift-outline"
+                      size={32}
+                      color={activeColors.primary}
+                    />
+                  </View>
+                  <Text
+                    style={{ color: activeColors.foreground }}
+                    className="text-lg font-fraunces-bold text-center mb-1"
+                  >
+                    {searchQuery ? 'No matching wishlists' : 'No Wishlists Yet'}
+                  </Text>
+                  <Text
+                    style={{ color: activeColors.mutedForeground }}
+                    className="text-center text-sm font-nunito max-w-70"
+                  >
+                    {searchQuery
+                      ? `No wishlist found matching "${searchQuery}".`
+                      : 'Tap the "+" button below to create your first wishlist and add items!'}
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+
+            <FloatingActionButton
+              onPress={handleFabPress}
+              isDarkMode={isDarkMode}
+            />
+          </View>
+        </View>
+      </ScreenWrapper>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-    },
+  safeArea: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 110, // Ensure content isn't covered by bottom nav bar on mobile
+  },
+  desktopScrollContent: {
+    paddingBottom: 5, // Reduced bottom padding when bottom nav bar is hidden
+  },
 });

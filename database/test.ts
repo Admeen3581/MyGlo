@@ -48,6 +48,7 @@ export const seedSampleData = mutation({
             description: "A few things I've been eyeing lately!",
             keepPurchasesSecret: true,
             items,
+            isArchived: false,
         });
 
         const wishlistIdJohn = await ctx.db.insert("wishlists", {
@@ -56,6 +57,7 @@ export const seedSampleData = mutation({
             description: "A few things I've been eyeing lately!",
             keepPurchasesSecret: true,
             items,
+            isArchived: false,
         });
 
         // Update users with shared lists
