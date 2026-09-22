@@ -21,7 +21,7 @@ import { TopNavBar } from '@/components/navigation/TopNavBar';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { WishlistCard } from '@/components/wishlist/WishlistCard';
 import { Ionicons } from '@expo/vector-icons';
-import FloatingActionButton from "@/components/core/FloatingActionButton";
+import { FloatingActionButton } from "@/components/core/FloatingActionButton";
 
 export default function SharedListsScreen() {
     const { isLoaded, isSignedIn } = useAuth();
