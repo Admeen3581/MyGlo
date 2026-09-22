@@ -49,11 +49,11 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                             borderColor: activeColors.primary,
                             backgroundColor: activeColors.muted,
                         }}
-                        className="w-10 h-10 rounded-full border border-solid items-center justify-center shadow-sm"
+                        className="w-12 h-12 rounded-full border border-solid items-center justify-center shadow-sm"
                     >
                         <Ionicons
                             name="person-add-outline"
-                            size={20}
+                            size={22}
                             color={activeColors.primary}
                         />
                     </View>
@@ -74,7 +74,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                             borderColor: activeColors.primary,
                             backgroundColor: activeColors.muted,
                         }}
-                        className="w-10 h-10 rounded-full border border-solid items-center justify-center shadow-sm"
+                        className="w-12 h-12 rounded-full border border-solid items-center justify-center shadow-sm"
                     >
                         <Ionicons
                             name="cloud-download-outline"
@@ -113,7 +113,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                             borderColor: activeColors.primary,
                             backgroundColor: activeColors.muted,
                         }}
-                        className="w-10 h-10 rounded-full border-2 items-center justify-center overflow-hidden shadow-sm"
+                        className="w-12 h-12 rounded-full border-2 items-center justify-center overflow-hidden shadow-sm"
                     >
                         {avatarUrl ? (
                             <Image
@@ -124,7 +124,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                         ) : (
                             <Ionicons
                                 name="person"
-                                size={20}
+                                size={22}
                                 color={activeColors.mutedForeground}
                             />
                         )}
@@ -135,7 +135,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
     };
 
     return (
-        <View className="flex-row items-center justify-between px-4 py-2.5 w-full">
+        <View className="flex-row items-center justify-between px-4 py-3 w-full">
             {/* Left: MyGlo Logo Icon OR Hamburger Menu Toggle on Desktop */}
             <View className="flex-row items-center mr-3">
                 {showMenuButton ? (
@@ -146,7 +146,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                     >
                         <View
                             style={{ backgroundColor: activeColors.primary }}
-                            className="w-10 h-10 rounded-full items-center justify-center shadow-sm"
+                            className="w-12 h-12 rounded-full items-center justify-center shadow-sm"
                         >
                             <Ionicons
                                 name={isSidebarOpen ? "close" : "menu"}
@@ -157,10 +157,9 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                     </TouchableOpacity>
                 ) : (
                     <View
-                        style={{ backgroundColor: activeColors.primary }}
-                        className="w-10 h-10 rounded-full items-center justify-center shadow-sm"
+                        className="pl-2 w-12 h-12 rounded-full items-center justify-center shadow-sm"
                     >
-                        <MyGloLogo type="icon" color="white" size="sm" align="center" />
+                        <MyGloLogo type="icon" color={customDarkMode ? 'dark' : 'light'} size="md" align="center" />
                     </View>
                 )}
             </View>
@@ -171,7 +170,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                     backgroundColor: activeColors.muted,
                     borderColor: activeColors.border,
                 }}
-                className="flex-1 flex-row items-center rounded-full h-10 px-3.5 border border-solid mr-3"
+                className="flex-1 flex-row items-center rounded-full h-12 px-3.5 border border-solid mr-3"
             >
                 <Ionicons
                     name="search-outline"
@@ -193,7 +192,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                     <TouchableOpacity onPress={() => onSearchChange?.('')} activeOpacity={0.7}>
                         <Ionicons
                             name="close-circle"
-                            size={16}
+                            size={20}
                             color={activeColors.mutedForeground}
                         />
                     </TouchableOpacity>

@@ -5,6 +5,8 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -116,7 +118,7 @@ export default function AccountLandingScreen() {
 
         // 1. Primary Operation: Save user record to Convex database (schema.ts users table)
         try {
-          const createdUserId = await createUser({
+          await createUser({
             clerkId: user.id,
             firstName,
             lastName,
@@ -200,95 +202,102 @@ export default function AccountLandingScreen() {
         style={{ bottom: -40, right: -110, opacity: isDarkMode ? 0.15 : 0.2 }}
       />
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingView}
       >
-        <ScreenWrapper variant="auth">
-          <AuthHeader
-            onBackPress={() => router.back()}
-            isDarkMode={isDarkMode}
-          />
-
-          {/* Titles & Headings */}
-          <View className="mb-6 items-center">
-            <Text
-              style={{ color: activeColors.foreground }}
-              className="text-3xl font-fraunces-black text-center leading-tight mb-2"
-            >
-              Create Your Profile
-            </Text>
-            <Text
-              style={{ color: activeColors.mutedForeground }}
-              className="text-sm font-nunito-semibold text-center leading-relaxed max-w-[320px]"
-            >
-              Personalize your account to start curating and sharing gift wishlists.
-            </Text>
-          </View>
-
-          {/* Form Card */}
-          <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
-            {/* Avatar Section */}
-            <View className="items-center mb-2">
-              <AvatarPicker
-                avatarUri={avatarUri}
-                onPress={handleAvatarPress}
-                size={112}
-                isDarkMode={isDarkMode}
-              />
-              <TouchableOpacity onPress={handleAvatarPress} activeOpacity={0.7}>
-                <Text
-                  style={{ color: activeColors.primary }}
-                  className="text-xs font-nunito-bold text-center mt-1"
-                >
-                  Upload Profile Photo (Optional)
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Name Input (Required) */}
-            <Input
-              label="Full Name *"
-              placeholder="e.g. Alex Morgan"
-              value={name}
-              onChangeText={(text) => {
-                setName(text);
-                if (nameError) setNameError('');
-              }}
-              statusType={nameError ? 'destructive' : null}
-              error={nameError || undefined}
-              autoCapitalize="words"
-              autoComplete="name"
-              textContentType="name"
-              returnKeyType="next"
-              leftIcon={
-                <Ionicons name="person-outline" size={18} color={activeColors.mutedForeground} />
-              }
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <ScreenWrapper variant="auth">
+            <AuthHeader
+              onBackPress={() => router.back()}
               isDarkMode={isDarkMode}
             />
 
-            {/* Save & Continue CTA Button */}
-            <View className="pt-3">
-              <Button
-                title={isLoading ? 'Saving...' : 'Save & Continue'}
-                variant="primary"
-                size="lg"
-                isDarkMode={isDarkMode}
-                onPress={handleSaveAndContinue}
-                disabled={isLoading}
-
-              />
+            {/* Titles & Headings */}
+            <View className="mb-6 items-center">
+              <Text
+                style={{ color: activeColors.foreground }}
+                className="text-3xl font-fraunces-black text-center leading-tight mb-2"
+              >
+                Create Your Profile
+              </Text>
+              <Text
+                style={{ color: activeColors.mutedForeground }}
+                className="text-sm font-nunito-semibold text-center leading-relaxed max-w-[320px]"
+              >
+                Personalize your account to start curating and sharing gift wishlists.
+              </Text>
             </View>
-          </Card>
-        </ScreenWrapper>
-      </ScrollView>
+
+            {/* Form Card */}
+            <Card variant="tl-large" isDarkMode={isDarkMode} className="mb-6 space-y-4 p-5">
+              {/* Avatar Section */}
+              <View className="items-center mb-2">
+                <AvatarPicker
+                  avatarUri={avatarUri}
+                  onPress={handleAvatarPress}
+                  size={112}
+                  isDarkMode={isDarkMode}
+                />
+                <TouchableOpacity onPress={handleAvatarPress} activeOpacity={0.7}>
+                  <Text
+                    style={{ color: activeColors.primary }}
+                    className="text-xs font-nunito-bold text-center mt-1"
+                  >
+                    Upload Profile Photo (Optional)
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Name Input (Required) */}
+              <Input
+                label="Full Name *"
+                placeholder="e.g. Alex Morgan"
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
+                  if (nameError) setNameError('');
+                }}
+                statusType={nameError ? 'destructive' : null}
+                error={nameError || undefined}
+                autoCapitalize="words"
+                autoComplete="name"
+                textContentType="name"
+                returnKeyType="next"
+                leftIcon={
+                  <Ionicons name="person-outline" size={18} color={activeColors.mutedForeground} />
+                }
+                isDarkMode={isDarkMode}
+              />
+
+              {/* Save & Continue CTA Button */}
+              <View className="pt-3">
+                <Button
+                  title={isLoading ? 'Saving...' : 'Save & Continue'}
+                  variant="primary"
+                  size="lg"
+                  isDarkMode={isDarkMode}
+                  onPress={handleSaveAndContinue}
+                  disabled={isLoading}
+                />
+              </View>
+            </Card>
+          </ScreenWrapper>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
     flex: 1,
   },
   scrollContent: {
