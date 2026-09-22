@@ -43,7 +43,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({ initTab }) => {
         },
         {
             id: 'shared-lists',
-            label: 'Shared with Me',
+            label: 'Shared',
             activeIcon: 'gift',
             inactiveIcon: 'gift-outline',
         },
@@ -79,9 +79,9 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({ initTab }) => {
                         : '0px -4px 16px rgba(1, 55, 125, 0.08)',
                 },
             ]}
-            className="w-full border-t border-solid px-6 pt-3"
+            className="w-full border-t border-solid pt-3"
         >
-            <View className="flex-row items-center justify-around w-full max-w-md mx-auto">
+            <View className="flex-row items-center w-full max-w-md mx-auto">
                 {navItems.map((item) => {
                     const isActive = activeTab === item.id;
                     const iconColor = isActive ? activeColors.primary : activeColors.mutedForeground;
@@ -92,7 +92,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({ initTab }) => {
                             key={item.id}
                             onPress={() => handleTabPress(item.id)}
                             activeOpacity={0.7}
-                            className="items-center justify-center py-1 px-4 min-w-18"
+                            className="flex-1 w-1/4 items-center justify-center py-1 px-1"
                         >
                             <View className="relative items-center justify-center">
                                 <Ionicons
@@ -103,7 +103,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({ initTab }) => {
                             </View>
                             <Text
                                 style={{ color: textColor }}
-                                className={`text-xs mt-1 ${isActive ? 'font-nunito-bold' : 'font-nunito-semibold'}`}
+                                className={`text-xs mt-1 text-center ${isActive ? 'font-nunito-bold' : 'font-nunito-semibold'}`}
                             >
                                 {item.label}
                             </Text>
