@@ -98,3 +98,43 @@ export const getSharedWishlists = query({
         return sharedLists.filter((item): item is NonNullable<typeof item> => item !== null);
     },
 });
+
+/**
+ * Query: getPendingSharedLists
+ * Fetches wishlists that are currently pending invitation for a specific user (from user.pendingSharedLists array).
+ */
+export const getPendingSharedLists = query({
+    args: { clerkId: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        if (!args.clerkId) {
+            return [];
+        }
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId!))
+            .first();
+
+        if (!user || !user.pendingSharedLists || user.pendingSharedLists.length === 0) {
+            return [];
+        }
+
+        const pendingLists = await Promise.all(
+            user.pendingSharedLists.map(async (wishlistId) => {
+                const list = await ctx.db.get(wishlistId);
+                if (!list) return null;
+
+                const owner = await ctx.db.get(list.ownerId);
+
+                return {
+                    ...list,
+                    ownerName: owner?.name ?? owner?.firstName ?? "Friend",
+                    ownerAvatar: owner?.avatarUrl ?? owner?.avatar,
+                    itemCount: list.items?.length ?? 0,
+                };
+            })
+        );
+
+        return pendingLists.filter((item): item is NonNullable<typeof item> => item !== null);
+    },
+});

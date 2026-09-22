@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
+import { Badge } from '@/components/core/Badge';
+import { WishlistCardMenuModal } from './WishlistCardMenuModal';
+import { WishlistShareModal } from './WishlistShareModal';
 
 export interface WishlistCardItem {
   _id: string;
@@ -26,9 +29,11 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 }) => {
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
   const count = wishlist.itemCount ?? 0;
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
-  const displayTitle = wishlist.title.length > 36
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isShareModalVisible, setIsShareModalVisible] = useState(false);
+
+  const displayTitle = wishlist.title.length > 30
     ? `${wishlist.title.substring(0, 28)}...`
     : wishlist.title;
 
@@ -38,36 +43,6 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 
   const handleCardLongPress = () => {
     setIsMenuVisible(true);
-  };
-
-  const handleAddItem = () => {
-    // TODO: Implement Add Item functionality (e.g. open add item modal or navigate to add item screen)
-    console.log('[WishlistCard] Add item pressed for wishlist:', wishlist._id, wishlist.title);
-    setIsMenuVisible(false);
-  };
-
-  const handleRename = () => {
-    // TODO: Implement Rename functionality (e.g. open rename wishlist prompt/modal)
-    console.log('[WishlistCard] Rename pressed for wishlist:', wishlist._id, wishlist.title);
-    setIsMenuVisible(false);
-  };
-
-  const handleShare = () => {
-    // TODO: Implement Share functionality (e.g. open share sheet or invite friends modal)
-    console.log('[WishlistCard] Share pressed for wishlist:', wishlist._id, wishlist.title);
-    setIsMenuVisible(false);
-  };
-
-  const handleDelete = () => {
-    // TODO: Implement Delete functionality (e.g. prompt confirmation and remove wishlist via Convex mutation)
-    console.log('[WishlistCard] Delete pressed for wishlist:', wishlist._id, wishlist.title);
-    setIsMenuVisible(false);
-  };
-
-  const handleRemoveShared = () => {
-    // TODO: Implement Remove from Shared functionality (e.g. remove wishlist ID from user's sharedLists)
-    console.log('[WishlistCard] Remove from shared pressed for wishlist:', wishlist._id, wishlist.title);
-    setIsMenuVisible(false);
   };
 
   return (
@@ -80,7 +55,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         style={[
           styles.card,
           {
-            backgroundColor: isDarkMode ? '#16222A' : '#FFFFFF',
+            backgroundColor: activeColors.card,
             borderColor: activeColors.border,
             boxShadow: isDarkMode
               ? '0px 8px 16px rgba(2, 8, 17, 0.35)'
@@ -92,34 +67,20 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         {/* Top Row: Item Count & Archived Badges + Pagination Dots Button */}
         <View className="flex-row items-center justify-between mb-3">
           <View className="flex-row items-center gap-1.5 flex-wrap flex-1 mr-2">
-            <View
-              style={{
-                backgroundColor: isDarkMode ? '#24343E' : '#EAEBE7',
-              }}
-              className="rounded-full px-3 py-1"
-            >
-              <Text
-                style={{ color: activeColors.primary }}
-                className="text-xs font-nunito-bold"
-              >
-                {count} {count === 1 ? 'Item' : 'Items'}
-              </Text>
-            </View>
+            <Badge
+              label={`${count} ${count === 1 ? 'Item' : 'Items'}`}
+              variant="primary"
+              size="sm"
+              isDarkMode={isDarkMode}
+            />
 
             {wishlist.isArchived && (
-              <View
-                style={{
-                  backgroundColor: isDarkMode ? '#3B2A1D' : '#FEF3C7',
-                }}
-                className="rounded-full px-3 py-1 border border-amber-500/30"
-              >
-                <Text
-                  style={{ color: isDarkMode ? '#FBBF24' : '#D97706' }}
-                  className="text-xs font-nunito-bold"
-                >
-                  Archived
-                </Text>
-              </View>
+              <Badge
+                label="Archived"
+                variant="warning"
+                size="sm"
+                isDarkMode={isDarkMode}
+              />
             )}
           </View>
 
@@ -138,176 +99,31 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 
         {/* Main Title */}
         <Text
-          style={{ color: activeColors.foreground }}
+          style={{ color: activeColors.cardForeground }}
           className="text-xl font-fraunces-bold leading-snug"
         >
           {displayTitle}
         </Text>
       </TouchableOpacity>
 
-      {/* Hovering Context Menu Modal */}
-      <Modal
-        visible={isMenuVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setIsMenuVisible(false)}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setIsMenuVisible(false)}
-        >
-          <Pressable
-            style={[
-              styles.menuContainer,
-              {
-                backgroundColor: isDarkMode ? '#1F2C34' : '#FFFFFF',
-                borderColor: activeColors.border,
-                boxShadow: isDarkMode
-                  ? '0px 12px 24px rgba(0, 0, 0, 0.5)'
-                  : '0px 12px 24px rgba(0, 0, 0, 0.12)',
-              },
-            ]}
-            onPress={(e) => e.stopPropagation()}
-            className="w-72 rounded-3xl p-4 border"
-          >
-            {/* Header */}
-            <View className="flex-row items-center justify-between pb-3 mb-2 border-b border-gray-200 dark:border-gray-700">
-              <Text
-                style={{ color: activeColors.foreground }}
-                className="font-fraunces-bold text-base flex-1 mr-2"
-                numberOfLines={1}
-              >
-                {displayTitle}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setIsMenuVisible(false)}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Ionicons
-                  name="close"
-                  size={20}
-                  color={activeColors.mutedForeground}
-                />
-              </TouchableOpacity>
-            </View>
+      {/* Context Menu Modal Component */}
+      <WishlistCardMenuModal
+        isVisible={isMenuVisible}
+        onClose={() => setIsMenuVisible(false)}
+        title={displayTitle}
+        wishlist={wishlist}
+        isShared={isShared}
+        isDarkMode={isDarkMode}
+        onShare={() => setIsShareModalVisible(true)}
+      />
 
-            {/* Menu Options */}
-            {isShared ? (
-              /* Shared List Menu Options: Share & Remove from Shared */
-              <>
-                <TouchableOpacity
-                  onPress={handleShare}
-                  className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
-                >
-                  <Ionicons
-                    name="share-outline"
-                    size={20}
-                    color={activeColors.foreground}
-                  />
-                  <Text
-                    style={{ color: activeColors.foreground }}
-                    className="text-base font-nunito-semibold ml-3"
-                  >
-                    Share
-                  </Text>
-                </TouchableOpacity>
-
-                <View style={{ height: 1, backgroundColor: activeColors.border, marginVertical: 4 }} />
-
-                <TouchableOpacity
-                  onPress={handleRemoveShared}
-                  className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
-                >
-                  <Ionicons
-                    name="trash-outline"
-                    size={20}
-                    color="#EF4444"
-                  />
-                  <Text
-                    style={{ color: '#EF4444' }}
-                    className="text-base font-nunito-bold ml-3"
-                  >
-                    Remove from Shared
-                  </Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              /* Owned List Menu Options: Add Item, Rename, Share, Delete */
-              <>
-                <TouchableOpacity
-                  onPress={handleAddItem}
-                  className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
-                >
-                  <Ionicons
-                    name="add-circle-outline"
-                    size={20}
-                    color={activeColors.primary}
-                  />
-                  <Text
-                    style={{ color: activeColors.foreground }}
-                    className="text-base font-nunito-semibold ml-3"
-                  >
-                    Add Item
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={handleRename}
-                  className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
-                >
-                  <Ionicons
-                    name="pencil-outline"
-                    size={20}
-                    color={activeColors.foreground}
-                  />
-                  <Text
-                    style={{ color: activeColors.foreground }}
-                    className="text-base font-nunito-semibold ml-3"
-                  >
-                    Rename
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={handleShare}
-                  className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
-                >
-                  <Ionicons
-                    name="share-outline"
-                    size={20}
-                    color={activeColors.foreground}
-                  />
-                  <Text
-                    style={{ color: activeColors.foreground }}
-                    className="text-base font-nunito-semibold ml-3"
-                  >
-                    Share
-                  </Text>
-                </TouchableOpacity>
-
-                <View style={{ height: 1, backgroundColor: activeColors.border, marginVertical: 4 }} />
-
-                <TouchableOpacity
-                  onPress={handleDelete}
-                  className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
-                >
-                  <Ionicons
-                    name="trash-outline"
-                    size={20}
-                    color="#EF4444"
-                  />
-                  <Text
-                    style={{ color: '#EF4444' }}
-                    className="text-base font-nunito-bold ml-3"
-                  >
-                    Delete
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </Pressable>
-        </Pressable>
-      </Modal>
+      {/* Share Wishlist Modal Component */}
+      <WishlistShareModal
+        isVisible={isShareModalVisible}
+        onClose={() => setIsShareModalVisible(false)}
+        wishlistId={wishlist._id}
+        isDarkMode={isDarkMode}
+      />
     </>
   );
 };
@@ -315,16 +131,6 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     elevation: 3,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.45)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  menuContainer: {
-    elevation: 10,
   },
 });
 

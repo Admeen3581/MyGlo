@@ -423,6 +423,7 @@ export default function TestPage() {
             <View className="flex-row flex-wrap justify-between">
               <ColorSwatch name="Background" hex={activeColors.background} isDarkMode={isDarkMode} />
               <ColorSwatch name="Foreground" hex={activeColors.foreground} isDarkMode={isDarkMode} />
+              <ColorSwatch name="Card" hex={activeColors.card} isDarkMode={isDarkMode} />
               <ColorSwatch name="Primary" hex={activeColors.primary} isDarkMode={isDarkMode} />
               <ColorSwatch name="Secondary" hex={activeColors.secondary} isDarkMode={isDarkMode} />
               <ColorSwatch name="Accent" hex={activeColors.accent} isDarkMode={isDarkMode} />

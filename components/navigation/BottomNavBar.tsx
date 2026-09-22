@@ -71,7 +71,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({ initTab }) => {
             style={[
                 styles.container,
                 {
-                    backgroundColor: isDarkMode ? '#0E151A' : '#F7F7F6',
+                    backgroundColor: activeColors.background,
                     borderTopColor: activeColors.border,
                     paddingBottom: Math.max(insets.bottom, 8),
                     boxShadow: isDarkMode

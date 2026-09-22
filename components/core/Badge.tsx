@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleProp, ViewStyle } from 'react-native';
 import { useTheme } from '@/hooks/useTheme';
 
 interface BadgeProps {
   label: string;
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'muted';
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;
   isDarkMode?: boolean;
+  className?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const Badge: React.FC<BadgeProps> = ({
@@ -16,6 +18,8 @@ export const Badge: React.FC<BadgeProps> = ({
   size = 'md',
   icon,
   isDarkMode: customDarkMode,
+  className = '',
+  style,
 }) => {
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
 
@@ -24,8 +28,8 @@ export const Badge: React.FC<BadgeProps> = ({
       case 'primary':
         return {
           container: {
-            backgroundColor: isDarkMode ? 'rgba(32, 164, 181, 0.15)' : 'rgba(0, 95, 115, 0.10)',
-            borderColor: isDarkMode ? 'rgba(32, 164, 181, 0.30)' : 'rgba(0, 95, 115, 0.20)',
+            backgroundColor: activeColors.badgePrimaryBg,
+            borderColor: activeColors.badgePrimaryBorder,
             borderWidth: 1,
           },
           text: {
@@ -35,8 +39,8 @@ export const Badge: React.FC<BadgeProps> = ({
       case 'secondary':
         return {
           container: {
-            backgroundColor: isDarkMode ? 'rgba(39, 74, 75, 0.40)' : 'rgba(132, 210, 189, 0.20)',
-            borderColor: isDarkMode ? 'rgba(163, 231, 213, 0.30)' : 'rgba(132, 210, 189, 0.40)',
+            backgroundColor: activeColors.badgeSecondaryBg,
+            borderColor: activeColors.badgeSecondaryBorder,
             borderWidth: 1,
           },
           text: {
@@ -46,8 +50,8 @@ export const Badge: React.FC<BadgeProps> = ({
       case 'success':
         return {
           container: {
-            backgroundColor: isDarkMode ? 'rgba(65, 196, 122, 0.15)' : 'rgba(56, 178, 108, 0.15)',
-            borderColor: isDarkMode ? 'rgba(65, 196, 122, 0.30)' : 'rgba(56, 178, 108, 0.30)',
+            backgroundColor: activeColors.badgeSuccessBg,
+            borderColor: activeColors.badgeSuccessBorder,
             borderWidth: 1,
           },
           text: {
@@ -57,8 +61,8 @@ export const Badge: React.FC<BadgeProps> = ({
       case 'warning':
         return {
           container: {
-            backgroundColor: isDarkMode ? 'rgba(240, 154, 36, 0.15)' : 'rgba(232, 139, 26, 0.15)',
-            borderColor: isDarkMode ? 'rgba(240, 154, 36, 0.30)' : 'rgba(232, 139, 26, 0.30)',
+            backgroundColor: activeColors.badgeWarningBg,
+            borderColor: activeColors.badgeWarningBorder,
             borderWidth: 1,
           },
           text: {
@@ -68,8 +72,8 @@ export const Badge: React.FC<BadgeProps> = ({
       case 'destructive':
         return {
           container: {
-            backgroundColor: isDarkMode ? 'rgba(224, 83, 67, 0.15)' : 'rgba(196, 61, 47, 0.15)',
-            borderColor: isDarkMode ? 'rgba(224, 83, 67, 0.30)' : 'rgba(196, 61, 47, 0.30)',
+            backgroundColor: activeColors.badgeDestructiveBg,
+            borderColor: activeColors.badgeDestructiveBorder,
             borderWidth: 1,
           },
           text: {
@@ -95,15 +99,16 @@ export const Badge: React.FC<BadgeProps> = ({
 
   const sizeStyles = {
     sm: { container: 'px-3 py-1', text: 'text-xs font-nunito-semibold' },
-    md: { container: 'px-4 py-1.5', text: 'text-sm font-nunito-bold' },
+    md: { container: 'px-4 py-1.25', text: 'text-xs font-nunito-semibold' },
+    lg: { container: 'px-4 py-1.5', text: 'text-sm font-nunito-bold' },
   };
 
   return (
     <View
-      style={[variantStyles.container]}
-      className={`rounded-full flex-row items-center justify-center self-start ${sizeStyles[size].container}`}
+      style={[variantStyles.container, style]}
+      className={`rounded-full flex-row items-center justify-center ${sizeStyles[size].container} ${className}`}
     >
-      {icon && <View className="mr-1.5">{icon}</View>}
+      {icon && <View className="mr-1.5 flex-row items-center justify-center">{icon}</View>}
       <Text
         style={[variantStyles.text]}
         className={`${sizeStyles[size].text}`}

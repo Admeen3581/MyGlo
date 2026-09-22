@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Image, StyleSheet, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { MyGloLogo } from '@/components/MyGloLogo';
 import { useTheme } from '@/hooks/useTheme';
@@ -13,6 +13,9 @@ export interface TopNavBarProps {
   showMenuButton?: boolean;
   isSidebarOpen?: boolean;
   onMenuPress?: () => void;
+  rightAction?: 'avatar' | 'incoming-cloud';
+  incomingCount?: number;
+  onIncomingPress?: () => void;
 }
 
 export const TopNavBar: React.FC<TopNavBarProps> = ({
@@ -24,8 +27,11 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
   showMenuButton = false,
   isSidebarOpen = false,
   onMenuPress,
+  rightAction = 'avatar',
+  incomingCount = 0,
+  onIncomingPress,
 }) => {
-  const { isDarkMode, activeColors } = useTheme(customDarkMode);
+  const { activeColors } = useTheme(customDarkMode);
 
   return (
     <View className="flex-row items-center justify-between px-4 py-2.5 w-full">
@@ -44,7 +50,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
               <Ionicons
                 name={isSidebarOpen ? "close" : "menu"}
                 size={22}
-                color="white"
+                color={activeColors.primaryForeground}
               />
             </View>
           </TouchableOpacity>
@@ -61,7 +67,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
       {/* Center: Search Bar */}
       <View
         style={{
-          backgroundColor: isDarkMode ? '#16222A' : '#EAEBE7',
+          backgroundColor: activeColors.muted,
           borderColor: activeColors.border,
         }}
         className="flex-1 flex-row items-center rounded-full h-10 px-3.5 border border-solid mr-3"
@@ -93,34 +99,72 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
         )}
       </View>
 
-      {/* Right: User Avatar */}
-      <TouchableOpacity
-        onPress={onAvatarPress}
-        activeOpacity={0.8}
-        className="relative"
-      >
-        <View
-          style={{
-            borderColor: activeColors.primary,
-            backgroundColor: activeColors.muted,
-          }}
-          className="w-10 h-10 rounded-full border-2 items-center justify-center overflow-hidden shadow-sm"
+      {/* Right Action: Incoming Cloud Icon OR User Avatar */}
+      {rightAction === 'incoming-cloud' ? (
+        <TouchableOpacity
+          onPress={onIncomingPress}
+          activeOpacity={0.8}
+          className="relative"
         >
-          {avatarUrl ? (
-            <Image
-              source={{ uri: avatarUrl }}
-              style={styles.avatarImage}
-              resizeMode="cover"
-            />
-          ) : (
+          <View
+            style={{
+              borderColor: activeColors.primary,
+              backgroundColor: activeColors.muted,
+            }}
+            className="w-10 h-10 rounded-full border border-solid items-center justify-center shadow-sm"
+          >
             <Ionicons
-              name="person"
-              size={20}
-              color={activeColors.mutedForeground}
+              name="cloud-download-outline"
+              size={22}
+              color={activeColors.primary}
             />
+          </View>
+          {Boolean(incomingCount && incomingCount > 0) && (
+            <View
+              style={{
+                backgroundColor: activeColors.destructive,
+                borderColor: activeColors.background,
+              }}
+              className="absolute -top-1 -right-1 min-w-5 h-5 rounded-full px-1 items-center justify-center border-2"
+            >
+              <Text
+                style={{ color: activeColors.destructiveForeground }}
+                className="text-[10px] font-nunito-bold text-center"
+              >
+                {incomingCount}
+              </Text>
+            </View>
           )}
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={onAvatarPress}
+          activeOpacity={0.8}
+          className="relative"
+        >
+          <View
+            style={{
+              borderColor: activeColors.primary,
+              backgroundColor: activeColors.muted,
+            }}
+            className="w-10 h-10 rounded-full border-2 items-center justify-center overflow-hidden shadow-sm"
+          >
+            {avatarUrl ? (
+              <Image
+                source={{ uri: avatarUrl }}
+                style={styles.avatarImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <Ionicons
+                name="person"
+                size={20}
+                color={activeColors.mutedForeground}
+              />
+            )}
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

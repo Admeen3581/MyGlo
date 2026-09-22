@@ -60,6 +60,117 @@ export const createUser = mutation({
 });
 
 /**
+ * Mutation: shareWishlistWithUser
+ * Adds a wishlist ID to the target user's pendingSharedLists array in the database.
+ */
+export const shareWishlistWithUser = mutation({
+    args: {
+        wishlistId: v.id("wishlists"),
+        targetUserId: v.id("users"),
+    },
+    handler: async (ctx, args) => {
+        const targetUser = await ctx.db.get(args.targetUserId);
+        if (!targetUser) {
+            throw new Error("Target user not found");
+        }
+
+        const currentPending = targetUser.pendingSharedLists ?? [];
+        const currentShared = targetUser.sharedLists ?? [];
+
+        // Check if already shared or already pending
+        if (!currentPending.includes(args.wishlistId) && !currentShared.includes(args.wishlistId)) {
+            await ctx.db.patch(targetUser._id, {
+                pendingSharedLists: [...currentPending, args.wishlistId],
+            });
+        }
+
+        return true;
+    },
+});
+
+/**
+ * Mutation: acceptSharedList
+ * Moves a wishlist ID from pendingSharedLists into sharedLists in the database.
+ */
+export const acceptSharedList = mutation({
+    args: {
+        clerkId: v.string(),
+        wishlistId: v.id("wishlists"),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+            .first();
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const currentShared = user.sharedLists ?? [];
+        const currentPending = user.pendingSharedLists ?? [];
+
+        const updatedShared = currentShared.includes(args.wishlistId)
+            ? currentShared
+            : [...currentShared, args.wishlistId];
+
+        const updatedPending = currentPending.filter((id) => id !== args.wishlistId);
+
+        await ctx.db.patch(user._id, {
+            sharedLists: updatedShared,
+            pendingSharedLists: updatedPending,
+        });
+
+        return true;
+    },
+});
+
+/**
+ * Mutation: ignoreSharedList
+ * Removes a wishlist ID from pendingSharedLists without adding to sharedLists.
+ */
+export const ignoreSharedList = mutation({
+    args: {
+        clerkId: v.string(),
+        wishlistId: v.id("wishlists"),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+            .first();
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const currentPending = user.pendingSharedLists ?? [];
+        const updatedPending = currentPending.filter((id) => id !== args.wishlistId);
+
+        await ctx.db.patch(user._id, {
+            pendingSharedLists: updatedPending,
+        });
+
+        return true;
+    },
+});
+
+/**
+ * Query: getAllUsers
+ * Fetches all registered users in the database (optionally excluding the current user by clerkId).
+ */
+export const getAllUsers = query({
+    args: { currentClerkId: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const allUsers = await ctx.db.query("users").collect();
+        if (args.currentClerkId) {
+            return allUsers.filter((u) => u.clerkId !== args.currentClerkId);
+        }
+        return allUsers;
+    },
+});
+
+/**
  * Query: getUserByClerkId
  * Fetches user document by Clerk ID.
  */

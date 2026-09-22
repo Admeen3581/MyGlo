@@ -36,7 +36,7 @@ export const Card: React.FC<CardProps> = ({
   };
 
   const dynamicCardStyle = {
-    backgroundColor: isDarkMode ? activeColors.muted : '#FFFFFF',
+    backgroundColor: activeColors.card,
     borderColor: activeColors.border,
     boxShadow: `0px 8px 16px ${isDarkMode ? 'rgba(2, 8, 17, 0.4)' : 'rgba(1, 55, 125, 0.12)'}`,
   };

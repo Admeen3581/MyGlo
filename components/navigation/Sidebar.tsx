@@ -60,7 +60,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, isOpen }) => {
       style={[
         styles.sidebar,
         {
-          backgroundColor: isDarkMode ? '#0E151A' : '#F7F7F6',
+          backgroundColor: activeColors.background,
           borderRightColor: activeColors.border,
         },
       ]}
@@ -97,8 +97,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, isOpen }) => {
               style={[
                 isActive && {
                   backgroundColor: isDarkMode
-                    ? 'rgba(235, 114, 88, 0.15)'
-                    : 'rgba(235, 114, 88, 0.1)',
+                    ? 'rgba(32, 164, 181, 0.15)'
+                    : 'rgba(0, 95, 115, 0.1)',
                 },
               ]}
               className="flex-row items-center px-3.5 py-3 rounded-xl gap-3"

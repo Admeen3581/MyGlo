@@ -15,6 +15,11 @@ export default defineSchema({
             v.array(
                 v.id('wishlists')
             )
+        ),
+        pendingSharedLists: v.optional(
+            v.array(
+                v.id('wishlists')
+            )
         )
     })
         .index("by_clerkId", ["clerkId"]),
