@@ -231,7 +231,7 @@ export const WishlistShareModal: React.FC<WishlistShareModalProps> = ({
                           label="Sent!"
                           variant="warning"
                           size="md"
-                          icon={<Ionicons name="checkmark-circle" size={15} color={activeColors.warning} />}
+                          icon={<Ionicons name="time-outline" size={15} color={activeColors.warning} />}
                           isDarkMode={isDarkMode}
                         />
                       ) : (

@@ -20,7 +20,22 @@ export default defineSchema({
             v.array(
                 v.id('wishlists')
             )
-        )
+        ),
+        friends: v.optional(
+            v.array(
+                v.id('users')
+            )
+        ),
+        pendingFriendRequests: v.optional(
+            v.array(
+                v.id('users')
+            )
+        ),
+        sentFriendRequests: v.optional(
+            v.array(
+                v.id('users')
+            )
+        ),
     })
         .index("by_clerkId", ["clerkId"])
         .index("by_email", ["email"]),
