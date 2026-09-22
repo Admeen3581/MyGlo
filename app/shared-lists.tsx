@@ -19,7 +19,6 @@ import { Sidebar } from '@/components/navigation/Sidebar';
 import { WishlistCard } from '@/components/wishlist/WishlistCard';
 import { IncomingListsModal } from '@/components/wishlist/IncomingListsModal';
 import { Ionicons } from '@expo/vector-icons';
-import { FloatingActionButton } from "@/components/core/FloatingActionButton";
 
 export default function SharedListsScreen() {
     const { isLoaded, isSignedIn } = useAuth();
@@ -67,11 +66,6 @@ export default function SharedListsScreen() {
     if (!isSignedIn) {
         return <Redirect href="/onboarding" />;
     }
-
-    const handleFabPress = () => {
-        //TODO: Action for creating items/lists (screens not implemented yet)
-        console.log('[MyWishlists] Create list/item FAB pressed');
-    };
 
     return (
         <SafeAreaView
@@ -187,11 +181,6 @@ export default function SharedListsScreen() {
                                 </View>
                             )}
                         </ScrollView>
-
-                        <FloatingActionButton
-                            onPress={handleFabPress}
-                            isDarkMode={isDarkMode}
-                        />
                     </View>
                 </View>
 
