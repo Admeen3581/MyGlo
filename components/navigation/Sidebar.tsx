@@ -68,18 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, isOpen }) => {
     >
       {/* Sidebar Top Branding Header */}
       <View className="flex-row items-center px-3 mb-6 gap-3">
-        <View
-          style={{ backgroundColor: activeColors.primary }}
-          className="w-9 h-9 rounded-full items-center justify-center shadow-sm"
-        >
-          <MyGloLogo type="icon" color="white" size="sm" align="center" />
-        </View>
-        <Text
-          style={{ color: activeColors.foreground }}
-          className="text-lg font-fraunces-bold"
-        >
-          MyGlo
-        </Text>
+        <MyGloLogo color={isDarkMode ? 'dark' : 'light'} size="md" type='standard'/>
       </View>
 
       {/* Navigation List */}
