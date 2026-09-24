@@ -37,7 +37,6 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
 
     const handleAddItem = () => {
         // TODO: Implement Add Item functionality
-        console.log('[WishlistCard] Add item pressed for wishlist:', wishlist?._id, wishlist?.title ?? title);
         onClose();
         onAddItem?.();
     };
