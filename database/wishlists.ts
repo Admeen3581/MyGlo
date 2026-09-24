@@ -61,7 +61,7 @@ export const getMyWishlists = query({
 
 /**
  * Query: getSharedWishlists
- * Fetches wishlists shared with a specific user (via user.sharedLists array).
+ * Fetches wishlists shared with a specific user (via shared_wishlists index and user.sharedLists array).
  */
 export const getSharedWishlists = query({
     args: { clerkId: v.optional(v.string()) },
@@ -75,12 +75,28 @@ export const getSharedWishlists = query({
             .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId!))
             .first();
 
-        if (!user || !user.sharedLists || user.sharedLists.length === 0) {
+        if (!user) {
+            return [];
+        }
+
+        const sharedRecords = await ctx.db
+            .query("shared_wishlists")
+            .withIndex("by_user_and_status", (q) =>
+                q.eq("userId", user._id).eq("status", "accepted")
+            )
+            .collect();
+
+        const sharedRecordIds = sharedRecords.map((r) => r.wishlistId);
+        const legacyIds = user.sharedLists ?? [];
+
+        const allWishlistIds = Array.from(new Set([...sharedRecordIds, ...legacyIds]));
+
+        if (allWishlistIds.length === 0) {
             return [];
         }
 
         const sharedLists = await Promise.all(
-            user.sharedLists.map(async (wishlistId) => {
+            allWishlistIds.map(async (wishlistId) => {
                 const list = await ctx.db.get(wishlistId);
                 if (!list) return null;
 
@@ -101,7 +117,7 @@ export const getSharedWishlists = query({
 
 /**
  * Query: getPendingSharedLists
- * Fetches wishlists that are currently pending invitation for a specific user (from user.pendingSharedLists array).
+ * Fetches wishlists that are currently pending invitation for a specific user (via shared_wishlists index and user.pendingSharedLists array).
  */
 export const getPendingSharedLists = query({
     args: { clerkId: v.optional(v.string()) },
@@ -115,12 +131,28 @@ export const getPendingSharedLists = query({
             .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId!))
             .first();
 
-        if (!user || !user.pendingSharedLists || user.pendingSharedLists.length === 0) {
+        if (!user) {
+            return [];
+        }
+
+        const pendingRecords = await ctx.db
+            .query("shared_wishlists")
+            .withIndex("by_user_and_status", (q) =>
+                q.eq("userId", user._id).eq("status", "pending")
+            )
+            .collect();
+
+        const pendingRecordIds = pendingRecords.map((r) => r.wishlistId);
+        const legacyIds = user.pendingSharedLists ?? [];
+
+        const allWishlistIds = Array.from(new Set([...pendingRecordIds, ...legacyIds]));
+
+        if (allWishlistIds.length === 0) {
             return [];
         }
 
         const pendingLists = await Promise.all(
-            user.pendingSharedLists.map(async (wishlistId) => {
+            allWishlistIds.map(async (wishlistId) => {
                 const list = await ctx.db.get(wishlistId);
                 if (!list) return null;
 
@@ -199,8 +231,10 @@ export const renameWishlist = mutation({
 
 /**
  * Mutation: deleteWishlist
- * 1. Removes the wishlist ID from everyone's sharedLists and pendingSharedLists arrays in users table.
- * 2. Deletes the wishlist entry from the database.
+ * 1. Uses the indexed shared_wishlists table (by_wishlist index) to immediately find ONLY the users this list was shared with.
+ * 2. Removes the wishlist ID from those specific users' sharedLists and pendingSharedLists arrays and deletes the share records.
+ * 3. Deletes the wishlist document from database.
+ * Time Complexity: O(K) where K is the number of users this list was shared with (instead of O(N) over all system users).
  */
 export const deleteWishlist = mutation({
     args: {
@@ -213,29 +247,37 @@ export const deleteWishlist = mutation({
             return false;
         }
 
-        // 1. Remove from all users' sharedLists and pendingSharedLists arrays
-        const users = await ctx.db.query("users").collect();
-        for (const user of users) {
-            let shouldPatch = false;
-            let updatedShared = user.sharedLists;
-            let updatedPending = user.pendingSharedLists;
+        // 1. Efficiently find ONLY the users this specific wishlist was shared with using by_wishlist index
+        const shares = await ctx.db
+            .query("shared_wishlists")
+            .withIndex("by_wishlist", (q) => q.eq("wishlistId", args.wishlistId))
+            .collect();
 
-            if (user.sharedLists && user.sharedLists.includes(args.wishlistId)) {
-                updatedShared = user.sharedLists.filter((id) => id !== args.wishlistId);
-                shouldPatch = true;
-            }
+        for (const share of shares) {
+            const targetUser = await ctx.db.get(share.userId);
+            if (targetUser) {
+                let shouldPatch = false;
+                let updatedShared = targetUser.sharedLists;
+                let updatedPending = targetUser.pendingSharedLists;
 
-            if (user.pendingSharedLists && user.pendingSharedLists.includes(args.wishlistId)) {
-                updatedPending = user.pendingSharedLists.filter((id) => id !== args.wishlistId);
-                shouldPatch = true;
-            }
+                if (targetUser.sharedLists && targetUser.sharedLists.includes(args.wishlistId)) {
+                    updatedShared = targetUser.sharedLists.filter((id) => id !== args.wishlistId);
+                    shouldPatch = true;
+                }
 
-            if (shouldPatch) {
-                await ctx.db.patch(user._id, {
-                    sharedLists: updatedShared,
-                    pendingSharedLists: updatedPending,
-                });
+                if (targetUser.pendingSharedLists && targetUser.pendingSharedLists.includes(args.wishlistId)) {
+                    updatedPending = targetUser.pendingSharedLists.filter((id) => id !== args.wishlistId);
+                    shouldPatch = true;
+                }
+
+                if (shouldPatch) {
+                    await ctx.db.patch(targetUser._id, {
+                        sharedLists: updatedShared,
+                        pendingSharedLists: updatedPending,
+                    });
+                }
             }
+            await ctx.db.delete(share._id);
         }
 
         // 2. Delete the wishlist document from database

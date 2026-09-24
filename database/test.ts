@@ -69,6 +69,19 @@ export const seedSampleData = mutation({
             sharedLists: [wishlistIdAlex],//Alex shared his list with John
         });
 
+        // Add corresponding records in shared_wishlists table
+        await ctx.db.insert("shared_wishlists", {
+            wishlistId: wishlistIdJohn,
+            userId: userIdUno,
+            status: "accepted",
+        });
+
+        await ctx.db.insert("shared_wishlists", {
+            wishlistId: wishlistIdAlex,
+            userId: userIdDos,
+            status: "accepted",
+        });
+
         return {
             success: true,
             created: { userIdUno, userIdDos, wishlistIdAlex, wishlistIdJohn, items },
