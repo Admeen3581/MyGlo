@@ -76,13 +76,13 @@ export default function FriendsScreen() {
 
     const pendingCount = pendingRequests?.length ?? 0;
 
-    const handleFabPress = () => {
-        setIsAddFriendModalOpen(true);
-    };
-
     const handleAddFriendPress = () => {
         setIsAddFriendModalOpen(true);
     };
+
+    const handleIncomingFriendPress = () => {
+        setIsIncomingModalOpen(true);
+    }
 
     if (!isLoaded) {
         return (
@@ -127,7 +127,7 @@ export default function FriendsScreen() {
                     rightAction={pendingCount > 0 ? "incoming-cloud" : "add-friend"}
                     incomingCount={pendingCount}
                     onIncomingPress={() => setIsIncomingModalOpen(true)}
-                    onAddFriendPress={handleAddFriendPress}
+                    onAddFriendPress={handleIncomingFriendPress}
                     isDarkMode={isDarkMode}
                     showMenuButton={isDesktop}
                     isSidebarOpen={isSidebarOpen}
@@ -251,7 +251,7 @@ export default function FriendsScreen() {
 
                         {/* Floating Plus Button at bottom right for inviting friends */}
                         <FloatingActionButton
-                            onPress={handleFabPress}
+                            onPress={handleAddFriendPress}
                             isDarkMode={isDarkMode}
                         />
                     </View>

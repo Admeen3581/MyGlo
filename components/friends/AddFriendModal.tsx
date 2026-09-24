@@ -25,6 +25,9 @@ export interface AddFriendModalProps {
   isDarkMode?: boolean;
 }
 
+//Load Bound
+const MAX_DISPLAY_USERS = 20;
+
 export const AddFriendModal: React.FC<AddFriendModalProps> = ({
   isVisible,
   onClose,
@@ -108,6 +111,9 @@ export const AddFriendModal: React.FC<AddFriendModalProps> = ({
     const emailMatch = u.email?.toLowerCase().includes(q);
     return nameMatch || emailMatch;
   });
+
+  const displayedUsers = filteredUsers?.slice(0, MAX_DISPLAY_USERS);
+  const hasMoreUsers = (filteredUsers?.length ?? 0) > MAX_DISPLAY_USERS;
 
   return (
     <Modal
@@ -204,103 +210,115 @@ export const AddFriendModal: React.FC<AddFriendModalProps> = ({
               <View className="py-8 items-center">
                 <ActivityIndicator size="small" color={activeColors.primary} />
               </View>
-            ) : filteredUsers && filteredUsers.length > 0 ? (
-              filteredUsers.map((targetUser) => {
-                const nameStr =
-                  targetUser.name ||
-                  [targetUser.firstName, targetUser.lastName].filter(Boolean).join(' ') ||
-                  'User';
-                const avatarUri = targetUser.avatarUrl || targetUser.avatar;
-                const isSending = sendingUserId === targetUser._id;
+            ) : displayedUsers && displayedUsers.length > 0 ? (
+              <>
+                {displayedUsers.map((targetUser) => {
+                  const nameStr =
+                    targetUser.name ||
+                    [targetUser.firstName, targetUser.lastName].filter(Boolean).join(' ') ||
+                    'User';
+                  const avatarUri = targetUser.avatarUrl || targetUser.avatar;
+                  const isSending = sendingUserId === targetUser._id;
 
-                return (
-                  <View
-                    key={targetUser._id}
-                    style={{
-                      backgroundColor: activeColors.card,
-                      borderColor: activeColors.border,
-                    }}
-                    className="flex-row items-center justify-between p-3 rounded-2xl mb-2 border"
-                  >
-                    <View className="flex-row items-center flex-1 mr-2">
-                      <View
-                        style={{ backgroundColor: activeColors.muted, borderColor: activeColors.border }}
-                        className="w-10 h-10 rounded-full items-center justify-center overflow-hidden mr-3 border"
-                      >
-                        {avatarUri ? (
-                          <Image
-                            source={{ uri: avatarUri }}
-                            style={styles.avatarImage}
-                            contentFit="cover"
-                          />
-                        ) : (
-                          <Ionicons
-                            name="person"
-                            size={18}
-                            color={activeColors.mutedForeground}
-                          />
-                        )}
-                      </View>
-                      <View className="flex-1 justify-center">
-                        <Text
-                          style={{ color: activeColors.cardForeground }}
-                          className="text-sm font-fraunces-bold"
-                          numberOfLines={1}
+                  return (
+                    <View
+                      key={targetUser._id}
+                      style={{
+                        backgroundColor: activeColors.card,
+                        borderColor: activeColors.border,
+                      }}
+                      className="flex-row items-center justify-between p-3 rounded-2xl mb-2 border"
+                    >
+                      <View className="flex-row items-center flex-1 mr-2">
+                        <View
+                          style={{ backgroundColor: activeColors.muted, borderColor: activeColors.border }}
+                          className="w-10 h-10 rounded-full items-center justify-center overflow-hidden mr-3 border"
                         >
-                          {nameStr}
-                        </Text>
-                        {Boolean(targetUser.email) && (
+                          {avatarUri ? (
+                            <Image
+                              source={{ uri: avatarUri }}
+                              style={styles.avatarImage}
+                              contentFit="cover"
+                            />
+                          ) : (
+                            <Ionicons
+                              name="person"
+                              size={18}
+                              color={activeColors.mutedForeground}
+                            />
+                          )}
+                        </View>
+                        <View className="flex-1 justify-center">
                           <Text
-                            style={{ color: activeColors.mutedForeground }}
-                            className="text-xs font-nunito"
+                            style={{ color: activeColors.cardForeground }}
+                            className="text-sm font-fraunces-bold"
                             numberOfLines={1}
                           >
-                            {targetUser.email}
+                            {nameStr}
                           </Text>
+                          {Boolean(targetUser.email) && (
+                            <Text
+                              style={{ color: activeColors.mutedForeground }}
+                              className="text-xs font-nunito"
+                              numberOfLines={1}
+                            >
+                              {targetUser.email}
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <View className="items-center justify-center">
+                        {targetUser.isFriend ? (
+                          <Badge
+                            label="Friends"
+                            variant="success"
+                            size="md"
+                            icon={<Ionicons name="checkmark-circle" size={15} color={activeColors.success} />}
+                            isDarkMode={isDarkMode}
+                          />
+                        ) : targetUser.isPendingOutgoing ? (
+                          <Badge
+                            label="Sent!"
+                            variant="warning"
+                            size="md"
+                            icon={<Ionicons name="time-outline" size={15} color={activeColors.warning} />}
+                            isDarkMode={isDarkMode}
+                          />
+                        ) : targetUser.isPendingIncoming ? (
+                          <Button
+                            title="Accept"
+                            variant="primary"
+                            size="xs"
+                            loading={isSending}
+                            isDarkMode={isDarkMode}
+                            onPress={() => handleAcceptRequest(targetUser._id)}
+                          />
+                        ) : (
+                          <Button
+                            title="Invite"
+                            variant="primary"
+                            size="xs"
+                            loading={isSending}
+                            isDarkMode={isDarkMode}
+                            onPress={() => handleSendInvite(targetUser._id)}
+                          />
                         )}
                       </View>
                     </View>
-
-                    <View className="items-center justify-center">
-                      {targetUser.isFriend ? (
-                        <Badge
-                          label="Friends"
-                          variant="success"
-                          size="md"
-                          icon={<Ionicons name="checkmark-circle" size={15} color={activeColors.success} />}
-                          isDarkMode={isDarkMode}
-                        />
-                      ) : targetUser.isPendingOutgoing ? (
-                        <Badge
-                          label="Sent!"
-                          variant="warning"
-                          size="md"
-                          icon={<Ionicons name="time-outline" size={15} color={activeColors.warning} />}
-                          isDarkMode={isDarkMode}
-                        />
-                      ) : targetUser.isPendingIncoming ? (
-                        <Button
-                          title="Accept"
-                          variant="primary"
-                          size="xs"
-                          loading={isSending}
-                          isDarkMode={isDarkMode}
-                          onPress={() => handleAcceptRequest(targetUser._id)}
-                        />
-                      ) : (
-                        <Button
-                          title="Invite"
-                          variant="primary"
-                          size="xs"
-                          loading={isSending}
-                          isDarkMode={isDarkMode}
-                          onPress={() => handleSendInvite(targetUser._id)}
-                        />
-                      )}
-                    </View>
+                  );
+                })}
+                {hasMoreUsers && (
+                  <View className="py-3 items-center">
+                    <Text
+                      style={{ color: activeColors.mutedForeground }}
+                      className="text-xs font-nunito text-center"
+                    >
+                      Showing top {MAX_DISPLAY_USERS} results. Type to refine your search.
+                    </Text>
                   </View>
-                );
-              })
+                )}
+              </>
             ) : (
               <View className="py-8 items-center justify-center">
                 <Ionicons name="people-outline" size={28} color={activeColors.mutedForeground} />

@@ -35,6 +35,9 @@ export interface IncomingFriendRequestsModalProps {
   isDarkMode?: boolean;
 }
 
+//Load bound
+const MAX_DISPLAY_REQUESTS = 30;
+
 export const IncomingFriendRequestsModal: React.FC<IncomingFriendRequestsModalProps> = ({
   isVisible,
   onClose,
@@ -82,6 +85,9 @@ export const IncomingFriendRequestsModal: React.FC<IncomingFriendRequestsModalPr
     }
   };
 
+  const displayedRequests = pendingRequests.slice(0, MAX_DISPLAY_REQUESTS);
+  const hasMoreRequests = pendingRequests.length > MAX_DISPLAY_REQUESTS;
+
   return (
     <Modal
       visible={isVisible}
@@ -127,83 +133,95 @@ export const IncomingFriendRequestsModal: React.FC<IncomingFriendRequestsModalPr
                 </Text>
               </View>
             ) : (
-              pendingRequests.map((item) => {
-                const fullName =
-                  item.name ||
-                  [item.firstName, item.lastName].filter(Boolean).join(' ') ||
-                  'User';
-                const avatarUri = item.avatarUrl || item.avatar;
-                const isLoading = loadingUserId === item._id;
+              <>
+                {displayedRequests.map((item) => {
+                  const fullName =
+                    item.name ||
+                    [item.firstName, item.lastName].filter(Boolean).join(' ') ||
+                    'User';
+                  const avatarUri = item.avatarUrl || item.avatar;
+                  const isLoading = loadingUserId === item._id;
 
-                return (
-                  <View
-                    key={item._id}
-                    style={{ backgroundColor: isDarkMode ? '#24343E' : '#F7F7F6', borderColor: activeColors.border }}
-                    className="p-4 md:p-3.5 rounded-2xl mb-3.5 md:mb-3 border flex-row items-center justify-between"
-                  >
-                    <View className="flex-row items-center flex-1 mr-3">
-                      <View
-                        style={{ backgroundColor: activeColors.muted, borderColor: activeColors.border }}
-                        className="w-11 h-11 rounded-full items-center justify-center overflow-hidden mr-3 border"
-                      >
-                        {avatarUri ? (
-                          <Image
-                            source={{ uri: avatarUri }}
-                            style={styles.avatarImage}
-                            contentFit="cover"
-                          />
-                        ) : (
-                          <Ionicons
-                            name="person"
-                            size={20}
-                            color={activeColors.mutedForeground}
-                          />
-                        )}
-                      </View>
-                      <View className="flex-1 justify-center">
-                        <Text style={{ color: activeColors.foreground }} className="text-base md:text-sm font-fraunces-bold" numberOfLines={1}>
-                          {fullName}
-                        </Text>
-                        {Boolean(item.email) && (
-                          <Text style={{ color: activeColors.mutedForeground }} className="text-xs font-nunito" numberOfLines={1}>
-                            {item.email}
+                  return (
+                    <View
+                      key={item._id}
+                      style={{ backgroundColor: isDarkMode ? '#24343E' : '#F7F7F6', borderColor: activeColors.border }}
+                      className="p-4 md:p-3.5 rounded-2xl mb-3.5 md:mb-3 border flex-row items-center justify-between"
+                    >
+                      <View className="flex-row items-center flex-1 mr-3">
+                        <View
+                          style={{ backgroundColor: activeColors.muted, borderColor: activeColors.border }}
+                          className="w-11 h-11 rounded-full items-center justify-center overflow-hidden mr-3 border"
+                        >
+                          {avatarUri ? (
+                            <Image
+                              source={{ uri: avatarUri }}
+                              style={styles.avatarImage}
+                              contentFit="cover"
+                            />
+                          ) : (
+                            <Ionicons
+                              name="person"
+                              size={20}
+                              color={activeColors.mutedForeground}
+                            />
+                          )}
+                        </View>
+                        <View className="flex-1 justify-center">
+                          <Text style={{ color: activeColors.foreground }} className="text-base md:text-sm font-fraunces-bold" numberOfLines={1}>
+                            {fullName}
                           </Text>
-                        )}
+                          {Boolean(item.email) && (
+                            <Text style={{ color: activeColors.mutedForeground }} className="text-xs font-nunito" numberOfLines={1}>
+                              {item.email}
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <View className="flex-row items-center gap-2">
+                        {/* Ignore Button */}
+                        <TouchableOpacity
+                          disabled={isLoading}
+                          onPress={() => handleIgnore(item._id)}
+                          style={{ backgroundColor: isDarkMode ? '#334155' : '#E2E8F0' }}
+                          className="px-3.5 py-1.5 md:px-3 md:py-1 rounded-full"
+                        >
+                          <Text style={{ color: activeColors.mutedForeground }} className="text-xs font-nunito-bold">
+                            Ignore
+                          </Text>
+                        </TouchableOpacity>
+
+                        {/* Accept Button */}
+                        <TouchableOpacity
+                          disabled={isLoading}
+                          onPress={() => handleAccept(item._id)}
+                          style={{ backgroundColor: activeColors.primary }}
+                          className="px-4 py-1.5 md:px-3.5 md:py-1 rounded-full flex-row items-center justify-center"
+                        >
+                          {isLoading ? (
+                            <ActivityIndicator size="small" color="#FFFFFF" />
+                          ) : (
+                            <Text className="text-xs font-nunito-bold text-white">
+                              Accept
+                            </Text>
+                          )}
+                        </TouchableOpacity>
                       </View>
                     </View>
-
-                    <View className="flex-row items-center gap-2">
-                      {/* Ignore Button */}
-                      <TouchableOpacity
-                        disabled={isLoading}
-                        onPress={() => handleIgnore(item._id)}
-                        style={{ backgroundColor: isDarkMode ? '#334155' : '#E2E8F0' }}
-                        className="px-3.5 py-1.5 md:px-3 md:py-1 rounded-full"
-                      >
-                        <Text style={{ color: activeColors.mutedForeground }} className="text-xs font-nunito-bold">
-                          Ignore
-                        </Text>
-                      </TouchableOpacity>
-
-                      {/* Accept Button */}
-                      <TouchableOpacity
-                        disabled={isLoading}
-                        onPress={() => handleAccept(item._id)}
-                        style={{ backgroundColor: activeColors.primary }}
-                        className="px-4 py-1.5 md:px-3.5 md:py-1 rounded-full flex-row items-center justify-center"
-                      >
-                        {isLoading ? (
-                          <ActivityIndicator size="small" color="#FFFFFF" />
-                        ) : (
-                          <Text className="text-xs font-nunito-bold text-white">
-                            Accept
-                          </Text>
-                        )}
-                      </TouchableOpacity>
-                    </View>
+                  );
+                })}
+                {hasMoreRequests && (
+                  <View className="py-3 items-center">
+                    <Text
+                      style={{ color: activeColors.mutedForeground }}
+                      className="text-xs font-nunito text-center"
+                    >
+                      Showing top {MAX_DISPLAY_REQUESTS} requests.
+                    </Text>
                   </View>
-                );
-              })
+                )}
+              </>
             )}
           </ScrollView>
         </Pressable>
