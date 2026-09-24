@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from 'convex/react';
+import { api } from '@/database/_generated/api';
 import { useTheme } from '@/hooks/useTheme';
 import type { WishlistCardItem } from './WishlistCard';
 
@@ -34,18 +36,27 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
     onRemoveShared,
 }) => {
     const { isDarkMode, activeColors } = useTheme(customDarkMode);
+    const toggleArchiveMutation = useMutation(api.wishlists.toggleArchiveWishlist);
+    const isArchived = Boolean(wishlist?.isArchived);
 
     const handleAddItem = () => {
-        // TODO: Implement Add Item functionality
         onClose();
         onAddItem?.();
     };
 
-    const handleArchive = () => {
-        // TODO: Implement functionality when user archives/unarchives a wishlist.
-        console.log('[WishlistCard] Archive pressed.');
+    const handleArchive = async () => {
         onClose();
-        onArchive?.();
+        if (onArchive) {
+            onArchive();
+        } else if (wishlist?._id) {
+            try {
+                await toggleArchiveMutation({
+                    wishlistId: wishlist._id as any,
+                });
+            } catch (err) {
+                console.error('[WishlistCardMenuModal] Failed to archive/unarchive wishlist:', err);
+            }
+        }
     };
 
     const handleRename = () => {
@@ -163,41 +174,45 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
                             </TouchableOpacity>
                         </>
                     ) : (
-                        /* Owned Wishlist Options: Add Item, Rename, Share, Delete */
+                        /* Owned Wishlist Options: Add Item, Rename (if active), Share, Archive/Unarchive, Delete */
                         <>
-                            <TouchableOpacity
-                                onPress={handleAddItem}
-                                className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
-                            >
-                                <Ionicons
-                                    name="add-circle-outline"
-                                    size={20}
-                                    color={activeColors.cardForeground}
-                                />
-                                <Text
-                                    style={{ color: activeColors.cardForeground }}
-                                    className="text-base font-nunito-semibold ml-3"
-                                >
-                                    Add Item
-                                </Text>
-                            </TouchableOpacity>
+                            {!isArchived && (
+                                <>
+                                    <TouchableOpacity
+                                        onPress={handleAddItem}
+                                        className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
+                                    >
+                                        <Ionicons
+                                            name="add-circle-outline"
+                                            size={20}
+                                            color={activeColors.cardForeground}
+                                        />
+                                        <Text
+                                            style={{ color: activeColors.cardForeground }}
+                                            className="text-base font-nunito-semibold ml-3"
+                                        >
+                                            Add Item
+                                        </Text>
+                                    </TouchableOpacity>
 
-                            <TouchableOpacity
-                                onPress={handleRename}
-                                className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
-                            >
-                                <Ionicons
-                                    name="pencil-outline"
-                                    size={20}
-                                    color={activeColors.cardForeground}
-                                />
-                                <Text
-                                    style={{ color: activeColors.cardForeground }}
-                                    className="text-base font-nunito-semibold ml-3"
-                                >
-                                    Rename
-                                </Text>
-                            </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={handleRename}
+                                        className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
+                                    >
+                                        <Ionicons
+                                            name="pencil-outline"
+                                            size={20}
+                                            color={activeColors.cardForeground}
+                                        />
+                                        <Text
+                                            style={{ color: activeColors.cardForeground }}
+                                            className="text-base font-nunito-semibold ml-3"
+                                        >
+                                            Rename
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
+                            )}
 
                             <TouchableOpacity
                                 onPress={handleShare}
@@ -221,7 +236,7 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
                                 className="flex-row items-center py-3 px-2 rounded-xl active:opacity-70"
                             >
                                 <Ionicons
-                                    name="lock-closed-outline"
+                                    name={isArchived ? "lock-open-outline" : "lock-closed-outline"}
                                     size={20}
                                     color={activeColors.cardForeground}
                                 />
@@ -229,7 +244,7 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
                                     style={{ color: activeColors.cardForeground }}
                                     className="text-base font-nunito-semibold ml-3"
                                 >
-                                    Archive
+                                    {isArchived ? "Unarchive" : "Archive"}
                                 </Text>
                             </TouchableOpacity>
 

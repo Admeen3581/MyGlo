@@ -48,10 +48,15 @@ export default function SharedListsScreen() {
 
     const pendingLists = pendingWishlistsRaw ?? [];
 
-    // Filter shared wishlists based on search query
-    const wishlists = sharedWishlistsRaw?.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
-    );
+    // Filter shared wishlists based on search query, with archived lists appearing at the bottom
+    const wishlists = sharedWishlistsRaw
+        ?.filter((item) =>
+            item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+        )
+        .sort((a, b) => {
+            if (Boolean(a.isArchived) === Boolean(b.isArchived)) return 0;
+            return a.isArchived ? 1 : -1;
+        });
 
     if (!isLoaded) {
         return (

@@ -25,6 +25,7 @@ export interface WishlistCardProps {
     onPress?: () => void;
     isDarkMode?: boolean;
     isShared?: boolean;
+    onArchive?: () => void;
     onRename?: () => void;
     onRemoveShared?: () => void;
     onDelete?: () => void;
@@ -35,6 +36,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                                                               onPress,
                                                               isDarkMode: customDarkMode,
                                                               isShared = false,
+                                                              onArchive: customOnArchive,
                                                               onRename: customOnRename,
                                                               onRemoveShared: customOnRemoveShared,
                                                               onDelete: customOnDelete,
@@ -52,6 +54,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 
     const removeSharedListMutation = useMutation(api.users.removeSharedList);
     const deleteWishlistMutation = useMutation(api.wishlists.deleteWishlist);
+    const toggleArchiveWishlistMutation = useMutation(api.wishlists.toggleArchiveWishlist);
 
     const displayTitle = wishlist.title.length > 30
         ? `${wishlist.title.substring(0, 28)}...`
@@ -63,6 +66,20 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 
     const handleCardLongPress = () => {
         setIsMenuVisible(true);
+    };
+
+    const handleArchiveClick = async () => {
+        if (customOnArchive) {
+            customOnArchive();
+        } else if (wishlist._id) {
+            try {
+                await toggleArchiveWishlistMutation({
+                    wishlistId: wishlist._id as any,
+                });
+            } catch (err) {
+                console.error('[WishlistCard] Failed to toggle archive status:', err);
+            }
+        }
     };
 
     const handleRenameClick = () => {
@@ -179,6 +196,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                 isShared={isShared}
                 isDarkMode={isDarkMode}
                 onAddItem={() => setIsAddItemModalVisible(true)}
+                onArchive={handleArchiveClick}
                 onShare={() => setIsShareModalVisible(true)}
                 onRename={handleRenameClick}
                 onRemoveShared={handleRemoveSharedClick}

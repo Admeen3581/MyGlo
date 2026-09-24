@@ -44,6 +44,7 @@ export default function MyGiftViewerScreen() {
         wishlistId ? { wishlistId } : 'skip'
     );
 
+    const isArchived = Boolean(wishlist?.isArchived);
     const rawItems: WishlistItem[] = (wishlist?.items as WishlistItem[]) || [];
 
     // Filter items according to search query
@@ -68,6 +69,7 @@ export default function MyGiftViewerScreen() {
     };
 
     const handleAddGiftPress = () => {
+        if (isArchived) return;
         setIsCreateItemVisible(true);
     };
 
@@ -151,12 +153,22 @@ export default function MyGiftViewerScreen() {
                             {wishlist?.title || 'Wishlist Details'}
                         </Text>
 
-                        <Badge
-                            label={`${itemCount} ${itemCount === 1 ? 'Item' : 'Items'}`}
-                            variant="primary"
-                            size="md"
-                            isDarkMode={isDarkMode}
-                        />
+                        <View className="flex-row items-center gap-1.5">
+                            {isArchived && (
+                                <Badge
+                                    label="Archived"
+                                    variant="warning"
+                                    size="md"
+                                    isDarkMode={isDarkMode}
+                                />
+                            )}
+                            <Badge
+                                label={`${itemCount} ${itemCount === 1 ? 'Item' : 'Items'}`}
+                                variant="primary"
+                                size="md"
+                                isDarkMode={isDarkMode}
+                            />
+                        </View>
                     </View>
 
                     <Text
@@ -300,32 +312,55 @@ export default function MyGiftViewerScreen() {
                     )}
                 </ScrollView>
 
-                {/* Bottom Screen-Width Button: Add Gift */}
-                <View
-                    style={{
-                        backgroundColor: activeColors.background,
-                        borderTopColor: activeColors.border,
-                    }}
-                    className="px-5 pt-3 pb-6 border-t"
-                >
-                    <Button
-                        title="Add a Gift"
-                        icon={
-                            <Ionicons
-                                name="add"
-                                size={22}
-                                color={activeColors.primaryForeground}
-                            />
-                        }
-                        variant="primary"
-                        size="lg"
-                        isDarkMode={isDarkMode}
-                        onPress={handleAddGiftPress}
-                    />
-                </View>
+                {/* Bottom Screen-Width Button / Archived Notice */}
+                {!isArchived ? (
+                    <View
+                        style={{
+                            backgroundColor: activeColors.background,
+                            borderTopColor: activeColors.border,
+                        }}
+                        className="px-5 pt-3 pb-6 border-t"
+                    >
+                        <Button
+                            title="Add a Gift"
+                            icon={
+                                <Ionicons
+                                    name="add"
+                                    size={22}
+                                    color={activeColors.primaryForeground}
+                                />
+                            }
+                            variant="primary"
+                            size="lg"
+                            isDarkMode={isDarkMode}
+                            onPress={handleAddGiftPress}
+                        />
+                    </View>
+                ) : (
+                    <View
+                        style={{
+                            backgroundColor: activeColors.background,
+                            borderTopColor: activeColors.border,
+                        }}
+                        className="px-5 py-4 border-t flex-row items-center justify-center"
+                    >
+                        <Ionicons
+                            name="lock-closed-outline"
+                            size={18}
+                            color={activeColors.mutedForeground}
+                            style={{ marginRight: 6 }}
+                        />
+                        <Text
+                            style={{ color: activeColors.mutedForeground }}
+                            className="text-sm font-nunito-semibold"
+                        >
+                            This wishlist is archived (read-only)
+                        </Text>
+                    </View>
+                )}
 
                 {/* Create New Item Modal */}
-                {Boolean(wishlistId) && (
+                {Boolean(wishlistId) && !isArchived && (
                     <CreateNewItem
                         isVisible={isCreateItemVisible}
                         onClose={() => setIsCreateItemVisible(false)}

@@ -4,6 +4,7 @@ import { v } from "convex/values";
 /**
  * Query: getFeed
  * Fetches all wishlists (public feed) with owner info and item counts.
+ * Non-archived wishlists appear first; archived wishlists appear at the bottom.
  */
 export const getFeed = query({
     args: {},
@@ -12,8 +13,13 @@ export const getFeed = query({
             .query("wishlists")
             .collect();
 
+        const sortedWishlists = [...wishlists].sort((a, b) => {
+            if (Boolean(a.isArchived) === Boolean(b.isArchived)) return 0;
+            return a.isArchived ? 1 : -1;
+        });
+
         return await Promise.all(
-            wishlists.map(async (list) => {
+            sortedWishlists.map(async (list) => {
                 const owner = await ctx.db.get(list.ownerId);
 
                 return {
@@ -57,6 +63,7 @@ export const getWishlist = query({
 /**
  * Query: getMyWishlists
  * Fetches wishlists owned by a specific user (by Clerk ID).
+ * Active wishlists appear first; archived wishlists appear at the bottom of the results.
  */
 export const getMyWishlists = query({
     args: { clerkId: v.optional(v.string()) },
@@ -79,7 +86,12 @@ export const getMyWishlists = query({
             .withIndex("by_owner", (q) => q.eq("ownerId", user._id))
             .collect();
 
-        return wishlists.map((list) => ({
+        const sortedWishlists = [...wishlists].sort((a, b) => {
+            if (Boolean(a.isArchived) === Boolean(b.isArchived)) return 0;
+            return a.isArchived ? 1 : -1;
+        });
+
+        return sortedWishlists.map((list) => ({
             ...list,
             itemCount: list.items?.length ?? 0,
         }));
@@ -89,6 +101,7 @@ export const getMyWishlists = query({
 /**
  * Query: getSharedWishlists
  * Fetches wishlists shared with a specific user (via shared_wishlists index and user.sharedLists array).
+ * Active wishlists appear first; archived wishlists appear at the bottom of the results.
  */
 export const getSharedWishlists = query({
     args: { clerkId: v.optional(v.string()) },
@@ -138,7 +151,14 @@ export const getSharedWishlists = query({
             })
         );
 
-        return sharedLists.filter((item): item is NonNullable<typeof item> => item !== null);
+        const validLists = sharedLists.filter((item): item is NonNullable<typeof item> => item !== null);
+
+        validLists.sort((a, b) => {
+            if (Boolean(a.isArchived) === Boolean(b.isArchived)) return 0;
+            return a.isArchived ? 1 : -1;
+        });
+
+        return validLists;
     },
 });
 
@@ -235,6 +255,7 @@ export const createWishlist = mutation({
 /**
  * Mutation: addItemToWishlist
  * Appends a new item to the wishlist's items array.
+ * Prevented if the wishlist is archived.
  */
 export const addItemToWishlist = mutation({
     args: {
@@ -250,6 +271,10 @@ export const addItemToWishlist = mutation({
         const wishlist = await ctx.db.get(args.wishlistId);
         if (!wishlist) {
             throw new Error("Wishlist not found");
+        }
+
+        if (wishlist.isArchived) {
+            throw new Error("Cannot add items to an archived wishlist");
         }
 
         const newItem = {
@@ -274,6 +299,7 @@ export const addItemToWishlist = mutation({
 /**
  * Mutation: renameWishlist
  * Updates the title of an existing wishlist document.
+ * Prevented if the wishlist is archived.
  */
 export const renameWishlist = mutation({
     args: {
@@ -287,11 +313,41 @@ export const renameWishlist = mutation({
             throw new Error("Wishlist not found");
         }
 
+        if (wishlist.isArchived) {
+            throw new Error("Cannot rename an archived wishlist");
+        }
+
         await ctx.db.patch(args.wishlistId, {
             title: args.title.trim(),
         });
 
         return true;
+    },
+});
+
+/**
+ * Mutation: toggleArchiveWishlist
+ * Toggles or updates the archived status of a wishlist.
+ */
+export const toggleArchiveWishlist = mutation({
+    args: {
+        wishlistId: v.id("wishlists"),
+        isArchived: v.optional(v.boolean()),
+    },
+    handler: async (ctx, args) => {
+        const wishlist = await ctx.db.get(args.wishlistId);
+
+        if (!wishlist) {
+            throw new Error("Wishlist not found");
+        }
+
+        const nextArchived = args.isArchived !== undefined ? args.isArchived : !wishlist.isArchived;
+
+        await ctx.db.patch(args.wishlistId, {
+            isArchived: nextArchived,
+        });
+
+        return nextArchived;
     },
 });
 

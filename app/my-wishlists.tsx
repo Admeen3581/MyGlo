@@ -43,10 +43,15 @@ export default function MyWishlistsScreen() {
     user?.id ? { clerkId: user.id } : 'skip'
   );
 
-  // Filter user's owned wishlists based on search query
-  const wishlists = rawWishlists?.filter((item) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
-  );
+  // Filter user's owned wishlists based on search query, with archived lists appearing at the bottom
+  const wishlists = rawWishlists
+    ?.filter((item) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+    )
+    .sort((a, b) => {
+      if (Boolean(a.isArchived) === Boolean(b.isArchived)) return 0;
+      return a.isArchived ? 1 : -1;
+    });
 
   if (!isLoaded) {
     return (
