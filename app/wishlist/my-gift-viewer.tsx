@@ -88,7 +88,7 @@ export default function MyGiftViewerScreen() {
             />
           </TouchableOpacity>
 
-          {/* Center: Surprise Protection Active Banner / Badge */}
+          {/*Center: Surprise Protection Active Banner / Badge*/}
           <View
             style={{
               backgroundColor: isDarkMode ? 'rgba(32, 164, 181, 0.15)' : 'rgba(0, 95, 115, 0.10)',
