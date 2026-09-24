@@ -28,6 +28,33 @@ export const getFeed = query({
 });
 
 /**
+ * Query: getWishlist
+ * Fetches a single wishlist by ID with owner info and item count.
+ */
+export const getWishlist = query({
+    args: { wishlistId: v.optional(v.id("wishlists")) },
+    handler: async (ctx, args) => {
+        if (!args.wishlistId) {
+            return null;
+        }
+
+        const list = await ctx.db.get(args.wishlistId);
+        if (!list) {
+            return null;
+        }
+
+        const owner = await ctx.db.get(list.ownerId);
+
+        return {
+            ...list,
+            ownerName: owner?.name ?? owner?.firstName ?? "Owner",
+            ownerAvatar: owner?.avatarUrl ?? owner?.avatar,
+            itemCount: list.items?.length ?? 0,
+        };
+    },
+});
+
+/**
  * Query: getMyWishlists
  * Fetches wishlists owned by a specific user (by Clerk ID).
  */
@@ -202,6 +229,45 @@ export const createWishlist = mutation({
         });
 
         return newWishlistId;
+    },
+});
+
+/**
+ * Mutation: addItemToWishlist
+ * Appends a new item to the wishlist's items array.
+ */
+export const addItemToWishlist = mutation({
+    args: {
+        wishlistId: v.id("wishlists"),
+        title: v.string(),
+        price: v.number(),
+        notes: v.optional(v.string()),
+        url: v.optional(v.string()),
+        priority: v.boolean(),
+        externalImageUrl: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const wishlist = await ctx.db.get(args.wishlistId);
+        if (!wishlist) {
+            throw new Error("Wishlist not found");
+        }
+
+        const newItem = {
+            id: `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+            title: args.title.trim(),
+            price: args.price,
+            notes: args.notes?.trim() || undefined,
+            url: args.url?.trim() || undefined,
+            priority: args.priority,
+            externalImageUrl: args.externalImageUrl?.trim() || undefined,
+        };
+
+        const currentItems = wishlist.items ?? [];
+        await ctx.db.patch(args.wishlistId, {
+            items: [...currentItems, newItem],
+        });
+
+        return newItem.id;
     },
 });
 

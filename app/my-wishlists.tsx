@@ -160,7 +160,10 @@ export default function MyWishlistsScreen() {
                         wishlist={item}
                         isDarkMode={isDarkMode}
                         onPress={() => {
-                          //TODO: Navigate to wishlist detail when implemented
+                          router.push({
+                            pathname: '/wishlist/my-gift-viewer' as any,
+                            params: { id: item._id },
+                          });
                         }}
                       />
                     </View>
