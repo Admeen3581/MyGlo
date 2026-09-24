@@ -18,6 +18,7 @@ import { TopNavBar } from '@/components/navigation/TopNavBar';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { WishlistCard } from '@/components/wishlist/WishlistCard';
 import { FloatingActionButton } from '@/components/core/FloatingActionButton';
+import { FabHoldMenuModal } from '@/components/wishlist/FabHoldMenuModal';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function MyWishlistsScreen() {
@@ -29,9 +30,10 @@ export default function MyWishlistsScreen() {
 
   const isDesktop = width >= 768;
 
-  // Navigation, search, and fold-out sidebar states
+  // Navigation, search, fold-out sidebar, and FAB hold popup states
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(isDesktop);
+  const [isFabHoldMenuOpen, setIsFabHoldMenuOpen] = useState(false);
 
   // Fetch only wishlists owned/created by the logged-in user via Convex
   const rawWishlists = useQuery(
@@ -66,9 +68,24 @@ export default function MyWishlistsScreen() {
     router.push('/profile' as any);
   };
 
+  const handleCreateNewList = () => {
+    // TODO: Navigate to create wishlist screen or open create wishlist modal when implemented
+    console.log('[MyWishlists] Create New List selected');
+  };
+
+  const handleCreateNewItem = () => {
+    // TODO: Navigate to create item screen or open create item modal when implemented
+    console.log('[MyWishlists] Create New Item selected');
+  };
+
+  // Standalone clicking the "+" icon functions the same as 'New List'
   const handleFabPress = () => {
-    //TODO: Action for creating items/lists (screens not implemented yet)
-    console.log('[MyWishlists] Create list/item FAB pressed');
+    handleCreateNewList();
+  };
+
+  // Pressing and holding the "+" icon opens the hold popup menu
+  const handleFabLongPress = () => {
+    setIsFabHoldMenuOpen(true);
   };
 
   return (
@@ -179,8 +196,19 @@ export default function MyWishlistsScreen() {
               )}
             </ScrollView>
 
+            {/* Floating Action Plus Button */}
             <FloatingActionButton
               onPress={handleFabPress}
+              onLongPress={handleFabLongPress}
+              isDarkMode={isDarkMode}
+            />
+
+            {/* Hold Popup Menu */}
+            <FabHoldMenuModal
+              isVisible={isFabHoldMenuOpen}
+              onClose={() => setIsFabHoldMenuOpen(false)}
+              onNewList={handleCreateNewList}
+              onNewItem={handleCreateNewItem}
               isDarkMode={isDarkMode}
             />
           </View>
