@@ -59,7 +59,7 @@ export const createUser = mutation({
 
 /**
  * Mutation: shareWishlistWithUser
- * Adds a wishlist ID to the target user's pendingSharedLists array in the database.
+ * Adds a wishlist ID to the target user's pendingSharedLists array and creates a shared_wishlists record.
  */
 export const shareWishlistWithUser = mutation({
     args: {
@@ -75,7 +75,23 @@ export const shareWishlistWithUser = mutation({
         const currentPending = targetUser.pendingSharedLists ?? [];
         const currentShared = targetUser.sharedLists ?? [];
 
-        // Check if already shared or already pending
+        // Check if already pending or accepted in shared_wishlists index
+        const existingShare = await ctx.db
+            .query("shared_wishlists")
+            .withIndex("by_wishlist_and_user", (q) =>
+                q.eq("wishlistId", args.wishlistId).eq("userId", targetUser._id)
+            )
+            .first();
+
+        if (!existingShare) {
+            await ctx.db.insert("shared_wishlists", {
+                wishlistId: args.wishlistId,
+                userId: targetUser._id,
+                status: "pending",
+            });
+        }
+
+        // Also update array for backward compatibility
         if (!currentPending.includes(args.wishlistId) && !currentShared.includes(args.wishlistId)) {
             await ctx.db.patch(targetUser._id, {
                 pendingSharedLists: [...currentPending, args.wishlistId],
@@ -103,6 +119,25 @@ export const acceptSharedList = mutation({
 
         if (!user) {
             throw new Error("User not found");
+        }
+
+        const existingShare = await ctx.db
+            .query("shared_wishlists")
+            .withIndex("by_wishlist_and_user", (q) =>
+                q.eq("wishlistId", args.wishlistId).eq("userId", user._id)
+            )
+            .first();
+
+        if (existingShare) {
+            await ctx.db.patch(existingShare._id, {
+                status: "accepted",
+            });
+        } else {
+            await ctx.db.insert("shared_wishlists", {
+                wishlistId: args.wishlistId,
+                userId: user._id,
+                status: "accepted",
+            });
         }
 
         const currentShared = user.sharedLists ?? [];
@@ -142,11 +177,63 @@ export const ignoreSharedList = mutation({
             throw new Error("User not found");
         }
 
+        const existingShare = await ctx.db
+            .query("shared_wishlists")
+            .withIndex("by_wishlist_and_user", (q) =>
+                q.eq("wishlistId", args.wishlistId).eq("userId", user._id)
+            )
+            .first();
+
+        if (existingShare) {
+            await ctx.db.delete(existingShare._id);
+        }
+
         const currentPending = user.pendingSharedLists ?? [];
         const updatedPending = currentPending.filter((id) => id !== args.wishlistId);
 
         await ctx.db.patch(user._id, {
             pendingSharedLists: updatedPending,
+        });
+
+        return true;
+    },
+});
+
+/**
+ * Mutation: removeSharedList
+ * Removes a wishlist ID from user's sharedLists array in the database.
+ */
+export const removeSharedList = mutation({
+    args: {
+        clerkId: v.string(),
+        wishlistId: v.id("wishlists"),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+            .first();
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const existingShare = await ctx.db
+            .query("shared_wishlists")
+            .withIndex("by_wishlist_and_user", (q) =>
+                q.eq("wishlistId", args.wishlistId).eq("userId", user._id)
+            )
+            .first();
+
+        if (existingShare) {
+            await ctx.db.delete(existingShare._id);
+        }
+
+        const currentShared = user.sharedLists ?? [];
+        const updatedShared = currentShared.filter((id) => id !== args.wishlistId);
+
+        await ctx.db.patch(user._id, {
+            sharedLists: updatedShared,
         });
 
         return true;

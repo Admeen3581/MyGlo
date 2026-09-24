@@ -66,4 +66,16 @@ export default defineSchema({
         isArchived: v.boolean(),
     })
         .index("by_owner", ["ownerId"]),
+
+    // Indexed join table for shared wishlists to enable efficient O(1) indexed lookups
+    // and eliminate O(N_users) full table scans during wishlist deletion.
+    shared_wishlists: defineTable({
+        wishlistId: v.id("wishlists"),
+        userId: v.id("users"),
+        status: v.union(v.literal("pending"), v.literal("accepted")),
+    })
+        .index("by_wishlist", ["wishlistId"])
+        .index("by_user", ["userId"])
+        .index("by_user_and_status", ["userId", "status"])
+        .index("by_wishlist_and_user", ["wishlistId", "userId"]),
 });

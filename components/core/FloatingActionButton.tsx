@@ -6,11 +6,13 @@ import { useTheme } from '@/hooks/useTheme';
 
 export interface FloatingActionButtonProps {
   onPress?: () => void;
+  onLongPress?: () => void;
   isDarkMode?: boolean;
 }
 
 export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   onPress,
+  onLongPress,
   isDarkMode: customDarkMode,
 }) => {
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
@@ -24,6 +26,8 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
+      onLongPress={onLongPress}
+      delayLongPress={250}
       activeOpacity={0.85}
       style={[
         styles.fab,

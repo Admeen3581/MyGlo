@@ -18,6 +18,8 @@ import { TopNavBar } from '@/components/navigation/TopNavBar';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { WishlistCard } from '@/components/wishlist/WishlistCard';
 import { FloatingActionButton } from '@/components/core/FloatingActionButton';
+import { FabHoldMenuModal } from '@/components/wishlist/FabHoldMenuModal';
+import { CreateNewWishlist } from '@/components/wishlist/CreateNewWishlist';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function MyWishlistsScreen() {
@@ -29,9 +31,11 @@ export default function MyWishlistsScreen() {
 
   const isDesktop = width >= 768;
 
-  // Navigation, search, and fold-out sidebar states
+  // Navigation, search, fold-out sidebar, FAB hold popup, and modal states
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(isDesktop);
+  const [isFabHoldMenuOpen, setIsFabHoldMenuOpen] = useState(false);
+  const [isCreateWishlistOpen, setIsCreateWishlistOpen] = useState(false);
 
   // Fetch only wishlists owned/created by the logged-in user via Convex
   const rawWishlists = useQuery(
@@ -39,10 +43,15 @@ export default function MyWishlistsScreen() {
     user?.id ? { clerkId: user.id } : 'skip'
   );
 
-  // Filter user's owned wishlists based on search query
-  const wishlists = rawWishlists?.filter((item) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
-  );
+  // Filter user's owned wishlists based on search query, with archived lists appearing at the bottom
+  const wishlists = rawWishlists
+    ?.filter((item) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+    )
+    .sort((a, b) => {
+      if (Boolean(a.isArchived) === Boolean(b.isArchived)) return 0;
+      return a.isArchived ? 1 : -1;
+    });
 
   if (!isLoaded) {
     return (
@@ -66,9 +75,23 @@ export default function MyWishlistsScreen() {
     router.push('/profile' as any);
   };
 
+  const handleCreateNewList = () => {
+    setIsCreateWishlistOpen(true);
+  };
+
+  const handleCreateNewItem = () => {
+    // TODO: Navigate to create item screen or open create item modal when implemented
+    console.log('[MyWishlists] Create New Item selected');
+  };
+
+  // Standalone clicking the "+" icon functions the same as 'New List'
   const handleFabPress = () => {
-    //TODO: Action for creating items/lists (screens not implemented yet)
-    console.log('[MyWishlists] Create list/item FAB pressed');
+    handleCreateNewList();
+  };
+
+  // Pressing and holding the "+" icon opens the hold popup menu
+  const handleFabLongPress = () => {
+    setIsFabHoldMenuOpen(true);
   };
 
   return (
@@ -142,7 +165,10 @@ export default function MyWishlistsScreen() {
                         wishlist={item}
                         isDarkMode={isDarkMode}
                         onPress={() => {
-                          //TODO: Navigate to wishlist detail when implemented
+                          router.push({
+                            pathname: '/wishlist/my-gift-viewer' as any,
+                            params: { id: item._id },
+                          });
                         }}
                       />
                     </View>
@@ -179,8 +205,26 @@ export default function MyWishlistsScreen() {
               )}
             </ScrollView>
 
+            {/* Floating Action Plus Button */}
             <FloatingActionButton
               onPress={handleFabPress}
+              onLongPress={handleFabLongPress}
+              isDarkMode={isDarkMode}
+            />
+
+            {/* Hold Popup Menu */}
+            <FabHoldMenuModal
+              isVisible={isFabHoldMenuOpen}
+              onClose={() => setIsFabHoldMenuOpen(false)}
+              onNewList={handleCreateNewList}
+              onNewItem={handleCreateNewItem}
+              isDarkMode={isDarkMode}
+            />
+
+            {/* Create New Wishlist Modal */}
+            <CreateNewWishlist
+              isVisible={isCreateWishlistOpen}
+              onClose={() => setIsCreateWishlistOpen(false)}
               isDarkMode={isDarkMode}
             />
           </View>

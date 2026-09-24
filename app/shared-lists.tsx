@@ -8,7 +8,7 @@ import {
     useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Redirect } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { useAuth, useUser } from '@clerk/expo';
 import { useQuery } from 'convex/react';
 import { api } from '@/database/_generated/api';
@@ -21,6 +21,7 @@ import { IncomingListsModal } from '@/components/wishlist/IncomingListsModal';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function SharedListsScreen() {
+    const router = useRouter();
     const { isLoaded, isSignedIn } = useAuth();
     const { user } = useUser();
     const { isDarkMode, activeColors } = useTheme();
@@ -47,10 +48,15 @@ export default function SharedListsScreen() {
 
     const pendingLists = pendingWishlistsRaw ?? [];
 
-    // Filter shared wishlists based on search query
-    const wishlists = sharedWishlistsRaw?.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
-    );
+    // Filter shared wishlists based on search query, with archived lists appearing at the bottom
+    const wishlists = sharedWishlistsRaw
+        ?.filter((item) =>
+            item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+        )
+        .sort((a, b) => {
+            if (Boolean(a.isArchived) === Boolean(b.isArchived)) return 0;
+            return a.isArchived ? 1 : -1;
+        });
 
     if (!isLoaded) {
         return (
@@ -145,7 +151,10 @@ export default function SharedListsScreen() {
                                                 isDarkMode={isDarkMode}
                                                 isShared={true}
                                                 onPress={() => {
-                                                    //TODO: Navigate to wishlist detail when implemented
+                                                    router.push({
+                                                        pathname: '/wishlist/my-gift-viewer' as any,
+                                                        params: { id: item._id },
+                                                    });
                                                 }}
                                             />
                                         </View>

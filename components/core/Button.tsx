@@ -5,7 +5,7 @@ import { useTheme } from '@/hooks/useTheme';
 interface ButtonProps {
     title: string;
     onPress?: () => void;
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
     size?: 'xs' | 'sm' | 'md' | 'lg';
     loading?: boolean;
     disabled?: boolean;
@@ -30,7 +30,7 @@ export const Button: React.FC<ButtonProps> = ({
         sm: 'h-10 px-6',
         md: 'h-12 px-8',
         lg: 'h-14 px-10',
-};
+    };
 
     const textSizeClasses = {
         xs: 'text-xs font-nunito-semibold',
@@ -62,6 +62,17 @@ export const Button: React.FC<ButtonProps> = ({
                         color: activeColors.secondaryForeground,
                     },
                     indicator: activeColors.secondaryForeground,
+                };
+            case 'destructive':
+                return {
+                    container: {
+                        backgroundColor: activeColors.destructive,
+                        borderWidth: 0,
+                    },
+                    text: {
+                        color: '#FFFFFF',
+                    },
+                    indicator: '#FFFFFF',
                 };
             case 'outline':
                 return {

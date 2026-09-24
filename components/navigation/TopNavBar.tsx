@@ -154,7 +154,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                         >
                             <Ionicons
                                 name={isSidebarOpen ? "close" : "menu"}
-                                size={22}
+                                size={24}
                                 color={activeColors.primaryForeground}
                             />
                         </View>
