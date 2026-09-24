@@ -154,6 +154,36 @@ export const ignoreSharedList = mutation({
 });
 
 /**
+ * Mutation: removeSharedList
+ * Removes a wishlist ID from user's sharedLists array in the database.
+ */
+export const removeSharedList = mutation({
+    args: {
+        clerkId: v.string(),
+        wishlistId: v.id("wishlists"),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+            .first();
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const currentShared = user.sharedLists ?? [];
+        const updatedShared = currentShared.filter((id) => id !== args.wishlistId);
+
+        await ctx.db.patch(user._id, {
+            sharedLists: updatedShared,
+        });
+
+        return true;
+    },
+});
+
+/**
  * Query: getAllUsers
  * Fetches all registered users in the database (optionally excluding the current user by clerkId).
  */

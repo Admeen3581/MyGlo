@@ -61,14 +61,11 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
 
     const handleDelete = () => {
         // TODO: Implement Delete functionality
-        console.log('[WishlistCard] Delete pressed for wishlist:', wishlist?._id, wishlist?.title ?? title);
         onClose();
         onDelete?.();
     };
 
     const handleRemoveShared = () => {
-        // TODO: Implement Remove from Shared functionality
-        console.log('[WishlistCard] Remove from shared pressed for wishlist:', wishlist?._id, wishlist?.title ?? title);
         onClose();
         onRemoveShared?.();
     };

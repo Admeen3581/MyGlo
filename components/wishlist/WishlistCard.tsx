@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useUser } from '@clerk/expo';
+import { useMutation } from 'convex/react';
+import { api } from '@/database/_generated/api';
 import { useTheme } from '@/hooks/useTheme';
 import { Badge } from '@/components/core/Badge';
 import { WishlistCardMenuModal } from './WishlistCardMenuModal';
@@ -21,6 +24,7 @@ export interface WishlistCardProps {
   isDarkMode?: boolean;
   isShared?: boolean;
   onRename?: () => void;
+  onRemoveShared?: () => void;
 }
 
 export const WishlistCard: React.FC<WishlistCardProps> = ({
@@ -29,13 +33,17 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
   isDarkMode: customDarkMode,
   isShared = false,
   onRename: customOnRename,
+  onRemoveShared: customOnRemoveShared,
 }) => {
+  const { user } = useUser();
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
   const count = wishlist.itemCount ?? 0;
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
   const [isRenameModalVisible, setIsRenameModalVisible] = useState(false);
+
+  const removeSharedListMutation = useMutation(api.users.removeSharedList);
 
   const displayTitle = wishlist.title.length > 30
     ? `${wishlist.title.substring(0, 28)}...`
@@ -54,6 +62,21 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
       customOnRename();
     } else {
       setIsRenameModalVisible(true);
+    }
+  };
+
+  const handleRemoveSharedClick = async () => {
+    if (customOnRemoveShared) {
+      customOnRemoveShared();
+    } else if (user?.id && wishlist._id) {
+      try {
+        await removeSharedListMutation({
+          clerkId: user.id,
+          wishlistId: wishlist._id as any,
+        });
+      } catch (err) {
+        console.error('[WishlistCard] Failed to remove shared wishlist:', err);
+      }
     }
   };
 
@@ -128,6 +151,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         isDarkMode={isDarkMode}
         onShare={() => setIsShareModalVisible(true)}
         onRename={handleRenameClick}
+        onRemoveShared={handleRemoveSharedClick}
       />
 
       {/* Share Wishlist Modal Component */}
