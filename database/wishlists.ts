@@ -173,8 +173,6 @@ export const createWishlist = mutation({
     },
 });
 
-export const handleCreateNewList = createWishlist;
-
 /**
  * Mutation: renameWishlist
  * Updates the title of an existing wishlist document.
@@ -195,6 +193,53 @@ export const renameWishlist = mutation({
             title: args.title.trim(),
         });
 
+        return true;
+    },
+});
+
+/**
+ * Mutation: deleteWishlist
+ * 1. Removes the wishlist ID from everyone's sharedLists and pendingSharedLists arrays in users table.
+ * 2. Deletes the wishlist entry from the database.
+ */
+export const deleteWishlist = mutation({
+    args: {
+        wishlistId: v.id("wishlists"),
+    },
+    handler: async (ctx, args) => {
+        const wishlist = await ctx.db.get(args.wishlistId);
+
+        if (!wishlist) {
+            return false;
+        }
+
+        // 1. Remove from all users' sharedLists and pendingSharedLists arrays
+        const users = await ctx.db.query("users").collect();
+        for (const user of users) {
+            let shouldPatch = false;
+            let updatedShared = user.sharedLists;
+            let updatedPending = user.pendingSharedLists;
+
+            if (user.sharedLists && user.sharedLists.includes(args.wishlistId)) {
+                updatedShared = user.sharedLists.filter((id) => id !== args.wishlistId);
+                shouldPatch = true;
+            }
+
+            if (user.pendingSharedLists && user.pendingSharedLists.includes(args.wishlistId)) {
+                updatedPending = user.pendingSharedLists.filter((id) => id !== args.wishlistId);
+                shouldPatch = true;
+            }
+
+            if (shouldPatch) {
+                await ctx.db.patch(user._id, {
+                    sharedLists: updatedShared,
+                    pendingSharedLists: updatedPending,
+                });
+            }
+        }
+
+        // 2. Delete the wishlist document from database
+        await ctx.db.delete(args.wishlistId);
         return true;
     },
 });

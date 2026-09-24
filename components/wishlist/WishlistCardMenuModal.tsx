@@ -60,7 +60,6 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
     };
 
     const handleDelete = () => {
-        // TODO: Implement Delete functionality
         onClose();
         onDelete?.();
     };

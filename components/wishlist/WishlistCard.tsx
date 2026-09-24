@@ -9,6 +9,7 @@ import { Badge } from '@/components/core/Badge';
 import { WishlistCardMenuModal } from './WishlistCardMenuModal';
 import { WishlistShareModal } from './WishlistShareModal';
 import { RenameWishlistModal } from './RenameWishlistModal';
+import { ConfirmModal } from '@/components/core/ConfirmModal';
 
 export interface WishlistCardItem {
   _id: string;
@@ -25,6 +26,7 @@ export interface WishlistCardProps {
   isShared?: boolean;
   onRename?: () => void;
   onRemoveShared?: () => void;
+  onDelete?: () => void;
 }
 
 export const WishlistCard: React.FC<WishlistCardProps> = ({
@@ -34,6 +36,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
   isShared = false,
   onRename: customOnRename,
   onRemoveShared: customOnRemoveShared,
+  onDelete: customOnDelete,
 }) => {
   const { user } = useUser();
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
@@ -42,8 +45,11 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
   const [isRenameModalVisible, setIsRenameModalVisible] = useState(false);
+  const [isDeleteConfirmVisible, setIsDeleteConfirmVisible] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const removeSharedListMutation = useMutation(api.users.removeSharedList);
+  const deleteWishlistMutation = useMutation(api.wishlists.deleteWishlist);
 
   const displayTitle = wishlist.title.length > 30
     ? `${wishlist.title.substring(0, 28)}...`
@@ -77,6 +83,27 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
       } catch (err) {
         console.error('[WishlistCard] Failed to remove shared wishlist:', err);
       }
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (customOnDelete) {
+      customOnDelete();
+    } else {
+      setIsDeleteConfirmVisible(true);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!wishlist._id) return;
+    try {
+      setIsDeleting(true);
+      await deleteWishlistMutation({ wishlistId: wishlist._id as any });
+      setIsDeleteConfirmVisible(false);
+    } catch (err) {
+      console.error('[WishlistCard] Failed to delete wishlist:', err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -152,6 +179,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         onShare={() => setIsShareModalVisible(true)}
         onRename={handleRenameClick}
         onRemoveShared={handleRemoveSharedClick}
+        onDelete={handleDeleteClick}
       />
 
       {/* Share Wishlist Modal Component */}
@@ -168,6 +196,20 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         onClose={() => setIsRenameModalVisible(false)}
         wishlistId={wishlist._id}
         currentTitle={wishlist.title}
+        isDarkMode={isDarkMode}
+      />
+
+      {/* Confirmation Alert Modal for Deleting Wishlist */}
+      <ConfirmModal
+        isVisible={isDeleteConfirmVisible}
+        onClose={() => setIsDeleteConfirmVisible(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Wishlist"
+        message={`Are you sure you want to delete "${wishlist.title}"? This will permanently remove the list and unshare it from everyone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isDestructive={true}
+        loading={isDeleting}
         isDarkMode={isDarkMode}
       />
     </>
