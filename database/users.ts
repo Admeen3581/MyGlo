@@ -16,7 +16,6 @@ export const createUser = mutation({
         email: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        console.log("[Convex database/users.ts] createUser called with args:", args);
 
         // Look up existing user by clerkId index
         const existingUser = await ctx.db
@@ -32,7 +31,6 @@ export const createUser = mutation({
         const avatarImage = args.avatar || args.avatarUrl;
 
         if (existingUser) {
-            console.log("[Convex database/users.ts] Updating existing user:", existingUser._id);
             await ctx.db.patch(existingUser._id, {
                 firstName: args.firstName,
                 lastName: args.lastName,

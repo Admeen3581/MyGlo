@@ -7,6 +7,7 @@ import { useTheme } from '@/hooks/useTheme';
 export interface TopNavBarProps {
     searchQuery?: string;
     onSearchChange?: (text: string) => void;
+    searchPlaceholder?: string;
     avatarUrl?: string | null;
     onAvatarPress?: () => void;
     isDarkMode?: boolean;
@@ -22,6 +23,7 @@ export interface TopNavBarProps {
 export const TopNavBar: React.FC<TopNavBarProps> = ({
                                                         searchQuery = '',
                                                         onSearchChange,
+                                                        searchPlaceholder = 'Search wishlists...',
                                                         avatarUrl,
                                                         onAvatarPress,
                                                         isDarkMode: customDarkMode,
@@ -183,7 +185,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
                 <TextInput
                     value={searchQuery}
                     onChangeText={onSearchChange}
-                    placeholder="Search wishlists..."
+                    placeholder={searchPlaceholder}
                     placeholderTextColor={activeColors.mutedForeground}
                     style={[
                         styles.searchInput,

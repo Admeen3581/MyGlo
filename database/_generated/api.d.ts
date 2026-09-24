@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as friends from "../friends.js";
 import type * as test from "../test.js";
 import type * as users from "../users.js";
 import type * as wishlists from "../wishlists.js";
@@ -19,6 +20,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  friends: typeof friends;
   test: typeof test;
   users: typeof users;
   wishlists: typeof wishlists;
