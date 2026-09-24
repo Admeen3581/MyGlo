@@ -97,7 +97,7 @@ export default function MyGiftViewerScreen() {
             className="flex-row items-center px-4 py-3 rounded-full border"
           >
             <Ionicons
-              name="sparkles-sharp"
+              name="sparkles"
               size={18}
               color={activeColors.primary}
               style={{ marginRight: 6 }}
