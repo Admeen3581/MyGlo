@@ -10,7 +10,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Keyboard,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -114,7 +113,11 @@ export const CreateNewItem: React.FC<CreateNewItemProps> = ({
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardAvoidingView}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <Pressable
+          onPress={Keyboard.dismiss}
+          accessible={false}
+          style={styles.pressableContainer}
+        >
           <Pressable
             style={[
               styles.modalCard,
@@ -303,7 +306,7 @@ export const CreateNewItem: React.FC<CreateNewItemProps> = ({
               />
             </View>
           </Pressable>
-        </TouchableWithoutFeedback>
+        </Pressable>
       </KeyboardAvoidingView>
     </ModalWrapper>
   );
@@ -311,6 +314,11 @@ export const CreateNewItem: React.FC<CreateNewItemProps> = ({
 
 const styles = StyleSheet.create({
   keyboardAvoidingView: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pressableContainer: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',

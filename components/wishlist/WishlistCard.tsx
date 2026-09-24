@@ -10,7 +10,7 @@ import { WishlistCardMenuModal } from './WishlistCardMenuModal';
 import { WishlistShareModal } from './WishlistShareModal';
 import { RenameWishlistModal } from './RenameWishlistModal';
 import { ConfirmModal } from '@/components/core/ConfirmModal';
-import CreateNewItem from "@/components/wishlist/CreateNewItem";
+import { CreateNewItem } from '@/components/wishlist/CreateNewItem';
 
 export interface WishlistCardItem {
     _id: string;
