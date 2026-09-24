@@ -20,23 +20,23 @@ export interface WishlistCardMenuModalProps {
 }
 
 export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
-                                                                                isVisible,
-                                                                                onClose,
-                                                                                title,
-                                                                                wishlist,
-                                                                                isShared = false,
-                                                                                isDarkMode: customDarkMode,
-                                                                                onAddItem,
-                                                                                onArchive,
-                                                                                onRename,
-                                                                                onShare,
-                                                                                onDelete,
-                                                                                onRemoveShared,
-                                                                            }) => {
+    isVisible,
+    onClose,
+    title,
+    wishlist,
+    isShared = false,
+    isDarkMode: customDarkMode,
+    onAddItem,
+    onArchive,
+    onRename,
+    onShare,
+    onDelete,
+    onRemoveShared,
+}) => {
     const { isDarkMode, activeColors } = useTheme(customDarkMode);
 
     const handleAddItem = () => {
-        // TODO: Implement Add Item functionality (e.g. open add item modal or navigate to add item screen)
+        // TODO: Implement Add Item functionality
         console.log('[WishlistCard] Add item pressed for wishlist:', wishlist?._id, wishlist?.title ?? title);
         onClose();
         onAddItem?.();
@@ -46,11 +46,10 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
         // TODO: Implement functionality when user archives/unarchives a wishlist.
         console.log('[WishlistCard] Archive pressed.');
         onClose();
-    }
+        onArchive?.();
+    };
 
     const handleRename = () => {
-        // TODO: Implement Rename functionality (e.g. open rename wishlist prompt/modal)
-        console.log('[WishlistCard] Rename pressed for wishlist:', wishlist?._id, wishlist?.title ?? title);
         onClose();
         onRename?.();
     };
@@ -61,14 +60,14 @@ export const WishlistCardMenuModal: React.FC<WishlistCardMenuModalProps> = ({
     };
 
     const handleDelete = () => {
-        // TODO: Implement Delete functionality (e.g. prompt confirmation and remove wishlist via Convex mutation)
+        // TODO: Implement Delete functionality
         console.log('[WishlistCard] Delete pressed for wishlist:', wishlist?._id, wishlist?.title ?? title);
         onClose();
         onDelete?.();
     };
 
     const handleRemoveShared = () => {
-        // TODO: Implement Remove from Shared functionality (e.g. remove wishlist ID from user's sharedLists)
+        // TODO: Implement Remove from Shared functionality
         console.log('[WishlistCard] Remove from shared pressed for wishlist:', wishlist?._id, wishlist?.title ?? title);
         onClose();
         onRemoveShared?.();

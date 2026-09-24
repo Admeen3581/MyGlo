@@ -174,3 +174,27 @@ export const createWishlist = mutation({
 });
 
 export const handleCreateNewList = createWishlist;
+
+/**
+ * Mutation: renameWishlist
+ * Updates the title of an existing wishlist document.
+ */
+export const renameWishlist = mutation({
+    args: {
+        wishlistId: v.id("wishlists"),
+        title: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const wishlist = await ctx.db.get(args.wishlistId);
+
+        if (!wishlist) {
+            throw new Error("Wishlist not found");
+        }
+
+        await ctx.db.patch(args.wishlistId, {
+            title: args.title.trim(),
+        });
+
+        return true;
+    },
+});

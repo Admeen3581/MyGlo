@@ -5,6 +5,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { Badge } from '@/components/core/Badge';
 import { WishlistCardMenuModal } from './WishlistCardMenuModal';
 import { WishlistShareModal } from './WishlistShareModal';
+import { RenameWishlistModal } from './RenameWishlistModal';
 
 export interface WishlistCardItem {
   _id: string;
@@ -19,6 +20,7 @@ export interface WishlistCardProps {
   onPress?: () => void;
   isDarkMode?: boolean;
   isShared?: boolean;
+  onRename?: () => void;
 }
 
 export const WishlistCard: React.FC<WishlistCardProps> = ({
@@ -26,12 +28,14 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
   onPress,
   isDarkMode: customDarkMode,
   isShared = false,
+  onRename: customOnRename,
 }) => {
   const { isDarkMode, activeColors } = useTheme(customDarkMode);
   const count = wishlist.itemCount ?? 0;
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
+  const [isRenameModalVisible, setIsRenameModalVisible] = useState(false);
 
   const displayTitle = wishlist.title.length > 30
     ? `${wishlist.title.substring(0, 28)}...`
@@ -43,6 +47,14 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 
   const handleCardLongPress = () => {
     setIsMenuVisible(true);
+  };
+
+  const handleRenameClick = () => {
+    if (customOnRename) {
+      customOnRename();
+    } else {
+      setIsRenameModalVisible(true);
+    }
   };
 
   return (
@@ -115,6 +127,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         isShared={isShared}
         isDarkMode={isDarkMode}
         onShare={() => setIsShareModalVisible(true)}
+        onRename={handleRenameClick}
       />
 
       {/* Share Wishlist Modal Component */}
@@ -122,6 +135,15 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         isVisible={isShareModalVisible}
         onClose={() => setIsShareModalVisible(false)}
         wishlistId={wishlist._id}
+        isDarkMode={isDarkMode}
+      />
+
+      {/* Rename Wishlist Modal Component */}
+      <RenameWishlistModal
+        isVisible={isRenameModalVisible}
+        onClose={() => setIsRenameModalVisible(false)}
+        wishlistId={wishlist._id}
+        currentTitle={wishlist.title}
         isDarkMode={isDarkMode}
       />
     </>
