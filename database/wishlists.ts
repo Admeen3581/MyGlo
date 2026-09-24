@@ -1,4 +1,4 @@
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
@@ -138,3 +138,39 @@ export const getPendingSharedLists = query({
         return pendingLists.filter((item): item is NonNullable<typeof item> => item !== null);
     },
 });
+
+/**
+ * Mutation: createWishlist / handleCreateNewList
+ * Creates a new wishlist record in the database.
+ */
+export const createWishlist = mutation({
+    args: {
+        clerkId: v.string(),
+        title: v.string(),
+        description: v.optional(v.string()),
+        keepPurchasesSecret: v.boolean(),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+            .first();
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const newWishlistId = await ctx.db.insert("wishlists", {
+            ownerId: user._id,
+            title: args.title.trim(),
+            description: args.description?.trim(),
+            keepPurchasesSecret: args.keepPurchasesSecret,
+            items: [],
+            isArchived: false,
+        });
+
+        return newWishlistId;
+    },
+});
+
+export const handleCreateNewList = createWishlist;

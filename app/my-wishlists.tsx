@@ -19,6 +19,7 @@ import { Sidebar } from '@/components/navigation/Sidebar';
 import { WishlistCard } from '@/components/wishlist/WishlistCard';
 import { FloatingActionButton } from '@/components/core/FloatingActionButton';
 import { FabHoldMenuModal } from '@/components/wishlist/FabHoldMenuModal';
+import { CreateNewWishlist } from '@/components/wishlist/CreateNewWishlist';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function MyWishlistsScreen() {
@@ -30,10 +31,11 @@ export default function MyWishlistsScreen() {
 
   const isDesktop = width >= 768;
 
-  // Navigation, search, fold-out sidebar, and FAB hold popup states
+  // Navigation, search, fold-out sidebar, FAB hold popup, and modal states
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(isDesktop);
   const [isFabHoldMenuOpen, setIsFabHoldMenuOpen] = useState(false);
+  const [isCreateWishlistOpen, setIsCreateWishlistOpen] = useState(false);
 
   // Fetch only wishlists owned/created by the logged-in user via Convex
   const rawWishlists = useQuery(
@@ -69,8 +71,7 @@ export default function MyWishlistsScreen() {
   };
 
   const handleCreateNewList = () => {
-    // TODO: Navigate to create wishlist screen or open create wishlist modal when implemented
-    console.log('[MyWishlists] Create New List selected');
+    setIsCreateWishlistOpen(true);
   };
 
   const handleCreateNewItem = () => {
@@ -209,6 +210,13 @@ export default function MyWishlistsScreen() {
               onClose={() => setIsFabHoldMenuOpen(false)}
               onNewList={handleCreateNewList}
               onNewItem={handleCreateNewItem}
+              isDarkMode={isDarkMode}
+            />
+
+            {/* Create New Wishlist Modal */}
+            <CreateNewWishlist
+              isVisible={isCreateWishlistOpen}
+              onClose={() => setIsCreateWishlistOpen(false)}
               isDarkMode={isDarkMode}
             />
           </View>
