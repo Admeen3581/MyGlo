@@ -88,7 +88,7 @@ export default function MyGiftViewerScreen() {
             />
           </TouchableOpacity>
 
-          {/*Center: Surprise Protection Active Banner / Badge*/}
+          {/* Center: Surprise Protection Active Banner / Badge */}
           <View
             style={{
               backgroundColor: isDarkMode ? 'rgba(32, 164, 181, 0.15)' : 'rgba(0, 95, 115, 0.10)',
@@ -123,7 +123,7 @@ export default function MyGiftViewerScreen() {
           >
             <Ionicons
               name="share-social-outline"
-              size={22}
+              size={24}
               color={activeColors.foreground}
             />
           </TouchableOpacity>
@@ -169,7 +169,7 @@ export default function MyGiftViewerScreen() {
           >
             <Ionicons
               name="search-outline"
-              size={18}
+              size={20}
               color={activeColors.mutedForeground}
               style={{ marginRight: 8 }}
             />
@@ -182,6 +182,7 @@ export default function MyGiftViewerScreen() {
                 styles.searchInput,
                 { color: activeColors.foreground },
               ]}
+              className="ml-2"
             />
             {Boolean(searchQuery) && (
               <TouchableOpacity
@@ -219,7 +220,7 @@ export default function MyGiftViewerScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Main Chunk: ScrollView containing ItemCard Grid */}
+        {/* Main Chunk: ScrollView containing ItemCard List */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
@@ -239,12 +240,12 @@ export default function MyGiftViewerScreen() {
               </Text>
             </View>
           ) : filteredItems.length > 0 ? (
-            /* Items Grid: 2 columns on mobile, 3 columns on tablet, 4 columns on desktop */
-            <View className="px-4 pt-1 flex-row flex-wrap">
+            /* Items List: 1 column rows on mobile, 4 items side-by-side on desktop */
+            <View className="px-4 flex-row flex-wrap -mx-1.5">
               {filteredItems.map((item) => (
                 <View
                   key={item.id}
-                  className="w-1/2 md:w-1/3 lg:w-1/4 p-1.5"
+                  className="w-full md:w-1/4 p-1.5"
                 >
                   <ItemCard
                     item={item}
